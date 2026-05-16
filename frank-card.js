@@ -4,7 +4,7 @@ SPRITES = {
   FRANK: {
     IDLE: [
       `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+<svg id="idle" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
   <g id="layer-0" fill="#fefefe" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
     <path d="M0 320 l0 -320 320 0 320 0 0 320 0 320 -320 0 -320 0 0 -320z m200
 80 l0 -40 -20 0 -20 0 0 40 0 40 20 0 20 0 0 -40z m160 -60 l0 -100 -40 0 -40
@@ -23,7 +23,7 @@ SPRITES = {
     ],
     NEUTRAL: [
       `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+<svg id="neutral" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
   <g id="layer-0" fill="#ffffff" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
     <path d="M0 320 l0 -320 320 0 320 0 0 320 0 320 -320 0 -320 0 0 -320z m200
 80 l0 -40 -20 0 -20 0 0 40 0 40 20 0 20 0 0 -40z m160 -60 l0 -100 -40 0 -40
@@ -41,7 +41,7 @@ SPRITES = {
     ],
     JIBJAB: [
       `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+<svg id="jibjab_1" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
   <g id="layer-0" fill="#ffffff" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
     <path d="M0 320 l0 -320 320 0 320 0 0 320 0 320 -320 0 -320 0 0 -320z m200
 80 l0 -40 -20 0 -20 0 0 40 0 40 20 0 20 0 0 -40z m160 -60 l0 -100 -40 0 -40
@@ -61,7 +61,7 @@ SPRITES = {
   </g>
 </svg>`,
       `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+<svg id="jibjab_2" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
   <g id="layer-0" fill="#ffffff" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
     <path d="M0 320 l0 -320 320 0 320 0 0 320 0 320 -320 0 -320 0 0 -320z m200
 80 l0 -40 -20 0 -20 0 0 40 0 40 20 0 20 0 0 -40z m160 -60 l0 -100 -40 0 -40
@@ -81,7 +81,7 @@ SPRITES = {
   </g>
 </svg>`,
       `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+<svg id="jibjab_3" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
   <g id="layer-0" fill="#fefefe" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
     <path d="M0 320 l0 -320 320 0 320 0 0 320 0 320 -320 0 -320 0 0 -320z m200
 80 l0 -40 -20 0 -20 0 0 40 0 40 20 0 20 0 0 -40z m160 -60 l0 -100 -40 0 -40
@@ -101,7 +101,7 @@ SPRITES = {
   </g>
 </svg>`,
       `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+<svg id="jibjab_4" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
   <g id="layer-0" fill="#ffffff" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
     <path d="M0 320 l0 -320 320 0 320 0 0 320 0 320 -320 0 -320 0 0 -320z m200
 80 l0 -40 -20 0 -20 0 0 40 0 40 20 0 20 0 0 -40z m160 -60 l0 -100 -40 0 -40
@@ -137,14 +137,18 @@ class FrankCard extends HTMLElement {
     this._lastHassVoice = null;
     this._lastHassMedia = null;
     this._lastHassBpm = null;
-    this._currentImage = null;
+    this._lastSprite = null;
+    this._currentSprite = null;
   }
   // #endregion
 
   // #region Lovelace methods
   static getConfigElement() { return document.createElement('frank-card-editor'); }
   static getStubConfig() { return { entity: "", media_entity: "", bpm_entity: "", respond_delay: 0, zoom: 85, transparent_bg: false }; }
+  static getCardSize() { return 6; }
   // #endregion
+
+  // #region setConfig
 
   setConfig(config) {
     if (!config.entity && !this.config) {
@@ -158,6 +162,10 @@ class FrankCard extends HTMLElement {
         this.applyState(this._currentState, this._currentBpm);
     }
   }
+
+  // #endregion
+
+  // #region hass setter
 
   set hass(hass) {
     if (!hass) return;
@@ -196,7 +204,7 @@ class FrankCard extends HTMLElement {
     }
   }
 
-  getCardSize() { return 6; }
+  // #endregion
 
   setupDOM() {
     const zoom = this.config.zoom !== undefined ? this.config.zoom : 85;
@@ -212,41 +220,37 @@ class FrankCard extends HTMLElement {
       </style>
       
       <div id="scene">
-        <!-- Frank's image will be injected here -->
+        <div id="frank-container">
+          <!-- Frank's image will be injected here -->
+        </div>
       </div>
     `;
   }
+
+
 
   initFrank() {
     const root = this.shadowRoot;
     const config = this.config;
 
     const el = {
-      image: root.getElementById('frank-image'),
+      scene: root.getElementById('scene'),
+      frankContainer: root.getElementById('frank-container'),
     };
-
-    const images = {
-      smile: ['spr_frank_smile.png'],
-      neutral: ['spr_frank_neutral.png'],
-      jibjab: ['spr_frank_jibjab_1.png', 'spr_frank_jibjab_2.png', 'spr_frank_jibjab_3.png', 'spr_frank_jibjab_4.png'],
-    }
 
     let stateNow = 'idle';
     let currentBaseLid = 0;
 
-    const setImage = (src) => {
-      if (el.image.src.endsWith(src)) return;
-      const fullSrc = "static/" + src;
-      el.image.src = fullSrc;
-      this._currentImage = fullSrc;
+    const setSprite = (spr, index) => {
+      el.frankContainer.innerHTML = spr[index];
+      this._lastSprite = this._currentSprite;
+
+      // id is stored in the SVG's root element
+      this._currentSprite = el.frankContainer.querySelector('svg').id;
     };
 
     function idle_smile() {
-      setImage(images.smile[0]);
-    }
-
-    function idle_neutral() {
-      setImage(images.neutral[0]);
+      setImage(SPRITES.FRANK.IDLE, 0);
     }
 
     this.idleTimer = null;
@@ -257,7 +261,6 @@ class FrankCard extends HTMLElement {
 
     const IDLE_BEHAVIORS = [
       { name: 'smile', exec() {idle_smile()} },
-      { name: 'neutral', exec() {idle_neutral()} },
     ];
 
     const runNextIdleBehavior = () => {
@@ -335,14 +338,18 @@ class FrankCard extends HTMLElement {
       step();
     };
 
-    const startTalkAnim = () => {
+    const startRespondAnim = () => {
       if (this.talkAnim) clearTimeout(this.talkAnim);
-      let talkPhase = 0;
       const step = () => {
-        const m = TALK_MOVES[talkPhase % TALK_MOVES.length];
+        if (this._currentImage !== SPRITES.FRANK.NEUTRAL[0]) {
+          setSprite(SPRITES.FRANK.NEUTRAL[0]);
+        }
+        else {
+          const nextSprite = SPRITES.FRANK.JIBJAB[Math.floor(Math.random() * SPRITES.FRANK.JIBJAB.length)];
+          setSprite(nextSprite);
+        }
 
-        talkPhase++;
-        this.talkAnim = setTimeout(step, m.dur * 1000);
+        this.talkAnim = setTimeout(step, 500);
       };
       step();
     };
@@ -354,7 +361,8 @@ class FrankCard extends HTMLElement {
       this.stopDanceCycle();
 
       if (state === 'idle') {
-
+        // idle is the default state, so we start the idle cycle which will pick random idle behaviors to execute
+        this.startIdleCycle();
       } else if (state === 'dancing') {
 
       } else if (state === 'listening') {
@@ -362,7 +370,7 @@ class FrankCard extends HTMLElement {
       } else if (state === 'processing') {
         
       } else if (state === 'responding') {
-        startTalkAnim();
+        startRespondAnim();
       }
     };
 
@@ -404,6 +412,10 @@ class FrankCard extends HTMLElement {
     if (this.talkAnim) clearTimeout(this.talkAnim);
   }
 }
+
+// #endregion
+
+// #region Home Assistant Card Editor
 
 class FrankCardEditor extends HTMLElement {
   constructor() {
