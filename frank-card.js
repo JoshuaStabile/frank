@@ -1,6 +1,6 @@
 // #region SVG SPRITES
 
-SPRITES = {
+const SPRITES = {
   FRANK: {
     IDLE: [
       `<?xml version="1.0" encoding="UTF-8"?>
