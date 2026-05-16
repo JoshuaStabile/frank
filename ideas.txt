@@ -1,0 +1,8 @@
+mac icon face and wokyis is frank
+
+speaking animation
+
+once talking, have subtitles at the bottom of the screen
+audio waveform in the screen replacing face?
+
+dont bring in live text. too difficult. but if gathering news or doing any web search, maybe have a separate llm call fetch it. and that can be retrieved here?
