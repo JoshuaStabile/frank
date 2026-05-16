@@ -1,6 +1,5 @@
 {
   "name": "frank lovelace card",
   "render_readme": true,
-  "zip_release": true,
-  "filename": "frank.zip"
+  "filename": "frank-card.js"
 }
