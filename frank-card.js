@@ -241,8 +241,8 @@ class FrankCard extends HTMLElement {
     let stateNow = 'idle';
     let currentBaseLid = 0;
 
-    const setSprite = (spr, index) => {
-      el.frankContainer.innerHTML = spr[index];
+    const setSprite = (spr) => {
+      el.frankContainer.innerHTML = spr;
       this._lastSprite = this._currentSprite;
 
       // id is stored in the SVG's root element
@@ -250,7 +250,7 @@ class FrankCard extends HTMLElement {
     };
 
     function idle_smile() {
-      setImage(SPRITES.FRANK.IDLE, 0);
+      setSprite(SPRITES.FRANK.IDLE[0]);
     }
 
     this.idleTimer = null;
@@ -260,7 +260,7 @@ class FrankCard extends HTMLElement {
     this.respondTimer = null;
 
     const IDLE_BEHAVIORS = [
-      { name: 'smile', exec() {idle_smile()} },
+      { name: 'smile', exec() {idle_smile()}, min: 5000, max: 10000, weight: 1 },
     ];
 
     const runNextIdleBehavior = () => {
@@ -341,7 +341,10 @@ class FrankCard extends HTMLElement {
     const startRespondAnim = () => {
       if (this.talkAnim) clearTimeout(this.talkAnim);
       const step = () => {
-        if (this._currentImage !== SPRITES.FRANK.NEUTRAL[0]) {
+        // if the sprite has changed, revert back to neutral sprite
+
+        // TODO: make a single source for sprite ids
+        if (this._currentSprite !== 'neutral') {
           setSprite(SPRITES.FRANK.NEUTRAL[0]);
         }
         else {
@@ -349,6 +352,7 @@ class FrankCard extends HTMLElement {
           setSprite(nextSprite);
         }
 
+        // TODO: change to variable talk speed
         this.talkAnim = setTimeout(step, 500);
       };
       step();
@@ -408,7 +412,6 @@ class FrankCard extends HTMLElement {
     if (this.stopIdleCycle) this.stopIdleCycle();
     if (this.stopDanceCycle) this.stopDanceCycle();
     if (this.respondTimer) clearTimeout(this.respondTimer);
-    if (this.lidTimer) clearTimeout(this.lidTimer);
     if (this.talkAnim) clearTimeout(this.talkAnim);
   }
 }
