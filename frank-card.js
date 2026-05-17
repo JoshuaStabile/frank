@@ -156,9 +156,11 @@ class FrankCard extends HTMLElement {
   // #endregion
 
   setupDOM() {
-    const bgStyle = this.config.transparent_bg
-      ? 'background: transparent; box-shadow: none; border: none;'
-      : 'background: var(--ha-card-background, var(--card-background-color, #ffffff));';
+    const zoom = this.config.zoom !== undefined ? this.config.zoom : 85;
+    const scale = zoom / 100;
+    const width = 280 * scale;
+    const height = 320 * scale;
+    const bgStyle = this.config.transparent_bg ? 'background: transparent; box-shadow: none; border: none;' : 'background: var(--ha-card-background, var(--card-background-color, #ffffff));';
 
     this.shadowRoot.innerHTML = `
       <style>
