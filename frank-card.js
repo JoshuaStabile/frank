@@ -175,7 +175,6 @@ class FrankCard extends HTMLElement {
           ${bgStyle}
 
           overflow: hidden;
-          z-index: 9999;
         }
 
         #scene {
