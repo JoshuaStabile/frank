@@ -192,8 +192,13 @@ class FrankCard extends HTMLElement {
       return;
     }
 
-    const spriteWidth = this._currentSprite.width;
-    const spriteHeight = this._currentSprite.height;
+    const spriteWidth =
+      this._currentSprite.width?.baseVal?.value ||
+      this._currentSprite.getBoundingClientRect().width;
+
+    const spriteHeight =
+      this._currentSprite.height?.baseVal?.value ||
+      this._currentSprite.getBoundingClientRect().height;
 
     const screenFill = 0.8;
 
@@ -244,8 +249,9 @@ class FrankCard extends HTMLElement {
       finalHeight
     });
 
-    this._currentSprite.width = finalWidth;
-    this._currentSprite.height = finalHeight;
+    const svg = this._currentSprite;
+    svg.setAttribute('width', finalWidth);
+    svg.setAttribute('height', finalHeight);
 
     console.log('[Frank] Applied sprite scale styles');
   }
