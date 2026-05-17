@@ -163,10 +163,10 @@ class FrankCard extends HTMLElement {
 
     this.shadowRoot.innerHTML = `
       <style>
-        :host { display: flex; align-items: center; justify-content: center; ${bgStyle} border-radius: var(--ha-card-border-radius, 12px); overflow: hidden; width: 100%; }
+        :host { display: flex; align-items: center; justify-content: center; ${bgStyle} border-radius: var(--ha-card-border-radius, 12px); overflow: hidden; width: 100%; height: 100%; }
         #scene { display: flex; align-items: center; justify-content: center; }
+        svg { image-rendering: pixelated; image-rendering: crisp-edges; }
       </style>
-      <style id="sprite-scale-style"></style>
 
       <div id="scene">
         <div id="frank-container">
@@ -179,47 +179,76 @@ class FrankCard extends HTMLElement {
   // #endregion
 
   updateSpriteScale() {
-    if (!this._currentSprite) return;
-
-    // container is the hui card
-    const container = this.shadowRoot.querySelector('hui-card');
-    if (!container) return;
-
-    const spriteWidth = this._currentSprite.width;
-    const spriteHeight = this._currentSprite.height;
-
-    const screenFill = 0.8;
-
-    const containerWidth = container.clientWidth;
-    const containerHeight = container.clientHeight;
-
-    // target area inside container
-    const targetWidth = containerWidth * screenFill;
-    const targetHeight = containerHeight * screenFill;
-
-    // scale independently from sprite dimensions
-    const scaleX = targetWidth / spriteWidth;
-    const scaleY = targetHeight / spriteHeight;
-
-    // use smaller scale so sprite fully fits
-    const scale = Math.max(1, Math.floor(Math.min(scaleX, scaleY)));
-
-    const finalWidth = spriteWidth * scale;
-    const finalHeight = spriteHeight * scale;
-
-    const style = this.shadowRoot.querySelector('#sprite-scale-style');
-
-    if (style) {
-      style.textContent = `
-        #frank-container svg {
-          width: ${finalWidth}px;
-          height: ${finalHeight}px;
-          image-rendering: pixelated;
-          image-rendering: crisp-edges;
-        }
-      `;
-    }
+  if (!this._currentSprite) {
+    console.log('[Frank] updateSpriteScale: no current sprite');
+    return;
   }
+
+  // container is the hui card
+  const container = this.shadowRoot.querySelector('hui-card');
+
+  if (!container) {
+    console.log('[Frank] updateSpriteScale: no hui-card found');
+    return;
+  }
+
+  const spriteWidth = this._currentSprite.width;
+  const spriteHeight = this._currentSprite.height;
+
+  const screenFill = 0.8;
+
+  const containerWidth = container.clientWidth;
+  const containerHeight = container.clientHeight;
+
+  console.log('[Frank] Container Size', {
+    width: containerWidth,
+    height: containerHeight
+  });
+
+  console.log('[Frank] Sprite Size', {
+    width: spriteWidth,
+    height: spriteHeight
+  });
+
+  // target area inside container
+  const targetWidth = containerWidth * screenFill;
+  const targetHeight = containerHeight * screenFill;
+
+  console.log('[Frank] Target Area', {
+    targetWidth,
+    targetHeight,
+    screenFill
+  });
+
+  // scale independently from sprite dimensions
+  const scaleX = targetWidth / spriteWidth;
+  const scaleY = targetHeight / spriteHeight;
+
+  console.log('[Frank] Scale Calculation', {
+    scaleX,
+    scaleY
+  });
+
+  // use smaller scale so sprite fully fits
+  const scale = Math.max(
+    1,
+    Math.floor(Math.min(scaleX, scaleY))
+  );
+
+  const finalWidth = spriteWidth * scale;
+  const finalHeight = spriteHeight * scale;
+
+  console.log('[Frank] Final Scale Result', {
+    scale,
+    finalWidth,
+    finalHeight
+  });
+
+  this._currentSprite.width = finalWidth;
+  this._currentSprite.height = finalHeight;
+  
+  console.log('[Frank] Applied sprite scale styles');
+}
 
   initFrank() {
     const root = this.shadowRoot;
