@@ -178,22 +178,41 @@ class FrankCard extends HTMLElement {
   }
 
   updateSpriteScale() {
-    const BASE_SIZE = 64;
-    const SCREEN_FILL = 0.6;
+    if (!this._currentSprite) return;
 
-    const target = Math.min(window.innerWidth, window.innerHeight) * SCREEN_FILL;
+    // container is the hui card
+    const container = this.shadowRoot.querySelector('hui-card');
+    if (!container) return;
 
-    const scale = Math.max(1, Math.floor(target / BASE_SIZE));
+    const spriteWidth = this._currentSprite.width;
+    const spriteHeight = this._currentSprite.height;
 
-    const finalSize = BASE_SIZE * scale;
+    const screenFill = 0.8;
+
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
+
+    // target area inside container
+    const targetWidth = containerWidth * screenFill;
+    const targetHeight = containerHeight * screenFill;
+
+    // scale independently from sprite dimensions
+    const scaleX = targetWidth / spriteWidth;
+    const scaleY = targetHeight / spriteHeight;
+
+    // use smaller scale so sprite fully fits
+    const scale = Math.max(1, Math.floor(Math.min(scaleX, scaleY)));
+
+    const finalWidth = spriteWidth * scale;
+    const finalHeight = spriteHeight * scale;
 
     const style = this.shadowRoot.querySelector('#sprite-scale-style');
 
     if (style) {
       style.textContent = `
         #frank-container svg {
-          width: ${finalSize}px;
-          height: ${finalSize}px;
+          width: ${finalWidth}px;
+          height: ${finalHeight}px;
           image-rendering: pixelated;
           image-rendering: crisp-edges;
         }
@@ -226,7 +245,7 @@ class FrankCard extends HTMLElement {
       this._lastSprite = this._currentSprite;
 
       // id is stored in the SVG's root element
-      this._currentSprite = el.frankContainer.querySelector('svg').id;
+      this._currentSprite = el.frankContainer.querySelector('svg');
     };
 
     function idle_smile() {
@@ -324,7 +343,7 @@ class FrankCard extends HTMLElement {
         // if the sprite has changed, revert back to neutral sprite
 
         // TODO: make a single source for sprite ids
-        if (this._currentSprite !== 'neutral') {
+        if (this._currentSprite.id !== 'neutral') {
           setSprite(SPRITES.FRANK.NEUTRAL[0]);
         }
         else {
@@ -332,7 +351,7 @@ class FrankCard extends HTMLElement {
           setSprite(nextSprite);
         }
 
-        const talkSpeed = config.talkSpeed !== undefined ? parseFloat(config.talkSpeed) : 200;
+        const talkSpeed = config.talk_speed !== undefined ? parseFloat(config.talk_speed) : 200;
 
         // TODO: change to variable talk speed
         this.talkAnim = setTimeout(step, talkSpeed);
@@ -496,40 +515,39 @@ class FrankCardEditor extends HTMLElement {
           allow-custom-entity
         ></ha-entity-picker>
 
-        <div class="side-by-side">
-          <div>
-             <label>Response Delay (ms): <span id="delay-val">${this._config.respond_delay !== undefined ? this._config.respond_delay : 0}</span>s</label>
-             <div class="secondary">Time before frank starts talking.</div>
-             <ha-slider
-               id="delay-slider"
-               min="0" max="16" step="0.5"
-               pin
-               value="${this._config.respond_delay !== undefined ? this._config.respond_delay : 0}"
-             ></ha-slider>
-          </div>
-          <div>
-             <label>Zoom Scale: <span id="zoom-val">${this._config.zoom !== undefined ? this._config.zoom : 85}</span>%</label>
-             <ha-slider
-               id="zoom-slider"
-               min="10" max="200" step="1"
-               pin
-               value="${this._config.zoom !== undefined ? this._config.zoom : 85}"
-             ></ha-slider>
+        <div>
+          <ha-textfield
+            id="delay-input"
+            label="Response Delay"
+            type="number"
+            min="0"
+            max="16"
+            step="0.5"
+            suffix="s"
+            value="${this._config.respond_delay ?? 0}"
+          ></ha-textfield>
+
+          <div class="secondary">
+            Time (ms) before frank starts talking.
           </div>
         </div>
 
-        <div class="side-by-side">
-          <div>
-            <label>Talk Speed (ms): <span id="talk-speed-val">${this._config.talkSpeed !== undefined ? this._config.talkSpeed : 200}</span>%</label>
-            <ha-slider
-              id="talk-speed-slider"
-              min="10" max="1000" step="1"
-              pin
-              value="${this._config.talkSpeed !== undefined ? this._config.talkSpeed : 200}"
-            ></ha-slider>
+        <div>
+          <ha-textfield
+            id="talk-speed-input"
+            label="Talk Speed"
+            type="number"
+            min="10"
+            max="1000"
+            step="1"
+            suffix="ms"
+            value="${this._config.talk_speed ?? 200}"
+          ></ha-textfield>
+
+          <div class="secondary">
+            Time (ms) it takes for frank's talking sprites to cycle back to neutral.
           </div>
         </div>
-
 
         <ha-formfield label="Transparent Background">
           <ha-switch id="bg-switch"></ha-switch>
@@ -555,25 +573,20 @@ class FrankCardEditor extends HTMLElement {
     bpmPicker.includeDomains = ['sensor'];
     bpmPicker.addEventListener('value-changed', (ev) => this.configChanged('bpm_entity', ev.detail.value));
 
-    const delaySlider = this.shadowRoot.querySelector('#delay-slider');
-    const delayVal = this.shadowRoot.querySelector('#delay-val');
-    delaySlider.addEventListener('change', (ev) => {
-      delayVal.innerText = ev.target.value;
-      this.configChanged('respond_delay', Number(ev.target.value));
+    const delayInput = this.shadowRoot.querySelector('#delay-input');
+    delayInput.addEventListener('change', (ev) => {
+      this.configChanged(
+        'respond_delay',
+        Number(ev.target.value)
+      );
     });
 
-    const zoomSlider = this.shadowRoot.querySelector('#zoom-slider');
-    const zoomVal = this.shadowRoot.querySelector('#zoom-val');
-    zoomSlider.addEventListener('change', (ev) => {
-      zoomVal.innerText = ev.target.value;
-      this.configChanged('zoom', Number(ev.target.value));
-    });
-
-    const talkSpeedSlider = this.shadowRoot.querySelector('#talk-speed-slider');
-    const talkSpeedVal = this.shadowRoot.querySelector('#talk-speed-val');
-    talkSpeedSlider.addEventListener('change', (ev) => {
-      talkSpeedVal.innerText = ev.target.value;
-      this.configChanged('talkSpeed', Number(ev.target.value));
+    const talkSpeedInput = this.shadowRoot.querySelector('#talk-speed-input');
+    talkSpeedInput.addEventListener('change', (ev) => {
+      this.configChanged(
+        'talk_speed',
+        Number(ev.target.value)
+      );
     });
 
     const bgSwitch = this.shadowRoot.querySelector('#bg-switch');
