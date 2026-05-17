@@ -127,6 +127,7 @@ class FrankCard extends HTMLElement {
     const entity = this.config.entity;
     const mediaEntity = this.config.media_entity;
     const bpmEntity = this.config.bpm_entity;
+    const weatherEntity = this.config.weather_entity;
 
     const newVoiceState = (entity && hass.states[entity]) ? hass.states[entity].state.toLowerCase() : 'idle';
     const newMediaState = (mediaEntity && hass.states[mediaEntity]) ? hass.states[mediaEntity].state.toLowerCase() : 'paused';
@@ -158,16 +159,12 @@ class FrankCard extends HTMLElement {
   // #region setupDOM
 
   setupDOM() {
-    const zoom = this.config.zoom !== undefined ? this.config.zoom : 85;
-    const scale = zoom / 100;
-    const width = 280 * scale;
-    const height = 320 * scale;
     const bgStyle = this.config.transparent_bg ? 'background: transparent; box-shadow: none; border: none;' : 'background: #ffffff;';
 
     this.shadowRoot.innerHTML = `
       <style>
         :host { display: flex; align-items: center; justify-content: center; ${bgStyle} border-radius: var(--ha-card-border-radius, 12px); overflow: hidden; width: 100%; }
-        #scene { width: ${width}px; height: ${height}px; display: flex; align-items: center; justify-content: center; }
+        #scene { display: flex; align-items: center; justify-content: center; }
       </style>
       <style id="sprite-scale-style"></style>
 
