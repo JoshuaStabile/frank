@@ -246,7 +246,7 @@ class FrankCard extends HTMLElement {
 
   this._currentSprite.width = finalWidth;
   this._currentSprite.height = finalHeight;
-  
+
   console.log('[Frank] Applied sprite scale styles');
 }
 
@@ -380,7 +380,7 @@ class FrankCard extends HTMLElement {
         // if the sprite has changed, revert back to neutral sprite
 
         // TODO: make a single source for sprite ids
-        if (this._currentSprite.id !== 'neutral') {
+        if (this._currentSprite?.id !== 'neutral') {
           setSprite(SPRITES.FRANK.NEUTRAL[0]);
         }
         else {
