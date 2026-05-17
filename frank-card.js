@@ -5,14 +5,6 @@ const SPRITES = {
     IDLE: [
       `<?xml version="1.0" encoding="UTF-8"?>
 <svg id="idle" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <g id="layer-0" fill="#fefefe" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
-    <path d="M0 320 l0 -320 320 0 320 0 0 320 0 320 -320 0 -320 0 0 -320z m200
-80 l0 -40 -20 0 -20 0 0 40 0 40 20 0 20 0 0 -40z m160 -60 l0 -100 -40 0 -40
-0 0 20 0 20 20 0 20 0 0 80 0 80 20 0 20 0 0 -100z m120 60 l0 -40 -20 0 -20
-0 0 40 0 40 20 0 20 0 0 -40z m-240 -220 l0 -20 80 0 80 0 0 20 0 20 20 0 20
-0 0 -20 0 -20 -20 0 -20 0 0 -20 0 -20 -80 0 -80 0 0 20 0 20 -20 0 -20 0 0
-20 0 20 20 0 20 0 0 -20z"/>
-  </g>
   <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
     <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
 -80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
@@ -24,13 +16,6 @@ const SPRITES = {
     NEUTRAL: [
       `<?xml version="1.0" encoding="UTF-8"?>
 <svg id="neutral" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <g id="layer-0" fill="#ffffff" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
-    <path d="M0 320 l0 -320 320 0 320 0 0 320 0 320 -320 0 -320 0 0 -320z m200
-80 l0 -40 -20 0 -20 0 0 40 0 40 20 0 20 0 0 -40z m160 -60 l0 -100 -40 0 -40
-0 0 20 0 20 20 0 20 0 0 80 0 80 20 0 20 0 0 -100z m120 60 l0 -40 -20 0 -20
-0 0 40 0 40 20 0 20 0 0 -40z m-80 -260 l0 -20 -80 0 -80 0 0 20 0 20 80 0 80
-0 0 -20z"/>
-  </g>
   <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
     <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
 -80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
@@ -42,15 +27,6 @@ const SPRITES = {
     JIBJAB: [
       `<?xml version="1.0" encoding="UTF-8"?>
 <svg id="jibjab_1" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <g id="layer-0" fill="#ffffff" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
-    <path d="M0 320 l0 -320 320 0 320 0 0 320 0 320 -320 0 -320 0 0 -320z m200
-80 l0 -40 -20 0 -20 0 0 40 0 40 20 0 20 0 0 -40z m160 -60 l0 -100 -40 0 -40
-0 0 20 0 20 20 0 20 0 0 80 0 80 20 0 20 0 0 -100z m120 60 l0 -40 -20 0 -20
-0 0 40 0 40 20 0 20 0 0 -40z m-80 -220 l0 -20 20 0 20 0 0 -20 0 -20 -20 0
--20 0 0 -20 0 -20 -80 0 -80 0 0 20 0 20 -20 0 -20 0 0 20 0 20 20 0 20 0 0
-20 0 20 80 0 80 0 0 -20z M240 140 l0 -20 80 0 80 0 0 20 0 20 -80 0 -80 0 0
--20z"/>
-  </g>
   <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
     <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
 -80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
@@ -62,15 +38,6 @@ const SPRITES = {
 </svg>`,
       `<?xml version="1.0" encoding="UTF-8"?>
 <svg id="jibjab_2" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <g id="layer-0" fill="#ffffff" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
-    <path d="M0 320 l0 -320 320 0 320 0 0 320 0 320 -320 0 -320 0 0 -320z m200
-80 l0 -40 -20 0 -20 0 0 40 0 40 20 0 20 0 0 -40z m160 -60 l0 -100 -40 0 -40
-0 0 20 0 20 20 0 20 0 0 80 0 80 20 0 20 0 0 -100z m120 60 l0 -40 -20 0 -20
-0 0 40 0 40 20 0 20 0 0 -40z m-120 -220 l0 -20 20 0 20 0 0 -20 0 -20 -20 0
--20 0 0 -20 0 -20 -40 0 -40 0 0 20 0 20 -20 0 -20 0 0 20 0 20 20 0 20 0 0
-20 0 20 40 0 40 0 0 -20z M280 140 l0 -20 40 0 40 0 0 20 0 20 -40 0 -40 0 0
--20z"/>
-  </g>
   <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
     <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
 -80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
@@ -82,15 +49,6 @@ const SPRITES = {
 </svg>`,
       `<?xml version="1.0" encoding="UTF-8"?>
 <svg id="jibjab_3" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <g id="layer-0" fill="#fefefe" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
-    <path d="M0 320 l0 -320 320 0 320 0 0 320 0 320 -320 0 -320 0 0 -320z m200
-80 l0 -40 -20 0 -20 0 0 40 0 40 20 0 20 0 0 -40z m160 -60 l0 -100 -40 0 -40
-0 0 20 0 20 20 0 20 0 0 80 0 80 20 0 20 0 0 -100z m120 60 l0 -40 -20 0 -20
-0 0 40 0 40 20 0 20 0 0 -40z m-120 -220 l0 -20 20 0 20 0 0 -40 0 -40 -20 0
--20 0 0 -20 0 -20 -40 0 -40 0 0 20 0 20 -20 0 -20 0 0 40 0 40 20 0 20 0 0
-20 0 20 40 0 40 0 0 -20z M280 120 l0 -40 40 0 40 0 0 40 0 40 -40 0 -40 0 0
--40z"/>
-  </g>
   <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
     <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
 -80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
@@ -102,15 +60,6 @@ const SPRITES = {
 </svg>`,
       `<?xml version="1.0" encoding="UTF-8"?>
 <svg id="jibjab_4" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <g id="layer-0" fill="#ffffff" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
-    <path d="M0 320 l0 -320 320 0 320 0 0 320 0 320 -320 0 -320 0 0 -320z m200
-80 l0 -40 -20 0 -20 0 0 40 0 40 20 0 20 0 0 -40z m160 -60 l0 -100 -40 0 -40
-0 0 20 0 20 20 0 20 0 0 80 0 80 20 0 20 0 0 -100z m120 60 l0 -40 -20 0 -20
-0 0 40 0 40 20 0 20 0 0 -40z m-120 -220 l0 -20 20 0 20 0 0 -20 0 -20 -20 0
--20 0 0 -20 0 -20 -40 0 -40 0 0 20 0 20 -20 0 -20 0 0 20 0 20 20 0 20 0 0
-20 0 20 40 0 40 0 0 -20z M280 140 l0 -20 40 0 40 0 0 20 0 20 -40 0 -40 0 0
--20z"/>
-  </g>
   <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
     <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
 -80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
@@ -207,18 +156,55 @@ class FrankCard extends HTMLElement {
   // #endregion
 
   setupDOM() {
-    const zoom = this.config.zoom !== undefined ? this.config.zoom : 85;
-    const scale = zoom / 100;
-    const width = 280 * scale;
-    const height = 320 * scale;
-    const bgStyle = this.config.transparent_bg ? 'background: transparent; box-shadow: none; border: none;' : 'background: var(--ha-card-background, var(--card-background-color, #ffffff));';
+    const bgStyle = this.config.transparent_bg
+      ? 'background: transparent; box-shadow: none; border: none;'
+      : 'background: var(--ha-card-background, var(--card-background-color, #ffffff));';
 
     this.shadowRoot.innerHTML = `
       <style>
-        :host { display: flex; align-items: center; justify-content: center; ${bgStyle} border-radius: var(--ha-card-border-radius, 12px); overflow: hidden; width: 100%; }
-        #scene { width: ${width}px; height: ${height}px; display: flex; align-items: center; justify-content: center; }
+        :host {
+          position: fixed;
+          inset: 0;
+          width: 100vw;
+          height: 100vh;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          ${bgStyle}
+
+          overflow: hidden;
+          z-index: 9999;
+        }
+
+        #scene {
+          width: 100%;
+          height: 100%;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        #frank-container {
+          width: 100%;
+          height: 100%;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        #frank-container svg,
+        #frank-container img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
       </style>
-      
+      <style id="sprite-scale-style"></style>
+
       <div id="scene">
         <div id="frank-container">
           <!-- Frank's image will be injected here -->
@@ -227,7 +213,29 @@ class FrankCard extends HTMLElement {
     `;
   }
 
+  updateSpriteScale() {
+    const BASE_SIZE = 64;
+    const SCREEN_FILL = 0.6;
 
+    const target = Math.min(window.innerWidth, window.innerHeight) * SCREEN_FILL;
+
+    const scale = Math.max(1, Math.floor(target / BASE_SIZE));
+
+    const finalSize = BASE_SIZE * scale;
+
+    const style = this.shadowRoot.querySelector('#sprite-scale-style');
+
+    if (style) {
+      style.textContent = `
+        #frank-container svg {
+          width: ${finalSize}px;
+          height: ${finalSize}px;
+          image-rendering: pixelated;
+          image-rendering: crisp-edges;
+        }
+      `;
+    }
+  }
 
   initFrank() {
     const root = this.shadowRoot;
@@ -237,6 +245,14 @@ class FrankCard extends HTMLElement {
       scene: root.getElementById('scene'),
       frankContainer: root.getElementById('frank-container'),
     };
+
+    this.handleResize = () => {
+      this.updateSpriteScale();
+    };
+
+    window.addEventListener('resize', this.handleResize);
+
+    this.updateSpriteScale();
 
     let stateNow = 'idle';
     let currentBaseLid = 0;
@@ -352,8 +368,10 @@ class FrankCard extends HTMLElement {
           setSprite(nextSprite);
         }
 
+        const talkSpeed = config.talkSpeed !== undefined ? parseFloat(config.talkSpeed) : 200;
+
         // TODO: change to variable talk speed
-        this.talkAnim = setTimeout(step, 500);
+        this.talkAnim = setTimeout(step, talkSpeed);
       };
       step();
     };
@@ -391,13 +409,13 @@ class FrankCard extends HTMLElement {
         this.respondTimer = null;
       }
 
-      const delaySeconds = config.respond_delay !== undefined ? parseFloat(config.respond_delay) : 0;
+      const delayMs = config.respond_delay !== undefined ? parseFloat(config.respond_delay) : 0;
 
-      if (mapped === 'responding' && this._lastEffectiveState !== 'responding' && delaySeconds > 0) {
+      if (mapped === 'responding' && this._lastEffectiveState !== 'responding' && delayMs > 0) {
         this.respondTimer = setTimeout(() => {
           this._lastEffectiveState = 'responding';
           animateFrank('responding', bpm);
-        }, delaySeconds * 1000);
+        }, delayMs);
         return; 
       }
 
@@ -409,6 +427,10 @@ class FrankCard extends HTMLElement {
   }
 
   disconnectedCallback() {
+    if (this.handleResize) {
+      window.removeEventListener('resize', this.handleResize);
+    }
+
     if (this.stopIdleCycle) this.stopIdleCycle();
     if (this.stopDanceCycle) this.stopDanceCycle();
     if (this.respondTimer) clearTimeout(this.respondTimer);
@@ -512,7 +534,7 @@ class FrankCardEditor extends HTMLElement {
 
         <div class="side-by-side">
           <div>
-             <label>Response Delay: <span id="delay-val">${this._config.respond_delay !== undefined ? this._config.respond_delay : 0}</span>s</label>
+             <label>Response Delay (ms): <span id="delay-val">${this._config.respond_delay !== undefined ? this._config.respond_delay : 0}</span>s</label>
              <div class="secondary">Time before frank starts talking.</div>
              <ha-slider
                id="delay-slider"
@@ -531,6 +553,19 @@ class FrankCardEditor extends HTMLElement {
              ></ha-slider>
           </div>
         </div>
+
+        <div class="side-by-side">
+          <div>
+            <label>Talk Speed (ms): <span id="talk-speed-val">${this._config.talkSpeed !== undefined ? this._config.talkSpeed : 200}</span>%</label>
+            <ha-slider
+              id="talk-speed-slider"
+              min="10" max="1000" step="1"
+              pin
+              value="${this._config.talkSpeed !== undefined ? this._config.talkSpeed : 200}"
+            ></ha-slider>
+          </div>
+        </div>
+
 
         <ha-formfield label="Transparent Background">
           <ha-switch id="bg-switch"></ha-switch>
@@ -568,6 +603,13 @@ class FrankCardEditor extends HTMLElement {
     zoomSlider.addEventListener('change', (ev) => {
       zoomVal.innerText = ev.target.value;
       this.configChanged('zoom', Number(ev.target.value));
+    });
+
+    const talkSpeedSlider = this.shadowRoot.querySelector('#talk-speed-slider');
+    const talkSpeedVal = this.shadowRoot.querySelector('#talk-speed-val');
+    talkSpeedSlider.addEventListener('change', (ev) => {
+      talkSpeedVal.innerText = ev.target.value;
+      this.configChanged('talkSpeed', Number(ev.target.value));
     });
 
     const bgSwitch = this.shadowRoot.querySelector('#bg-switch');
