@@ -164,7 +164,7 @@ class FrankCard extends HTMLElement {
     this.shadowRoot.innerHTML = `
       <style>
         :host { display: flex; align-items: center; justify-content: center; ${bgStyle} border-radius: var(--ha-card-border-radius, 12px); overflow: hidden; width: 100%; height: 100%; }
-        #scene { display: flex; align-items: center; justify-content: center; }
+        #scene { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;}
         svg { image-rendering: pixelated; image-rendering: crisp-edges; }
       </style>
 
@@ -185,7 +185,7 @@ class FrankCard extends HTMLElement {
     }
 
     // container is the frank card elm
-    const container = document.querySelector('frank-card');
+    const container = this.shadowRoot.querySelector('#scene');
 
     if (!container) {
       console.log('[Frank] updateSpriteScale: no frank-card found');
