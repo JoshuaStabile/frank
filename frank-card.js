@@ -179,76 +179,76 @@ class FrankCard extends HTMLElement {
   // #endregion
 
   updateSpriteScale() {
-  if (!this._currentSprite) {
-    console.log('[Frank] updateSpriteScale: no current sprite');
-    return;
+    if (!this._currentSprite) {
+      console.log('[Frank] updateSpriteScale: no current sprite');
+      return;
+    }
+
+    // container is the frank card elm
+    const container = document.querySelector('frank-card');
+
+    if (!container) {
+      console.log('[Frank] updateSpriteScale: no frank-card found');
+      return;
+    }
+
+    const spriteWidth = this._currentSprite.width;
+    const spriteHeight = this._currentSprite.height;
+
+    const screenFill = 0.8;
+
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
+
+    console.log('[Frank] Container Size', {
+      width: containerWidth,
+      height: containerHeight
+    });
+
+    console.log('[Frank] Sprite Size', {
+      width: spriteWidth,
+      height: spriteHeight
+    });
+
+    // target area inside container
+    const targetWidth = containerWidth * screenFill;
+    const targetHeight = containerHeight * screenFill;
+
+    console.log('[Frank] Target Area', {
+      targetWidth,
+      targetHeight,
+      screenFill
+    });
+
+    // scale independently from sprite dimensions
+    const scaleX = targetWidth / spriteWidth;
+    const scaleY = targetHeight / spriteHeight;
+
+    console.log('[Frank] Scale Calculation', {
+      scaleX,
+      scaleY
+    });
+
+    // use smaller scale so sprite fully fits
+    const scale = Math.max(
+      1,
+      Math.floor(Math.min(scaleX, scaleY))
+    );
+
+    const finalWidth = spriteWidth * scale;
+    const finalHeight = spriteHeight * scale;
+
+    console.log('[Frank] Final Scale Result', {
+      scale,
+      finalWidth,
+      finalHeight
+    });
+
+    this._currentSprite.width = finalWidth;
+    this._currentSprite.height = finalHeight;
+
+    console.log('[Frank] Applied sprite scale styles');
   }
-
-  // container is the hui card
-  const container = this.shadowRoot.querySelector('hui-card');
-
-  if (!container) {
-    console.log('[Frank] updateSpriteScale: no hui-card found');
-    return;
-  }
-
-  const spriteWidth = this._currentSprite.width;
-  const spriteHeight = this._currentSprite.height;
-
-  const screenFill = 0.8;
-
-  const containerWidth = container.clientWidth;
-  const containerHeight = container.clientHeight;
-
-  console.log('[Frank] Container Size', {
-    width: containerWidth,
-    height: containerHeight
-  });
-
-  console.log('[Frank] Sprite Size', {
-    width: spriteWidth,
-    height: spriteHeight
-  });
-
-  // target area inside container
-  const targetWidth = containerWidth * screenFill;
-  const targetHeight = containerHeight * screenFill;
-
-  console.log('[Frank] Target Area', {
-    targetWidth,
-    targetHeight,
-    screenFill
-  });
-
-  // scale independently from sprite dimensions
-  const scaleX = targetWidth / spriteWidth;
-  const scaleY = targetHeight / spriteHeight;
-
-  console.log('[Frank] Scale Calculation', {
-    scaleX,
-    scaleY
-  });
-
-  // use smaller scale so sprite fully fits
-  const scale = Math.max(
-    1,
-    Math.floor(Math.min(scaleX, scaleY))
-  );
-
-  const finalWidth = spriteWidth * scale;
-  const finalHeight = spriteHeight * scale;
-
-  console.log('[Frank] Final Scale Result', {
-    scale,
-    finalWidth,
-    finalHeight
-  });
-
-  this._currentSprite.width = finalWidth;
-  this._currentSprite.height = finalHeight;
-
-  console.log('[Frank] Applied sprite scale styles');
-}
 
   initFrank() {
     const root = this.shadowRoot;
