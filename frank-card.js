@@ -162,45 +162,8 @@ class FrankCard extends HTMLElement {
 
     this.shadowRoot.innerHTML = `
       <style>
-        :host {
-          position: fixed;
-          inset: 0;
-          width: 100vw;
-          height: 100vh;
-
-          display: flex;
-          align-items: center;
-          justify-content: center;
-
-          ${bgStyle}
-
-          overflow: hidden;
-        }
-
-        #scene {
-          width: 100%;
-          height: 100%;
-
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        #frank-container {
-          width: 100%;
-          height: 100%;
-
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        #frank-container svg,
-        #frank-container img {
-          width: 100%;
-          height: 100%;
-          object-fit: contain;
-        }
+        :host { display: flex; align-items: center; justify-content: center; ${bgStyle} border-radius: var(--ha-card-border-radius, 12px); overflow: hidden; width: 100%; }
+        #scene { width: ${width}px; height: ${height}px; display: flex; align-items: center; justify-content: center; }
       </style>
       <style id="sprite-scale-style"></style>
 
