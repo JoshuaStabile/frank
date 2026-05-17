@@ -155,6 +155,8 @@ class FrankCard extends HTMLElement {
 
   // #endregion
 
+  // #region setupDOM
+
   setupDOM() {
     const zoom = this.config.zoom !== undefined ? this.config.zoom : 85;
     const scale = zoom / 100;
@@ -177,90 +179,50 @@ class FrankCard extends HTMLElement {
     `;
   }
 
+  // #endregion
+
   updateSpriteScale() {
-  if (!this._currentSprite) {
-    console.log('[Frank] updateSpriteScale: no current sprite');
-    return;
-  }
+    if (!this._currentSprite) return;
 
-  // container is the hui card
-  const container = this.shadowRoot.querySelector('hui-card');
+    // container is the hui card
+    const container = this.shadowRoot.querySelector('hui-card');
+    if (!container) return;
 
-  if (!container) {
-    console.log('[Frank] updateSpriteScale: no hui-card found');
-    return;
-  }
+    const spriteWidth = this._currentSprite.width;
+    const spriteHeight = this._currentSprite.height;
 
-  const spriteWidth = this._currentSprite.width;
-  const spriteHeight = this._currentSprite.height;
+    const screenFill = 0.8;
 
-  const screenFill = 0.8;
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
 
-  const containerWidth = container.clientWidth;
-  const containerHeight = container.clientHeight;
+    // target area inside container
+    const targetWidth = containerWidth * screenFill;
+    const targetHeight = containerHeight * screenFill;
 
-  console.log('[Frank] Container Size', {
-    width: containerWidth,
-    height: containerHeight
-  });
+    // scale independently from sprite dimensions
+    const scaleX = targetWidth / spriteWidth;
+    const scaleY = targetHeight / spriteHeight;
 
-  console.log('[Frank] Sprite Size', {
-    width: spriteWidth,
-    height: spriteHeight
-  });
+    // use smaller scale so sprite fully fits
+    const scale = Math.max(1, Math.floor(Math.min(scaleX, scaleY)));
 
-  // target area inside container
-  const targetWidth = containerWidth * screenFill;
-  const targetHeight = containerHeight * screenFill;
+    const finalWidth = spriteWidth * scale;
+    const finalHeight = spriteHeight * scale;
 
-  console.log('[Frank] Target Area', {
-    targetWidth,
-    targetHeight,
-    screenFill
-  });
+    const style = this.shadowRoot.querySelector('#sprite-scale-style');
 
-  // scale independently from sprite dimensions
-  const scaleX = targetWidth / spriteWidth;
-  const scaleY = targetHeight / spriteHeight;
-
-  console.log('[Frank] Scale Calculation', {
-    scaleX,
-    scaleY
-  });
-
-  // use smaller scale so sprite fully fits
-  const scale = Math.max(
-    1,
-    Math.floor(Math.min(scaleX, scaleY))
-  );
-
-  const finalWidth = spriteWidth * scale;
-  const finalHeight = spriteHeight * scale;
-
-  console.log('[Frank] Final Scale Result', {
-    scale,
-    finalWidth,
-    finalHeight
-  });
-
-  const style = this.shadowRoot.querySelector('#sprite-scale-style');
-
-  if (!style) {
-    console.log('[Frank] updateSpriteScale: missing #sprite-scale-style');
-    return;
-  }
-
-  style.textContent = `
-    #frank-container svg {
-      width: ${finalWidth}px;
-      height: ${finalHeight}px;
-      image-rendering: pixelated;
-      image-rendering: crisp-edges;
+    if (style) {
+      style.textContent = `
+        #frank-container svg {
+          width: ${finalWidth}px;
+          height: ${finalHeight}px;
+          image-rendering: pixelated;
+          image-rendering: crisp-edges;
+        }
+      `;
     }
-  `;
-
-  console.log('[Frank] Applied sprite scale styles');
-}
+  }
 
   initFrank() {
     const root = this.shadowRoot;
@@ -277,17 +239,24 @@ class FrankCard extends HTMLElement {
 
     window.addEventListener('resize', this.handleResize);
 
-    this.updateSpriteScale();
-
     let stateNow = 'idle';
     let currentBaseLid = 0;
 
     const setSprite = (spr) => {
       el.frankContainer.innerHTML = spr;
-      this._lastSprite = this._currentSprite;
 
-      // id is stored in the SVG's root element
-      this._currentSprite = el.frankContainer.querySelector('svg');
+      const svg = el.frankContainer.querySelector('svg');
+
+      if (!svg) {
+        console.log('[Frank] setSprite: no SVG found after injection');
+        return;
+      }
+
+      this._lastSprite = this._currentSprite;
+      this._currentSprite = svg; 
+
+      // re-scale after sprite swap
+      this.updateSpriteScale();
     };
 
     function idle_smile() {
@@ -557,6 +526,12 @@ class FrankCardEditor extends HTMLElement {
           allow-custom-entity
         ></ha-entity-picker>
 
+        <ha-entity-picker
+          id="weather-picker"
+          label="Weather Entity (Optional)"
+          allow-custom-entity
+        ></ha-entity-picker>
+
         <div>
           <ha-textfield
             id="delay-input"
@@ -614,6 +589,12 @@ class FrankCardEditor extends HTMLElement {
     bpmPicker.value = this._config.bpm_entity;
     bpmPicker.includeDomains = ['sensor'];
     bpmPicker.addEventListener('value-changed', (ev) => this.configChanged('bpm_entity', ev.detail.value));
+
+    const weatherPicker = this.shadowRoot.querySelector('#weather-picker');
+    weatherPicker.hass = this._hass;
+    weatherPicker.value = this._config.weather_entity;
+    weatherPicker.includeDomains = ['weather'];
+    weatherPicker.addEventListener('value-changed', (ev) => this.configChanged('weather_entity', ev.detail.value));
 
     const delayInput = this.shadowRoot.querySelector('#delay-input');
     delayInput.addEventListener('change', (ev) => {
