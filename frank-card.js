@@ -205,34 +205,13 @@ class FrankCard extends HTMLElement {
     const containerWidth = container.clientWidth;
     const containerHeight = container.clientHeight;
 
-    console.log('[Frank] Container Size', {
-      width: containerWidth,
-      height: containerHeight
-    });
-
-    console.log('[Frank] Sprite Size', {
-      width: spriteWidth,
-      height: spriteHeight
-    });
-
     // target area inside container
     const targetWidth = containerWidth * screenFill;
     const targetHeight = containerHeight * screenFill;
 
-    console.log('[Frank] Target Area', {
-      targetWidth,
-      targetHeight,
-      screenFill
-    });
-
     // scale independently from sprite dimensions
     const scaleX = targetWidth / spriteWidth;
     const scaleY = targetHeight / spriteHeight;
-
-    console.log('[Frank] Scale Calculation', {
-      scaleX,
-      scaleY
-    });
 
     // use smaller scale so sprite fully fits
     const scale = Math.max(
@@ -243,17 +222,9 @@ class FrankCard extends HTMLElement {
     const finalWidth = spriteWidth * scale;
     const finalHeight = spriteHeight * scale;
 
-    console.log('[Frank] Final Scale Result', {
-      scale,
-      finalWidth,
-      finalHeight
-    });
-
     const svg = this._currentSprite;
     svg.setAttribute('width', finalWidth);
     svg.setAttribute('height', finalHeight);
-
-    console.log('[Frank] Applied sprite scale styles');
   }
 
   initFrank() {
