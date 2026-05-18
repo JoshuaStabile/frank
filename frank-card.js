@@ -266,6 +266,8 @@ class FrankCard extends HTMLElement {
     };
 
     this.handleResize = () => {
+      alert('resize');
+      window.focus();
       this.updateSpriteScale();
     };
 
