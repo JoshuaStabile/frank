@@ -1,83 +1,9 @@
-// #region SVG SPRITES
-
-const SPRITES = {
-  FRANK: {
-    IDLE: [
-      `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="idle" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
-    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
--80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
-400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M200 180 l0 -20 20 0 20 0
-0 -20 0 -20 80 0 80 0 0 20 0 20 20 0 20 0 0 20 0 20 -20 0 -20 0 0 -20 0 -20
--80 0 -80 0 0 20 0 20 -20 0 -20 0 0 -20z"/>
-  </g></svg>`
-    ],
-    NEUTRAL: [
-      `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="neutral" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
-    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
--80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
-400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M240 140 l0 -20 80 0 80 0
-0 20 0 20 -80 0 -80 0 0 -20z"/>
-  </g>
-</svg>`
-    ],
-    JIBJAB: [
-      `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="jibjab_1" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
-    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
--80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
-400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M240 180 l0 -20 -20 0 -20
-0 0 -20 0 -20 20 0 20 0 0 -20 0 -20 80 0 80 0 0 20 0 20 20 0 20 0 0 20 0 20
--20 0 -20 0 0 20 0 20 -80 0 -80 0 0 -20z m160 -40 l0 -20 -80 0 -80 0 0 20 0
-20 80 0 80 0 0 -20z"/>
-  </g>
-</svg>`,
-      `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="jibjab_2" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
-    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
--80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
-400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M280 180 l0 -20 -20 0 -20
-0 0 -20 0 -20 20 0 20 0 0 -20 0 -20 40 0 40 0 0 20 0 20 20 0 20 0 0 20 0 20
--20 0 -20 0 0 20 0 20 -40 0 -40 0 0 -20z m80 -40 l0 -20 -40 0 -40 0 0 20 0
-20 40 0 40 0 0 -20z"/>
-  </g>
-</svg>`,
-      `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="jibjab_3" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
-    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
--80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
-400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M280 180 l0 -20 -20 0 -20
-0 0 -40 0 -40 20 0 20 0 0 -20 0 -20 40 0 40 0 0 20 0 20 20 0 20 0 0 40 0 40
--20 0 -20 0 0 20 0 20 -40 0 -40 0 0 -20z m80 -60 l0 -40 -40 0 -40 0 0 40 0
-40 40 0 40 0 0 -40z"/>
-  </g>
-</svg>`,
-      `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="jibjab_4" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
-    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
--80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
-400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M280 180 l0 -20 -20 0 -20
-0 0 -20 0 -20 20 0 20 0 0 -20 0 -20 40 0 40 0 0 20 0 20 20 0 20 0 0 20 0 20
--20 0 -20 0 0 20 0 20 -40 0 -40 0 0 -20z m80 -40 l0 -20 -40 0 -40 0 0 20 0
-20 40 0 40 0 0 -20z"/>
-  </g>
-</svg>`
-    ],
-  }
-}
-
-// #endregion
+import { SPRITES } from './config/sprites.js';
+import { STYLES } from './config/styles.js';
 
 // #region FrankCard Class Definition
 
-class FrankCard extends HTMLElement {
+export class FrankCard extends HTMLElement {
 
   // #region constructor
   constructor() {
@@ -159,19 +85,28 @@ class FrankCard extends HTMLElement {
   // #region setupDOM
 
   setupDOM() {
-    const bgStyle = this.config.transparent_bg ? 'background: transparent; box-shadow: none; border: none;' : 'background: #ffffff;';
-
     this.shadowRoot.innerHTML = `
       <style>
-        :host { display: flex; align-items: center; justify-content: center; ${bgStyle} border-radius: var(--ha-card-border-radius, 12px); overflow: hidden; width: 100%; height: 100%; }
-        #scene { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;}
-        svg { image-rendering: pixelated; image-rendering: crisp-edges; }
+        ${STYLES}
       </style>
 
       <div id="scene">
-        <div id="frank-container">
-          <!-- Frank's image will be injected here -->
+        <div class="window" style="width:30rem;">
+            <div class="title-bar"> 
+                <h1 class="title">Frank</h1>
+            </div>
+            <div class="separator"></div>
+            
+            <div class="window-pane">
+                <div id="frank-container">
+                    <!-- Frank's image will be injected here -->
+                </div>
+                <div id="state-display">
+                    <!-- display current state here -->
+                </div>
+            </div>
         </div>
+
       </div>
     `;
   }
@@ -327,7 +262,6 @@ class FrankCard extends HTMLElement {
         const phaseMod8 = dancePhase % 8;
         let dirX = isDownBeat ? 1 : -1;
 
-
         if (this.danceLedTimer) clearTimeout(this.danceLedTimer);
         this.danceLedTimer = setTimeout(() => {
           if (stateNow === 'dancing') {
@@ -385,9 +319,9 @@ class FrankCard extends HTMLElement {
       } else if (state === 'dancing') {
 
       } else if (state === 'listening') {
- 
+        this.displayState(state);
       } else if (state === 'processing') {
-        
+        this.displayState(state);
       } else if (state === 'responding') {
         startRespondAnim();
       }
@@ -420,6 +354,10 @@ class FrankCard extends HTMLElement {
       animateFrank(mapped, bpm);
     };
 
+    this.displayState = (state) => {
+      
+    }
+
     this.applyState('idle', 120);
   }
 
@@ -434,211 +372,5 @@ class FrankCard extends HTMLElement {
     if (this.talkAnim) clearTimeout(this.talkAnim);
   }
 }
-
-// #endregion
-
-// #region Home Assistant Card Editor
-
-class FrankCardEditor extends HTMLElement {
-  constructor() {
-    super();
-    this.attachShadow({ mode: 'open' });
-  }
-
-  setConfig(config) {
-    this._config = config;
-    this.render();
-  }
-
-  set hass(hass) {
-    this._hass = hass;
-    const pickers = this.shadowRoot.querySelectorAll('ha-entity-picker');
-    if (pickers.length > 0) {
-      pickers.forEach(picker => { picker.hass = hass; });
-    } else {
-      this.render();
-    }
-  }
-
-  configChanged(configKey, value) {
-    if (!this._config) return;
-
-    const newConfig = { ...this._config };
-    if (value === '' || value === undefined || value === null) {
-       delete newConfig[configKey];
-    } else {
-       newConfig[configKey] = value;
-    }
-
-    this._config = newConfig;
-
-    this.dispatchEvent(new CustomEvent('config-changed', {
-      detail: { config: this._config },
-      bubbles: true,
-      composed: true,
-    }));
-  }
-
-  render() {
-    if (!this._config || !this._hass) return;
-
-    this.shadowRoot.innerHTML = `
-      <style>
-        .card-config {
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-        }
-        .side-by-side {
-          display: flex;
-          gap: 16px;
-          margin-top: 8px;
-        }
-        .side-by-side > div {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-        }
-        label {
-          font-family: var(--paper-font-body1_-_font-family, sans-serif);
-          font-size: 14px;
-          color: var(--primary-text-color);
-        }
-        .secondary {
-          font-size: 12px;
-          color: var(--secondary-text-color);
-          margin-top: 2px;
-        }
-      </style>
-      <div class="card-config">
-        <ha-entity-picker
-          id="entity-picker"
-          label="Voice Assistant Entity (Required)"
-          allow-custom-entity
-        ></ha-entity-picker>
-
-        <ha-entity-picker
-          id="media-picker"
-          label="Media Player Entity (Optional)"
-          allow-custom-entity
-        ></ha-entity-picker>
-
-        <ha-entity-picker
-          id="bpm-picker"
-          label="BPM Sensor Entity (Optional)"
-          allow-custom-entity
-        ></ha-entity-picker>
-
-        <ha-entity-picker
-          id="weather-picker"
-          label="Weather Entity (Optional)"
-          allow-custom-entity
-        ></ha-entity-picker>
-
-        <div>
-          <ha-textfield
-            id="delay-input"
-            label="Response Delay"
-            type="number"
-            min="0"
-            max="16"
-            step="0.5"
-            suffix="s"
-            value="${this._config.respond_delay ?? 0}"
-          ></ha-textfield>
-
-          <div class="secondary">
-            Time (ms) before frank starts talking.
-          </div>
-        </div>
-
-        <div>
-          <ha-textfield
-            id="talk-speed-input"
-            label="Talk Speed"
-            type="number"
-            min="10"
-            max="1000"
-            step="1"
-            suffix="ms"
-            value="${this._config.talk_speed ?? 200}"
-          ></ha-textfield>
-
-          <div class="secondary">
-            Time (ms) it takes for frank's talking sprites to cycle back to neutral.
-          </div>
-        </div>
-
-        <ha-formfield label="Transparent Background">
-          <ha-switch id="bg-switch"></ha-switch>
-        </ha-formfield>
-      </div>
-    `;
-
-    const entityPicker = this.shadowRoot.querySelector('#entity-picker');
-    entityPicker.hass = this._hass;
-    entityPicker.value = this._config.entity;
-    entityPicker.includeDomains = ['assist_satellite'];
-    entityPicker.addEventListener('value-changed', (ev) => this.configChanged('entity', ev.detail.value));
-
-    const mediaPicker = this.shadowRoot.querySelector('#media-picker');
-    mediaPicker.hass = this._hass;
-    mediaPicker.value = this._config.media_entity;
-    mediaPicker.includeDomains = ['media_player'];
-    mediaPicker.addEventListener('value-changed', (ev) => this.configChanged('media_entity', ev.detail.value));
-
-    const bpmPicker = this.shadowRoot.querySelector('#bpm-picker');
-    bpmPicker.hass = this._hass;
-    bpmPicker.value = this._config.bpm_entity;
-    bpmPicker.includeDomains = ['sensor'];
-    bpmPicker.addEventListener('value-changed', (ev) => this.configChanged('bpm_entity', ev.detail.value));
-
-    const weatherPicker = this.shadowRoot.querySelector('#weather-picker');
-    weatherPicker.hass = this._hass;
-    weatherPicker.value = this._config.weather_entity;
-    weatherPicker.includeDomains = ['weather'];
-    weatherPicker.addEventListener('value-changed', (ev) => this.configChanged('weather_entity', ev.detail.value));
-
-    const delayInput = this.shadowRoot.querySelector('#delay-input');
-    delayInput.addEventListener('change', (ev) => {
-      this.configChanged(
-        'respond_delay',
-        Number(ev.target.value)
-      );
-    });
-
-    const talkSpeedInput = this.shadowRoot.querySelector('#talk-speed-input');
-    talkSpeedInput.addEventListener('change', (ev) => {
-      this.configChanged(
-        'talk_speed',
-        Number(ev.target.value)
-      );
-    });
-
-    const bgSwitch = this.shadowRoot.querySelector('#bg-switch');
-    bgSwitch.checked = this._config.transparent_bg === true;
-    bgSwitch.addEventListener('change', (ev) => {
-      this.configChanged('transparent_bg', ev.target.checked);
-    });
-  }
-}
-
-// #endregion
-
-// #region Custom Element Registration
-
-customElements.define('frank-card-editor', FrankCardEditor);
-customElements.define('frank-card', FrankCard);
-
-// #endregion
-
-// #region Card Definition
-window.customCards = window.customCards || [];
-window.customCards.push({
-  type: 'frank-card',
-  name: 'Frank Custom Card',
-  preview: true,
-  description: 'A responsive, animated Frank AI assistant card that reacts to voice and dances to music.'
-});
 
 // #endregion
