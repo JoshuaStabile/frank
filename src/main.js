@@ -1,5 +1,6 @@
 import { FrankCard } from './FrankCard.js';
 import { FrankCardEditor } from './FrankCardEditor.js';
+import { STYLES } from './config/styles.js';
 
 // #region Custom Element Registration
 
@@ -16,5 +17,8 @@ window.customCards.push({
   preview: true,
   description: 'A responsive, animated Frank AI assistant card that reacts to voice and dances to music.'
 });
-
 // #endregion
+
+// add document styles
+document.body.innerHTML += '<style>' + STYLES + '</style>';
+

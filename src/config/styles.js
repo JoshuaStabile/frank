@@ -1,5 +1,4 @@
 export const STYLES = `
-:host { display: flex; align-items: center; justify-content: center; background: #ffffff; border-radius: var(--ha-card-border-radius, 12px); overflow: hidden; width: 100%; height: 100%; }
 #scene { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;}
 svg { image-rendering: pixelated; image-rendering: crisp-edges; }
 
@@ -103,7 +102,7 @@ svg { image-rendering: pixelated; image-rendering: crisp-edges; }
 
 /* Fonts below are recreations by Giles Booth */
 @font-face {
-  font-family: Chicago_12;
+  font-family: ChicagoKare-Regular;
   src: url("fonts/ChiKareGo2.woff") format("woff");
   src: url("fonts/ChiKareGo2.woff2") format("woff2");
 }
@@ -279,7 +278,7 @@ h2 {
   text-align: center;
   background: var(--primary);
   cursor: default;
-  font-family: Chicago_12;
+  font-family: ChicagoKare-Regular;
 }
 
 .inactive-title-bar {
@@ -300,7 +299,7 @@ h2 {
   line-height: 1.1;
   text-align: center;
   cursor: default;
-  font-family: Chicago_12;
+  font-family: ChicagoKare-Regular;
   color: var(--tertiary);
 }
 
@@ -432,7 +431,7 @@ h2 {
   text-align: center;
   text-decoration: none;
   font-size: 18px;
-  font-family: Chicago_12;
+  font-family: ChicagoKare-Regular;
   cursor: pointer;
 }
 
@@ -440,7 +439,7 @@ h2 {
   background: var(--secondary);
   border-radius:6px;
   color: var(--primary);
-  font-family: Chicago_12;
+  font-family: ChicagoKare-Regular;
 }
 
 .btn:disabled {
@@ -455,7 +454,7 @@ h2 {
   text-align: center;
   text-decoration: none;
   font-size: 18px;
-  font-family: Chicago_12;
+  font-family: ChicagoKare-Regular;
 }
 
 .btn-default {
@@ -470,7 +469,7 @@ h2 {
 /* text input */
 input  {
   border: 1.5px solid var(--secondary);
-  font-family: Chicago_12;
+  font-family: ChicagoKare-Regular;
   font-size: 18px;
   padding-left: 5px;
 }
@@ -608,7 +607,7 @@ input[type="checkbox"][disabled]:checked + label::after {
 .field-row {
   display: flex;
   align-items: center;
-  font-family: Chicago_12;
+  font-family: ChicagoKare-Regular;
   font-size: 1em;
 }
 
@@ -641,7 +640,7 @@ select {
   border: 1.5px solid;
   height: auto;
   width: 10rem;
-  font-family: Chicago_12;
+  font-family: ChicagoKare-Regular;
   font-size: 18px;
   background-image: svg-load("./icon/select-button.svg");
   background-position: top 2px right 2px;
@@ -662,7 +661,7 @@ ul[role] {
   padding: 0;
   list-style: none;
   cursor: pointer;
-  font-family: Chicago_12;
+  font-family: ChicagoKare-Regular;
   font-size: 1em;
 }
 ul[role="menu-bar"] {
