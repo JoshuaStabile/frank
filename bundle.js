@@ -73,492 +73,6 @@
     }
   };
 
-  // src/FrankCard.js
-  var FrankCard = class extends HTMLElement {
-    // #region constructor
-    constructor() {
-      super();
-      this.attachShadow({ mode: "open" });
-      this._lastHassVoice = null;
-      this._lastHassMedia = null;
-      this._lastHassBpm = null;
-      this._lastSprite = null;
-      this._currentSprite = null;
-    }
-    // #endregion
-    // #region Lovelace methods
-    static getConfigElement() {
-      return document.createElement("frank-card-editor");
-    }
-    static getStubConfig() {
-      return { entity: "", media_entity: "", bpm_entity: "", respond_delay: 0, zoom: 85, transparent_bg: false };
-    }
-    static getCardSize() {
-      return 6;
-    }
-    // #endregion
-    // #region setConfig
-    setConfig(config) {
-      if (!config.entity && !this.config) {
-        this.config = { ...config, entity: "assist_satellite.example" };
-      } else {
-        this.config = config;
-      }
-      if (this.contentReady) {
-        this.setupDOM();
-        this.initFrank();
-        this.applyState(this._currentState, this._currentBpm);
-      }
-    }
-    // #endregion
-    // #region hass setter
-    set hass(hass) {
-      if (!hass) return;
-      if (!this.contentReady) {
-        this.setupDOM();
-        this.initFrank();
-        this.contentReady = true;
-      }
-      const entity = this.config.entity;
-      const mediaEntity = this.config.media_entity;
-      const bpmEntity = this.config.bpm_entity;
-      const weatherEntity = this.config.weather_entity;
-      const newVoiceState = entity && hass.states[entity] ? hass.states[entity].state.toLowerCase() : "idle";
-      const newMediaState = mediaEntity && hass.states[mediaEntity] ? hass.states[mediaEntity].state.toLowerCase() : "paused";
-      const newBpmState = bpmEntity && hass.states[bpmEntity] ? hass.states[bpmEntity].state : "120";
-      if (this._lastHassVoice === newVoiceState && this._lastHassMedia === newMediaState && this._lastHassBpm === newBpmState) return;
-      this._lastHassVoice = newVoiceState;
-      this._lastHassMedia = newMediaState;
-      this._lastHassBpm = newBpmState;
-      const currentBpm = isNaN(parseFloat(newBpmState)) ? 120 : parseFloat(newBpmState);
-      let effectiveState = "idle";
-      if (["listen", "wake", "process", "think", "respond", "speak", "tts"].some((s) => newVoiceState.includes(s))) {
-        effectiveState = newVoiceState;
-      } else if (newMediaState === "playing") {
-        effectiveState = "dancing";
-      }
-      if (this._currentState !== effectiveState || effectiveState === "dancing" && this._currentBpm !== currentBpm) {
-        this._currentState = effectiveState;
-        this._currentBpm = currentBpm;
-        if (this.applyState) this.applyState(effectiveState, currentBpm);
-      }
-    }
-    // #endregion
-    // #region setupDOM
-    setupDOM() {
-      this.shadowRoot.innerHTML = `
-      <style>
-        :host { display: flex; align-items: center; justify-content: center; background: #ffffff; border-radius: var(--ha-card-border-radius, 12px); overflow: hidden; width: 100%; height: 100%; }
-      </style>
-
-      <div id="scene">
-        <div class="window">
-            <div class="title-bar" style="width:95%; height:95%; display:flex; align-items:center; justify-content:center;"> 
-                <h1 class="title">Frank</h1>
-            </div>
-            <div class="separator"></div>
-            
-            <div class="window-pane">
-                <div id="frank-container">
-                    <!-- Frank's image will be injected here -->
-                </div>
-                <div id="state-display">
-                    <!-- display current state here -->
-                </div>
-            </div>
-        </div>
-
-      </div>
-    `;
-    }
-    // #endregion
-    updateSpriteScale() {
-      if (!this._currentSprite) {
-        console.log("[Frank] updateSpriteScale: no current sprite");
-        return;
-      }
-      const container = this.shadowRoot.querySelector("#scene");
-      if (!container) {
-        console.log("[Frank] updateSpriteScale: no frank-card found");
-        return;
-      }
-      const spriteWidth = this._currentSprite.width?.baseVal?.value || this._currentSprite.getBoundingClientRect().width;
-      const spriteHeight = this._currentSprite.height?.baseVal?.value || this._currentSprite.getBoundingClientRect().height;
-      const screenFill = 0.8;
-      const containerWidth = container.clientWidth;
-      const containerHeight = container.clientHeight;
-      const targetWidth = containerWidth * screenFill;
-      const targetHeight = containerHeight * screenFill;
-      const scaleX = targetWidth / spriteWidth;
-      const scaleY = targetHeight / spriteHeight;
-      const scale = Math.max(
-        1,
-        Math.floor(Math.min(scaleX, scaleY))
-      );
-      const finalWidth = spriteWidth * scale;
-      const finalHeight = spriteHeight * scale;
-      const svg = this._currentSprite;
-      svg.setAttribute("width", finalWidth);
-      svg.setAttribute("height", finalHeight);
-    }
-    initFrank() {
-      const root = this.shadowRoot;
-      const config = this.config;
-      const el = {
-        scene: root.getElementById("scene"),
-        frankContainer: root.getElementById("frank-container")
-      };
-      this.handleResize = () => {
-        this.updateSpriteScale();
-      };
-      window.addEventListener("resize", this.handleResize);
-      let stateNow = "idle";
-      let currentBaseLid = 0;
-      const setSprite = (spr) => {
-        el.frankContainer.innerHTML = spr;
-        const svg = el.frankContainer.querySelector("svg");
-        if (!svg) {
-          console.log("[Frank] setSprite: no SVG found after injection");
-          return;
-        }
-        this._lastSprite = this._currentSprite;
-        this._currentSprite = svg;
-        this.updateSpriteScale();
-      };
-      function idle_smile() {
-        setSprite(SPRITES.FRANK.IDLE[0]);
-      }
-      this.idleTimer = null;
-      this.danceTimer = null;
-      this.danceLedTimer = null;
-      this.talkAnim = null;
-      this.respondTimer = null;
-      const IDLE_BEHAVIORS = [
-        { name: "smile", exec() {
-          idle_smile();
-        }, min: 5e3, max: 1e4, weight: 1 }
-      ];
-      const runNextIdleBehavior = () => {
-        if (stateNow !== "idle") return;
-        let r = Math.random() * IDLE_BEHAVIORS.reduce((s, b) => s + b.weight, 0), chosen = IDLE_BEHAVIORS[0];
-        for (const b of IDLE_BEHAVIORS) {
-          r -= b.weight;
-          if (r <= 0) {
-            chosen = b;
-            break;
-          }
-        }
-        chosen.exec();
-        this.idleTimer = setTimeout(runNextIdleBehavior, chosen.min + Math.random() * (chosen.max - chosen.min));
-      };
-      this.startIdleCycle = () => {
-        this.stopIdleCycle();
-        this.idleTimer = setTimeout(runNextIdleBehavior, 2e3 + Math.random() * 3e3);
-      };
-      this.stopIdleCycle = () => {
-        if (this.idleTimer) {
-          clearTimeout(this.idleTimer);
-          this.idleTimer = null;
-        }
-        if (this.pupilTimer) {
-          clearTimeout(this.pupilTimer);
-          this.pupilTimer = null;
-        }
-        if (this.glitchRaf) {
-          cancelAnimationFrame(this.glitchRaf);
-          this.glitchRaf = null;
-        }
-      };
-      this.stopDanceCycle = () => {
-        if (this.danceTimer) {
-          clearTimeout(this.danceTimer);
-          this.danceTimer = null;
-        }
-        if (this.danceLedTimer) {
-          clearTimeout(this.danceLedTimer);
-          this.danceLedTimer = null;
-        }
-      };
-      this.startDanceCycle = (bpm) => {
-        this.stopDanceCycle();
-        let dancePhase = 0;
-        let currentRoutine = Math.floor(Math.random() * 8);
-        const currentBpm = Math.max(60, Math.min(200, bpm));
-        const beatMs = 60 / currentBpm * 1e3;
-        const beatSec = beatMs / 1e3;
-        let expectedNextTick = performance.now() + beatMs;
-        const step = () => {
-          if (stateNow !== "dancing") return;
-          if (dancePhase > 0 && dancePhase % 16 === 0) {
-            let nextRoutine;
-            do {
-              nextRoutine = Math.floor(Math.random() * 8);
-            } while (nextRoutine === currentRoutine);
-            currentRoutine = nextRoutine;
-          }
-          const choreoBlock = currentRoutine;
-          const isDownBeat = dancePhase % 2 === 0;
-          const isQuadBeat = dancePhase % 4 === 0;
-          const phaseMod4 = dancePhase % 4;
-          const phaseMod8 = dancePhase % 8;
-          let dirX = isDownBeat ? 1 : -1;
-          if (this.danceLedTimer) clearTimeout(this.danceLedTimer);
-          this.danceLedTimer = setTimeout(() => {
-            if (stateNow === "dancing") {
-            }
-          }, beatMs * 0.3);
-          let moveDur = beatSec;
-          let bodyDur = beatSec * 2;
-          const executeTick = () => {
-            dancePhase++;
-            const now = performance.now();
-            expectedNextTick += beatMs;
-            const delay = Math.max(0, expectedNextTick - now);
-            this.danceTimer = setTimeout(step, delay);
-          };
-          executeTick();
-        };
-        step();
-      };
-      const startRespondAnim = () => {
-        if (this.talkAnim) clearTimeout(this.talkAnim);
-        const step = () => {
-          if (this._currentSprite?.id !== "neutral") {
-            setSprite(SPRITES.FRANK.NEUTRAL[0]);
-          } else {
-            const nextSprite = SPRITES.FRANK.JIBJAB[Math.floor(Math.random() * SPRITES.FRANK.JIBJAB.length)];
-            setSprite(nextSprite);
-          }
-          const talkSpeed = config.talk_speed !== void 0 ? parseFloat(config.talk_speed) : 200;
-          this.talkAnim = setTimeout(step, talkSpeed);
-        };
-        step();
-      };
-      const animateFrank = (state, bpm) => {
-        stateNow = state;
-        if (this.talkAnim) clearTimeout(this.talkAnim);
-        this.stopIdleCycle();
-        this.stopDanceCycle();
-        if (state === "idle") {
-          this.startIdleCycle();
-        } else if (state === "dancing") {
-        } else if (state === "listening") {
-          this.displayState(state);
-        } else if (state === "processing") {
-          this.displayState(state);
-        } else if (state === "responding") {
-          startRespondAnim();
-        }
-      };
-      this.applyState = (raw, bpm) => {
-        const s = (raw || "idle").toLowerCase();
-        let mapped = "idle";
-        if (s.includes("respond") || s.includes("speak") || s.includes("tts")) mapped = "responding";
-        else if (s.includes("listen") || s.includes("wake")) mapped = "listening";
-        else if (s.includes("process") || s.includes("think")) mapped = "processing";
-        else if (s === "dancing") mapped = "dancing";
-        if (this.respondTimer) {
-          clearTimeout(this.respondTimer);
-          this.respondTimer = null;
-        }
-        const delayMs = config.respond_delay !== void 0 ? parseFloat(config.respond_delay) : 0;
-        if (mapped === "responding" && this._lastEffectiveState !== "responding" && delayMs > 0) {
-          this.respondTimer = setTimeout(() => {
-            this._lastEffectiveState = "responding";
-            animateFrank("responding", bpm);
-          }, delayMs);
-          return;
-        }
-        this._lastEffectiveState = mapped;
-        animateFrank(mapped, bpm);
-      };
-      this.displayState = (state) => {
-      };
-      this.applyState("idle", 120);
-    }
-    disconnectedCallback() {
-      if (this.handleResize) {
-        window.removeEventListener("resize", this.handleResize);
-      }
-      if (this.stopIdleCycle) this.stopIdleCycle();
-      if (this.stopDanceCycle) this.stopDanceCycle();
-      if (this.respondTimer) clearTimeout(this.respondTimer);
-      if (this.talkAnim) clearTimeout(this.talkAnim);
-    }
-  };
-
-  // src/FrankCardEditor.js
-  var FrankCardEditor = class extends HTMLElement {
-    constructor() {
-      super();
-      this.attachShadow({ mode: "open" });
-    }
-    setConfig(config) {
-      this._config = config;
-      this.render();
-    }
-    set hass(hass) {
-      this._hass = hass;
-      const pickers = this.shadowRoot.querySelectorAll("ha-entity-picker");
-      if (pickers.length > 0) {
-        pickers.forEach((picker) => {
-          picker.hass = hass;
-        });
-      } else {
-        this.render();
-      }
-    }
-    configChanged(configKey, value) {
-      if (!this._config) return;
-      const newConfig = { ...this._config };
-      if (value === "" || value === void 0 || value === null) {
-        delete newConfig[configKey];
-      } else {
-        newConfig[configKey] = value;
-      }
-      this._config = newConfig;
-      this.dispatchEvent(new CustomEvent("config-changed", {
-        detail: { config: this._config },
-        bubbles: true,
-        composed: true
-      }));
-    }
-    render() {
-      if (!this._config || !this._hass) return;
-      this.shadowRoot.innerHTML = `
-      <style>
-        .card-config {
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-        }
-        .side-by-side {
-          display: flex;
-          gap: 16px;
-          margin-top: 8px;
-        }
-        .side-by-side > div {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-        }
-        label {
-          font-family: var(--paper-font-body1_-_font-family, sans-serif);
-          font-size: 14px;
-          color: var(--primary-text-color);
-        }
-        .secondary {
-          font-size: 12px;
-          color: var(--secondary-text-color);
-          margin-top: 2px;
-        }
-      </style>
-      <div class="card-config">
-        <ha-entity-picker
-          id="entity-picker"
-          label="Voice Assistant Entity (Required)"
-          allow-custom-entity
-        ></ha-entity-picker>
-
-        <ha-entity-picker
-          id="media-picker"
-          label="Media Player Entity (Optional)"
-          allow-custom-entity
-        ></ha-entity-picker>
-
-        <ha-entity-picker
-          id="bpm-picker"
-          label="BPM Sensor Entity (Optional)"
-          allow-custom-entity
-        ></ha-entity-picker>
-
-        <ha-entity-picker
-          id="weather-picker"
-          label="Weather Entity (Optional)"
-          allow-custom-entity
-        ></ha-entity-picker>
-
-        <div>
-          <ha-textfield
-            id="delay-input"
-            label="Response Delay"
-            type="number"
-            min="0"
-            max="16"
-            step="0.5"
-            suffix="s"
-            value="${this._config.respond_delay ?? 0}"
-          ></ha-textfield>
-
-          <div class="secondary">
-            Time (ms) before frank starts talking.
-          </div>
-        </div>
-
-        <div>
-          <ha-textfield
-            id="talk-speed-input"
-            label="Talk Speed"
-            type="number"
-            min="10"
-            max="1000"
-            step="1"
-            suffix="ms"
-            value="${this._config.talk_speed ?? 200}"
-          ></ha-textfield>
-
-          <div class="secondary">
-            Time (ms) it takes for frank's talking sprites to cycle back to neutral.
-          </div>
-        </div>
-
-        <ha-formfield label="Transparent Background">
-          <ha-switch id="bg-switch"></ha-switch>
-        </ha-formfield>
-      </div>
-    `;
-      const entityPicker = this.shadowRoot.querySelector("#entity-picker");
-      entityPicker.hass = this._hass;
-      entityPicker.value = this._config.entity;
-      entityPicker.includeDomains = ["assist_satellite"];
-      entityPicker.addEventListener("value-changed", (ev) => this.configChanged("entity", ev.detail.value));
-      const mediaPicker = this.shadowRoot.querySelector("#media-picker");
-      mediaPicker.hass = this._hass;
-      mediaPicker.value = this._config.media_entity;
-      mediaPicker.includeDomains = ["media_player"];
-      mediaPicker.addEventListener("value-changed", (ev) => this.configChanged("media_entity", ev.detail.value));
-      const bpmPicker = this.shadowRoot.querySelector("#bpm-picker");
-      bpmPicker.hass = this._hass;
-      bpmPicker.value = this._config.bpm_entity;
-      bpmPicker.includeDomains = ["sensor"];
-      bpmPicker.addEventListener("value-changed", (ev) => this.configChanged("bpm_entity", ev.detail.value));
-      const weatherPicker = this.shadowRoot.querySelector("#weather-picker");
-      weatherPicker.hass = this._hass;
-      weatherPicker.value = this._config.weather_entity;
-      weatherPicker.includeDomains = ["weather"];
-      weatherPicker.addEventListener("value-changed", (ev) => this.configChanged("weather_entity", ev.detail.value));
-      const delayInput = this.shadowRoot.querySelector("#delay-input");
-      delayInput.addEventListener("change", (ev) => {
-        this.configChanged(
-          "respond_delay",
-          Number(ev.target.value)
-        );
-      });
-      const talkSpeedInput = this.shadowRoot.querySelector("#talk-speed-input");
-      talkSpeedInput.addEventListener("change", (ev) => {
-        this.configChanged(
-          "talk_speed",
-          Number(ev.target.value)
-        );
-      });
-      const bgSwitch = this.shadowRoot.querySelector("#bg-switch");
-      bgSwitch.checked = this._config.transparent_bg === true;
-      bgSwitch.addEventListener("change", (ev) => {
-        this.configChanged("transparent_bg", ev.target.checked);
-      });
-    }
-  };
-
   // src/config/styles.js
   var STYLES = `
 #scene { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;}
@@ -1300,6 +814,493 @@ ul [role="menu-item"].divider::after {
 }
 
 `;
+
+  // src/FrankCard.js
+  var FrankCard = class extends HTMLElement {
+    // #region constructor
+    constructor() {
+      super();
+      this.attachShadow({ mode: "open" });
+      this._lastHassVoice = null;
+      this._lastHassMedia = null;
+      this._lastHassBpm = null;
+      this._lastSprite = null;
+      this._currentSprite = null;
+    }
+    // #endregion
+    // #region Lovelace methods
+    static getConfigElement() {
+      return document.createElement("frank-card-editor");
+    }
+    static getStubConfig() {
+      return { entity: "", media_entity: "", bpm_entity: "", respond_delay: 0, zoom: 85, transparent_bg: false };
+    }
+    static getCardSize() {
+      return 6;
+    }
+    // #endregion
+    // #region setConfig
+    setConfig(config) {
+      if (!config.entity && !this.config) {
+        this.config = { ...config, entity: "assist_satellite.example" };
+      } else {
+        this.config = config;
+      }
+      if (this.contentReady) {
+        this.setupDOM();
+        this.initFrank();
+        this.applyState(this._currentState, this._currentBpm);
+      }
+    }
+    // #endregion
+    // #region hass setter
+    set hass(hass) {
+      if (!hass) return;
+      if (!this.contentReady) {
+        this.setupDOM();
+        this.initFrank();
+        this.contentReady = true;
+      }
+      const entity = this.config.entity;
+      const mediaEntity = this.config.media_entity;
+      const bpmEntity = this.config.bpm_entity;
+      const weatherEntity = this.config.weather_entity;
+      const newVoiceState = entity && hass.states[entity] ? hass.states[entity].state.toLowerCase() : "idle";
+      const newMediaState = mediaEntity && hass.states[mediaEntity] ? hass.states[mediaEntity].state.toLowerCase() : "paused";
+      const newBpmState = bpmEntity && hass.states[bpmEntity] ? hass.states[bpmEntity].state : "120";
+      if (this._lastHassVoice === newVoiceState && this._lastHassMedia === newMediaState && this._lastHassBpm === newBpmState) return;
+      this._lastHassVoice = newVoiceState;
+      this._lastHassMedia = newMediaState;
+      this._lastHassBpm = newBpmState;
+      const currentBpm = isNaN(parseFloat(newBpmState)) ? 120 : parseFloat(newBpmState);
+      let effectiveState = "idle";
+      if (["listen", "wake", "process", "think", "respond", "speak", "tts"].some((s) => newVoiceState.includes(s))) {
+        effectiveState = newVoiceState;
+      } else if (newMediaState === "playing") {
+        effectiveState = "dancing";
+      }
+      if (this._currentState !== effectiveState || effectiveState === "dancing" && this._currentBpm !== currentBpm) {
+        this._currentState = effectiveState;
+        this._currentBpm = currentBpm;
+        if (this.applyState) this.applyState(effectiveState, currentBpm);
+      }
+    }
+    // #endregion
+    // #region setupDOM
+    setupDOM() {
+      this.shadowRoot.innerHTML = `
+      <style>
+        :host { display: flex; align-items: center; justify-content: center; background: #ffffff; border-radius: var(--ha-card-border-radius, 12px); overflow: hidden; width: 100%; height: 100%; }
+        ${STYLES}
+      </style>
+
+      <div id="scene">
+        <div class="window">
+            <div class="title-bar" style="width:95%; height:95%; display:flex; align-items:center; justify-content:center;"> 
+                <h1 class="title">Frank</h1>
+            </div>
+            <div class="separator"></div>
+            
+            <div class="window-pane">
+                <div id="frank-container">
+                    <!-- Frank's image will be injected here -->
+                </div>
+                <div id="state-display">
+                    <!-- display current state here -->
+                </div>
+            </div>
+        </div>
+
+      </div>
+    `;
+    }
+    // #endregion
+    updateSpriteScale() {
+      if (!this._currentSprite) {
+        console.log("[Frank] updateSpriteScale: no current sprite");
+        return;
+      }
+      const container = this.shadowRoot.querySelector("#scene");
+      if (!container) {
+        console.log("[Frank] updateSpriteScale: no frank-card found");
+        return;
+      }
+      const spriteWidth = this._currentSprite.width?.baseVal?.value || this._currentSprite.getBoundingClientRect().width;
+      const spriteHeight = this._currentSprite.height?.baseVal?.value || this._currentSprite.getBoundingClientRect().height;
+      const screenFill = 0.8;
+      const containerWidth = container.clientWidth;
+      const containerHeight = container.clientHeight;
+      const targetWidth = containerWidth * screenFill;
+      const targetHeight = containerHeight * screenFill;
+      const scaleX = targetWidth / spriteWidth;
+      const scaleY = targetHeight / spriteHeight;
+      const scale = Math.max(
+        1,
+        Math.floor(Math.min(scaleX, scaleY))
+      );
+      const finalWidth = spriteWidth * scale;
+      const finalHeight = spriteHeight * scale;
+      const svg = this._currentSprite;
+      svg.setAttribute("width", finalWidth);
+      svg.setAttribute("height", finalHeight);
+    }
+    initFrank() {
+      const root = this.shadowRoot;
+      const config = this.config;
+      const el = {
+        scene: root.getElementById("scene"),
+        frankContainer: root.getElementById("frank-container")
+      };
+      this.handleResize = () => {
+        this.updateSpriteScale();
+      };
+      window.addEventListener("resize", this.handleResize);
+      let stateNow = "idle";
+      let currentBaseLid = 0;
+      const setSprite = (spr) => {
+        el.frankContainer.innerHTML = spr;
+        const svg = el.frankContainer.querySelector("svg");
+        if (!svg) {
+          console.log("[Frank] setSprite: no SVG found after injection");
+          return;
+        }
+        this._lastSprite = this._currentSprite;
+        this._currentSprite = svg;
+        this.updateSpriteScale();
+      };
+      function idle_smile() {
+        setSprite(SPRITES.FRANK.IDLE[0]);
+      }
+      this.idleTimer = null;
+      this.danceTimer = null;
+      this.danceLedTimer = null;
+      this.talkAnim = null;
+      this.respondTimer = null;
+      const IDLE_BEHAVIORS = [
+        { name: "smile", exec() {
+          idle_smile();
+        }, min: 5e3, max: 1e4, weight: 1 }
+      ];
+      const runNextIdleBehavior = () => {
+        if (stateNow !== "idle") return;
+        let r = Math.random() * IDLE_BEHAVIORS.reduce((s, b) => s + b.weight, 0), chosen = IDLE_BEHAVIORS[0];
+        for (const b of IDLE_BEHAVIORS) {
+          r -= b.weight;
+          if (r <= 0) {
+            chosen = b;
+            break;
+          }
+        }
+        chosen.exec();
+        this.idleTimer = setTimeout(runNextIdleBehavior, chosen.min + Math.random() * (chosen.max - chosen.min));
+      };
+      this.startIdleCycle = () => {
+        this.stopIdleCycle();
+        this.idleTimer = setTimeout(runNextIdleBehavior, 2e3 + Math.random() * 3e3);
+      };
+      this.stopIdleCycle = () => {
+        if (this.idleTimer) {
+          clearTimeout(this.idleTimer);
+          this.idleTimer = null;
+        }
+        if (this.pupilTimer) {
+          clearTimeout(this.pupilTimer);
+          this.pupilTimer = null;
+        }
+        if (this.glitchRaf) {
+          cancelAnimationFrame(this.glitchRaf);
+          this.glitchRaf = null;
+        }
+      };
+      this.stopDanceCycle = () => {
+        if (this.danceTimer) {
+          clearTimeout(this.danceTimer);
+          this.danceTimer = null;
+        }
+        if (this.danceLedTimer) {
+          clearTimeout(this.danceLedTimer);
+          this.danceLedTimer = null;
+        }
+      };
+      this.startDanceCycle = (bpm) => {
+        this.stopDanceCycle();
+        let dancePhase = 0;
+        let currentRoutine = Math.floor(Math.random() * 8);
+        const currentBpm = Math.max(60, Math.min(200, bpm));
+        const beatMs = 60 / currentBpm * 1e3;
+        const beatSec = beatMs / 1e3;
+        let expectedNextTick = performance.now() + beatMs;
+        const step = () => {
+          if (stateNow !== "dancing") return;
+          if (dancePhase > 0 && dancePhase % 16 === 0) {
+            let nextRoutine;
+            do {
+              nextRoutine = Math.floor(Math.random() * 8);
+            } while (nextRoutine === currentRoutine);
+            currentRoutine = nextRoutine;
+          }
+          const choreoBlock = currentRoutine;
+          const isDownBeat = dancePhase % 2 === 0;
+          const isQuadBeat = dancePhase % 4 === 0;
+          const phaseMod4 = dancePhase % 4;
+          const phaseMod8 = dancePhase % 8;
+          let dirX = isDownBeat ? 1 : -1;
+          if (this.danceLedTimer) clearTimeout(this.danceLedTimer);
+          this.danceLedTimer = setTimeout(() => {
+            if (stateNow === "dancing") {
+            }
+          }, beatMs * 0.3);
+          let moveDur = beatSec;
+          let bodyDur = beatSec * 2;
+          const executeTick = () => {
+            dancePhase++;
+            const now = performance.now();
+            expectedNextTick += beatMs;
+            const delay = Math.max(0, expectedNextTick - now);
+            this.danceTimer = setTimeout(step, delay);
+          };
+          executeTick();
+        };
+        step();
+      };
+      const startRespondAnim = () => {
+        if (this.talkAnim) clearTimeout(this.talkAnim);
+        const step = () => {
+          if (this._currentSprite?.id !== "neutral") {
+            setSprite(SPRITES.FRANK.NEUTRAL[0]);
+          } else {
+            const nextSprite = SPRITES.FRANK.JIBJAB[Math.floor(Math.random() * SPRITES.FRANK.JIBJAB.length)];
+            setSprite(nextSprite);
+          }
+          const talkSpeed = config.talk_speed !== void 0 ? parseFloat(config.talk_speed) : 200;
+          this.talkAnim = setTimeout(step, talkSpeed);
+        };
+        step();
+      };
+      const animateFrank = (state, bpm) => {
+        stateNow = state;
+        if (this.talkAnim) clearTimeout(this.talkAnim);
+        this.stopIdleCycle();
+        this.stopDanceCycle();
+        if (state === "idle") {
+          this.startIdleCycle();
+        } else if (state === "dancing") {
+        } else if (state === "listening") {
+          this.displayState(state);
+        } else if (state === "processing") {
+          this.displayState(state);
+        } else if (state === "responding") {
+          startRespondAnim();
+        }
+      };
+      this.applyState = (raw, bpm) => {
+        const s = (raw || "idle").toLowerCase();
+        let mapped = "idle";
+        if (s.includes("respond") || s.includes("speak") || s.includes("tts")) mapped = "responding";
+        else if (s.includes("listen") || s.includes("wake")) mapped = "listening";
+        else if (s.includes("process") || s.includes("think")) mapped = "processing";
+        else if (s === "dancing") mapped = "dancing";
+        if (this.respondTimer) {
+          clearTimeout(this.respondTimer);
+          this.respondTimer = null;
+        }
+        const delayMs = config.respond_delay !== void 0 ? parseFloat(config.respond_delay) : 0;
+        if (mapped === "responding" && this._lastEffectiveState !== "responding" && delayMs > 0) {
+          this.respondTimer = setTimeout(() => {
+            this._lastEffectiveState = "responding";
+            animateFrank("responding", bpm);
+          }, delayMs);
+          return;
+        }
+        this._lastEffectiveState = mapped;
+        animateFrank(mapped, bpm);
+      };
+      this.displayState = (state) => {
+      };
+      this.applyState("idle", 120);
+    }
+    disconnectedCallback() {
+      if (this.handleResize) {
+        window.removeEventListener("resize", this.handleResize);
+      }
+      if (this.stopIdleCycle) this.stopIdleCycle();
+      if (this.stopDanceCycle) this.stopDanceCycle();
+      if (this.respondTimer) clearTimeout(this.respondTimer);
+      if (this.talkAnim) clearTimeout(this.talkAnim);
+    }
+  };
+
+  // src/FrankCardEditor.js
+  var FrankCardEditor = class extends HTMLElement {
+    constructor() {
+      super();
+      this.attachShadow({ mode: "open" });
+    }
+    setConfig(config) {
+      this._config = config;
+      this.render();
+    }
+    set hass(hass) {
+      this._hass = hass;
+      const pickers = this.shadowRoot.querySelectorAll("ha-entity-picker");
+      if (pickers.length > 0) {
+        pickers.forEach((picker) => {
+          picker.hass = hass;
+        });
+      } else {
+        this.render();
+      }
+    }
+    configChanged(configKey, value) {
+      if (!this._config) return;
+      const newConfig = { ...this._config };
+      if (value === "" || value === void 0 || value === null) {
+        delete newConfig[configKey];
+      } else {
+        newConfig[configKey] = value;
+      }
+      this._config = newConfig;
+      this.dispatchEvent(new CustomEvent("config-changed", {
+        detail: { config: this._config },
+        bubbles: true,
+        composed: true
+      }));
+    }
+    render() {
+      if (!this._config || !this._hass) return;
+      this.shadowRoot.innerHTML = `
+      <style>
+        .card-config {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+        .side-by-side {
+          display: flex;
+          gap: 16px;
+          margin-top: 8px;
+        }
+        .side-by-side > div {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+        }
+        label {
+          font-family: var(--paper-font-body1_-_font-family, sans-serif);
+          font-size: 14px;
+          color: var(--primary-text-color);
+        }
+        .secondary {
+          font-size: 12px;
+          color: var(--secondary-text-color);
+          margin-top: 2px;
+        }
+      </style>
+      <div class="card-config">
+        <ha-entity-picker
+          id="entity-picker"
+          label="Voice Assistant Entity (Required)"
+          allow-custom-entity
+        ></ha-entity-picker>
+
+        <ha-entity-picker
+          id="media-picker"
+          label="Media Player Entity (Optional)"
+          allow-custom-entity
+        ></ha-entity-picker>
+
+        <ha-entity-picker
+          id="bpm-picker"
+          label="BPM Sensor Entity (Optional)"
+          allow-custom-entity
+        ></ha-entity-picker>
+
+        <ha-entity-picker
+          id="weather-picker"
+          label="Weather Entity (Optional)"
+          allow-custom-entity
+        ></ha-entity-picker>
+
+        <div>
+          <ha-textfield
+            id="delay-input"
+            label="Response Delay"
+            type="number"
+            min="0"
+            max="16"
+            step="0.5"
+            suffix="s"
+            value="${this._config.respond_delay ?? 0}"
+          ></ha-textfield>
+
+          <div class="secondary">
+            Time (ms) before frank starts talking.
+          </div>
+        </div>
+
+        <div>
+          <ha-textfield
+            id="talk-speed-input"
+            label="Talk Speed"
+            type="number"
+            min="10"
+            max="1000"
+            step="1"
+            suffix="ms"
+            value="${this._config.talk_speed ?? 200}"
+          ></ha-textfield>
+
+          <div class="secondary">
+            Time (ms) it takes for frank's talking sprites to cycle back to neutral.
+          </div>
+        </div>
+
+        <ha-formfield label="Transparent Background">
+          <ha-switch id="bg-switch"></ha-switch>
+        </ha-formfield>
+      </div>
+    `;
+      const entityPicker = this.shadowRoot.querySelector("#entity-picker");
+      entityPicker.hass = this._hass;
+      entityPicker.value = this._config.entity;
+      entityPicker.includeDomains = ["assist_satellite"];
+      entityPicker.addEventListener("value-changed", (ev) => this.configChanged("entity", ev.detail.value));
+      const mediaPicker = this.shadowRoot.querySelector("#media-picker");
+      mediaPicker.hass = this._hass;
+      mediaPicker.value = this._config.media_entity;
+      mediaPicker.includeDomains = ["media_player"];
+      mediaPicker.addEventListener("value-changed", (ev) => this.configChanged("media_entity", ev.detail.value));
+      const bpmPicker = this.shadowRoot.querySelector("#bpm-picker");
+      bpmPicker.hass = this._hass;
+      bpmPicker.value = this._config.bpm_entity;
+      bpmPicker.includeDomains = ["sensor"];
+      bpmPicker.addEventListener("value-changed", (ev) => this.configChanged("bpm_entity", ev.detail.value));
+      const weatherPicker = this.shadowRoot.querySelector("#weather-picker");
+      weatherPicker.hass = this._hass;
+      weatherPicker.value = this._config.weather_entity;
+      weatherPicker.includeDomains = ["weather"];
+      weatherPicker.addEventListener("value-changed", (ev) => this.configChanged("weather_entity", ev.detail.value));
+      const delayInput = this.shadowRoot.querySelector("#delay-input");
+      delayInput.addEventListener("change", (ev) => {
+        this.configChanged(
+          "respond_delay",
+          Number(ev.target.value)
+        );
+      });
+      const talkSpeedInput = this.shadowRoot.querySelector("#talk-speed-input");
+      talkSpeedInput.addEventListener("change", (ev) => {
+        this.configChanged(
+          "talk_speed",
+          Number(ev.target.value)
+        );
+      });
+      const bgSwitch = this.shadowRoot.querySelector("#bg-switch");
+      bgSwitch.checked = this._config.transparent_bg === true;
+      bgSwitch.addEventListener("change", (ev) => {
+        this.configChanged("transparent_bg", ev.target.checked);
+      });
+    }
+  };
 
   // src/main.js
   customElements.define("frank-card-editor", FrankCardEditor);

@@ -1,4 +1,5 @@
 import { SPRITES } from './config/sprites.js';
+import { STYLES } from './config/styles.js';
 
 // #region FrankCard Class Definition
 
@@ -87,6 +88,7 @@ export class FrankCard extends HTMLElement {
     this.shadowRoot.innerHTML = `
       <style>
         :host { display: flex; align-items: center; justify-content: center; background: #ffffff; border-radius: var(--ha-card-border-radius, 12px); overflow: hidden; width: 100%; height: 100%; }
+        ${STYLES}
       </style>
 
       <div id="scene">
