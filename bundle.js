@@ -153,7 +153,7 @@
 
       <div id="scene">
         <div class="window">
-            <div class="title-bar"> 
+            <div class="title-bar" style="width:95%; height:95%; display:flex; align-items:center; justify-content:center;"> 
                 <h1 class="title">Frank</h1>
             </div>
             <div class="separator"></div>
