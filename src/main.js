@@ -20,5 +20,6 @@ window.customCards.push({
 // #endregion
 
 // add document styles
-document.body.innerHTML += '<style>' + STYLES + '</style>';
-
+const styleElement = document.createElement('style');
+styleElement.textContent = STYLES;
+document.head.appendChild(styleElement);

@@ -1311,5 +1311,7 @@ ul [role="menu-item"].divider::after {
     preview: true,
     description: "A responsive, animated Frank AI assistant card that reacts to voice and dances to music."
   });
-  document.body.innerHTML += "<style>" + STYLES + "</style>";
+  var styleElement = document.createElement("style");
+  styleElement.textContent = STYLES;
+  document.head.appendChild(styleElement);
 })();
