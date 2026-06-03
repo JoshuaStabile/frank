@@ -115,28 +115,28 @@ export class FrankCard extends HTMLElement {
             <img src="" alt="Computer Chronicles">
             <div class="desktop-icon-label">Computer Chronicles</div>
         </div>
-    <div class="desktop-icon alias" style="right: 20px; top: 100px;" data-name="Frank.app" data-type="alias">
-        <img src="" alt="Frank.app">
-        <div class="desktop-icon-label">Frank.app</div>
-    </div>
-        <!-- Frank's window will be injected here -->
+        <div class="desktop-icon alias" style="right: 20px; top: 100px;" data-name="Frank.app" data-type="alias">
+            <img src="" alt="Frank.app">
+            <div class="desktop-icon-label">Frank.app</div>
+        </div>
+        
+        <div class="window">
+            <div class="title-bar"> 
+                <h1 class="title">Frank</h1>
+            </div>
+            <div class="separator"></div>
+            
+            <div class="window-pane">
+                <div id="frank-container">
+                    <!-- Frank's image will be injected here -->
+                </div>
+                <div id="state-display">
+                    <!-- display current state here -->
+                </div>
+            </div>
+        </div>
     </div>  
 
-    <div class="window">
-        <div class="title-bar"> 
-            <h1 class="title">Frank</h1>
-        </div>
-        <div class="separator"></div>
-        
-        <div class="window-pane">
-            <div id="frank-container">
-                <!-- Frank's image will be injected here -->
-            </div>
-            <div id="state-display">
-                <!-- display current state here -->
-            </div>
-        </div>
-    </div>
     `;
   }
 
@@ -149,7 +149,7 @@ export class FrankCard extends HTMLElement {
     }
 
     // container is the frank card elm
-    const container = this.shadowRoot.querySelector('#scene');
+    const container = this.shadowRoot.querySelector('#desktop');
 
     if (!container) {
       console.log('[Frank] updateSpriteScale: no frank-card found');
@@ -196,7 +196,7 @@ export class FrankCard extends HTMLElement {
     const config = this.config;
 
     const el = {
-      scene: root.getElementById('scene'),
+      desktop: root.getElementById('desktop'),
       frankContainer: root.getElementById('frank-container'),
     };
 
