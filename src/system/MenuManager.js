@@ -1,12 +1,12 @@
 // Menu System Management
 import { findItem, fileSystem } from './filesystem.js';
 
-export const MenuManager = {
-    init() {
+export class MenuManager {
+    constructor() {
         this.initializeMenuListeners();
         this.updateApplicationMenu();
         this.addMenuStyles();
-    },
+    }
 
     hideProgram(programName) {
         if (!programName || programName === 'Finder') return;
@@ -21,7 +21,7 @@ export const MenuManager = {
         });
         
         this.updateApplicationMenu();
-    },
+    }
 
     hideOthers() {
         const activeWindow = this.getActiveWindow();
@@ -39,7 +39,7 @@ export const MenuManager = {
         });
         
         this.updateApplicationMenu();
-    },
+    }
 
     showAll() {
         const windows = Array.from(document.querySelectorAll('.window.hidden'));
@@ -49,7 +49,7 @@ export const MenuManager = {
         });
         
         this.updateApplicationMenu();
-    },
+    }
 
     initializeMenuListeners() {
         // Menu click handlers
@@ -113,13 +113,13 @@ export const MenuManager = {
                 this.closeAllMenus();
             }
         });
-    },
+    }
 
     closeAllMenus() {
         document.querySelectorAll('.dropdown-menu').forEach(menu => {
             menu.style.display = 'none';
         });
-    },
+    }
 
     getOpenPrograms() {
         // Get all open windows (including hidden ones)
@@ -165,7 +165,7 @@ export const MenuManager = {
         });
     
         return Array.from(programs.values());
-    },
+    }
 
     updateApplicationMenu() {
         const appMenu = document.querySelector('.app-menu');
@@ -223,7 +223,7 @@ export const MenuManager = {
         });
 
         menu.innerHTML = menuHTML;
-    },
+    }
 
     addMenuStyles() {
         const style = document.createElement('style');
@@ -263,7 +263,7 @@ export const MenuManager = {
             }
         `;
         document.head.appendChild(style);
-    },
+    }
 
     getActiveWindow() {
         const highestZ = Math.max(
@@ -271,7 +271,7 @@ export const MenuManager = {
                 .map(el => parseInt(el.style.zIndex) || 0)
         );
         return document.querySelector(`.window[style*="z-index: ${highestZ}"]`);
-    },
+    }
 
     switchToProgram(programName) {
         const windows = Array.from(document.querySelectorAll('.window'));
@@ -308,14 +308,14 @@ export const MenuManager = {
         }
         
         this.updateApplicationMenu();
-    },
+    }
 
     getHighestZIndex() {
         return Math.max(
             ...Array.from(document.querySelectorAll('.window'))
                 .map(el => parseInt(el.style.zIndex) || 0)
         );
-    },
+    }
 
     closeActiveWindow() {
         const activeWindow = this.getActiveWindow();
@@ -329,7 +329,7 @@ export const MenuManager = {
                 StateManager.saveState();
             }
         }
-    },
+    }
 
     getInfo() {
         const activeWindow = this.getActiveWindow();
@@ -349,7 +349,7 @@ export const MenuManager = {
         new Window('Get Info', content, 'info', 
             window.innerWidth / 2 - 150, 
             window.innerHeight / 2 - 100);
-    },
+    }
 
     getActiveProgram() {
         // If Finder was explicitly activated, return it
@@ -375,11 +375,6 @@ export const MenuManager = {
         return activeWindow.querySelector('.window-title').textContent;
     }
 };
-
-// Initialize menu system when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    MenuManager.init();
-});
 
 MenuManager.hideProgram = function(programName) {
     if (!programName || programName === 'Finder') return;

@@ -1,6 +1,6 @@
 // #region Home Assistant Card Editor
 
-export class FrankCardEditor extends HTMLElement {
+export class FrankOSCardEditor extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });

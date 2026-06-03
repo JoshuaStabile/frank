@@ -1,78 +1,4 @@
 (() => {
-  // src/config/sprites.js
-  var SPRITES = {
-    FRANK: {
-      IDLE: [
-        `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="idle" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
-    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
--80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
-400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M200 180 l0 -20 20 0 20 0
-0 -20 0 -20 80 0 80 0 0 20 0 20 20 0 20 0 0 20 0 20 -20 0 -20 0 0 -20 0 -20
--80 0 -80 0 0 20 0 20 -20 0 -20 0 0 -20z"/>
-  </g></svg>`
-      ],
-      NEUTRAL: [
-        `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="neutral" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
-    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
--80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
-400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M240 140 l0 -20 80 0 80 0
-0 20 0 20 -80 0 -80 0 0 -20z"/>
-  </g>
-</svg>`
-      ],
-      JIBJAB: [
-        `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="jibjab_1" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
-    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
--80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
-400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M240 180 l0 -20 -20 0 -20
-0 0 -20 0 -20 20 0 20 0 0 -20 0 -20 80 0 80 0 0 20 0 20 20 0 20 0 0 20 0 20
--20 0 -20 0 0 20 0 20 -80 0 -80 0 0 -20z m160 -40 l0 -20 -80 0 -80 0 0 20 0
-20 80 0 80 0 0 -20z"/>
-  </g>
-</svg>`,
-        `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="jibjab_2" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
-    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
--80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
-400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M280 180 l0 -20 -20 0 -20
-0 0 -20 0 -20 20 0 20 0 0 -20 0 -20 40 0 40 0 0 20 0 20 20 0 20 0 0 20 0 20
--20 0 -20 0 0 20 0 20 -40 0 -40 0 0 -20z m80 -40 l0 -20 -40 0 -40 0 0 20 0
-20 40 0 40 0 0 -20z"/>
-  </g>
-</svg>`,
-        `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="jibjab_3" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
-    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
--80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
-400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M280 180 l0 -20 -20 0 -20
-0 0 -40 0 -40 20 0 20 0 0 -20 0 -20 40 0 40 0 0 20 0 20 20 0 20 0 0 40 0 40
--20 0 -20 0 0 20 0 20 -40 0 -40 0 0 -20z m80 -60 l0 -40 -40 0 -40 0 0 40 0
-40 40 0 40 0 0 -40z"/>
-  </g>
-</svg>`,
-        `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="jibjab_4" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
-    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
--80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
-400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M280 180 l0 -20 -20 0 -20
-0 0 -20 0 -20 20 0 20 0 0 -20 0 -20 40 0 40 0 0 20 0 20 20 0 20 0 0 20 0 20
--20 0 -20 0 0 20 0 20 -40 0 -40 0 0 -20z m80 -40 l0 -20 -40 0 -40 0 0 20 0
-20 40 0 40 0 0 -20z"/>
-  </g>
-</svg>`
-      ]
-    }
-  };
-
   // src/config/styles.js
   var STYLES = `
 svg { image-rendering: pixelated; image-rendering: crisp-edges; }
@@ -1244,52 +1170,90 @@ height: 100vh;
 }
 `;
 
-  // src/FrankCard.js
-  var FrankCard = class extends HTMLElement {
-    // #region constructor
+  // src/config/sprites.js
+  var SPRITES = {
+    FRANK: {
+      IDLE: [
+        `<?xml version="1.0" encoding="UTF-8"?>
+<svg id="idle" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
+    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
+-80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
+400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M200 180 l0 -20 20 0 20 0
+0 -20 0 -20 80 0 80 0 0 20 0 20 20 0 20 0 0 20 0 20 -20 0 -20 0 0 -20 0 -20
+-80 0 -80 0 0 20 0 20 -20 0 -20 0 0 -20z"/>
+  </g></svg>`
+      ],
+      NEUTRAL: [
+        `<?xml version="1.0" encoding="UTF-8"?>
+<svg id="neutral" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
+    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
+-80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
+400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M240 140 l0 -20 80 0 80 0
+0 20 0 20 -80 0 -80 0 0 -20z"/>
+  </g>
+</svg>`
+      ],
+      JIBJAB: [
+        `<?xml version="1.0" encoding="UTF-8"?>
+<svg id="jibjab_1" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
+    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
+-80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
+400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M240 180 l0 -20 -20 0 -20
+0 0 -20 0 -20 20 0 20 0 0 -20 0 -20 80 0 80 0 0 20 0 20 20 0 20 0 0 20 0 20
+-20 0 -20 0 0 20 0 20 -80 0 -80 0 0 -20z m160 -40 l0 -20 -80 0 -80 0 0 20 0
+20 80 0 80 0 0 -20z"/>
+  </g>
+</svg>`,
+        `<?xml version="1.0" encoding="UTF-8"?>
+<svg id="jibjab_2" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
+    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
+-80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
+400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M280 180 l0 -20 -20 0 -20
+0 0 -20 0 -20 20 0 20 0 0 -20 0 -20 40 0 40 0 0 20 0 20 20 0 20 0 0 20 0 20
+-20 0 -20 0 0 20 0 20 -40 0 -40 0 0 -20z m80 -40 l0 -20 -40 0 -40 0 0 20 0
+20 40 0 40 0 0 -20z"/>
+  </g>
+</svg>`,
+        `<?xml version="1.0" encoding="UTF-8"?>
+<svg id="jibjab_3" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
+    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
+-80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
+400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M280 180 l0 -20 -20 0 -20
+0 0 -40 0 -40 20 0 20 0 0 -20 0 -20 40 0 40 0 0 20 0 20 20 0 20 0 0 40 0 40
+-20 0 -20 0 0 20 0 20 -40 0 -40 0 0 -20z m80 -60 l0 -40 -40 0 -40 0 0 40 0
+40 40 0 40 0 0 -40z"/>
+  </g>
+</svg>`,
+        `<?xml version="1.0" encoding="UTF-8"?>
+<svg id="jibjab_4" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
+    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
+-80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
+400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M280 180 l0 -20 -20 0 -20
+0 0 -20 0 -20 20 0 20 0 0 -20 0 -20 40 0 40 0 0 20 0 20 20 0 20 0 0 20 0 20
+-20 0 -20 0 0 20 0 20 -40 0 -40 0 0 -20z m80 -40 l0 -20 -40 0 -40 0 0 20 0
+20 40 0 40 0 0 -20z"/>
+  </g>
+</svg>`
+      ]
+    }
+  };
+
+  // src/applications/FrankApp.js
+  var FrankApp = class extends App {
     constructor() {
-      super();
-      this.attachShadow({ mode: "open" });
       this._lastHassVoice = null;
       this._lastHassMedia = null;
       this._lastHassBpm = null;
       this._lastSprite = null;
       this._currentSprite = null;
     }
-    // #endregion
-    // #region Lovelace methods
-    static getConfigElement() {
-      return document.createElement("frank-card-editor");
-    }
-    static getStubConfig() {
-      return { entity: "", media_entity: "", bpm_entity: "", respond_delay: 0, zoom: 85, transparent_bg: false };
-    }
-    static getCardSize() {
-      return 6;
-    }
-    // #endregion
-    // #region setConfig
-    setConfig(config) {
-      if (!config.entity && !this.config) {
-        this.config = { ...config, entity: "assist_satellite.example" };
-      } else {
-        this.config = config;
-      }
-      if (this.contentReady) {
-        this.setupDOM();
-        this.initFrank();
-        this.applyState(this._currentState, this._currentBpm);
-      }
-    }
-    // #endregion
-    // #region hass setter
-    set hass(hass) {
-      if (!hass) return;
-      if (!this.contentReady) {
-        this.setupDOM();
-        this.initFrank();
-        this.contentReady = true;
-      }
+    init() {
       const entity = this.config.entity;
       const mediaEntity = this.config.media_entity;
       const bpmEntity = this.config.bpm_entity;
@@ -1313,89 +1277,6 @@ height: 100vh;
         this._currentBpm = currentBpm;
         if (this.applyState) this.applyState(effectiveState, currentBpm);
       }
-    }
-    // #endregion
-    // #region setupDOM
-    setupDOM() {
-      this.shadowRoot.innerHTML = `
-    <style>
-        ${STYLES}
-    </style>
-
-    <div id="scene">
-        <div class="menubar">
-            <div class="menubar-left">
-                <div class="menubar-item" data-menu="apple">
-                    <!-- svg 12x12-->
-                </div>
-                <div class="menubar-item" data-menu="file">File</div>
-                <div class="menubar-item" data-menu="edit">Edit</div>
-                <div class="menubar-item" data-menu="view">View</div>
-                <div class="menubar-item" data-menu="help">Help</div>
-            </div>
-            <div class="menubar-right">
-                <div class="weather" id="weather"></div>
-                <div class="clock" id="clock"></div>
-                <div class="menubar-item app-menu" data-menu="application">
-                    <img src="/assets/images/MacSE.png" alt="" class="app-icon" id="current-app-icon" width="16" height="16">
-                    <span class="app-name" id="current-app-name">Finder</span>
-                </div>
-            </div>
-        </div>
-
-        <div id="desktop" class="desktop">            
-            <div class="window">
-                <div class="title-bar"> 
-                    <h1 class="title">Frank</h1>
-                </div>
-                <div class="separator"></div>
-                
-                <div class="window-pane">
-                    <div id="frank-container">
-                        <!-- Frank's image will be injected here -->
-                    </div>
-                    <div id="state-display">
-                        <!-- display current state here -->
-                    </div>
-                </div>
-            </div>
-        </div>  
-    </div>
-    
-
-    `;
-    }
-    // #endregion
-    updateSpriteScale() {
-      if (!this._currentSprite) {
-        console.log("[Frank] updateSpriteScale: no current sprite");
-        return;
-      }
-      const container = this.shadowRoot.querySelector("#desktop");
-      if (!container) {
-        console.log("[Frank] updateSpriteScale: no frank-card found");
-        return;
-      }
-      const spriteWidth = this._currentSprite.width?.baseVal?.value || this._currentSprite.getBoundingClientRect().width;
-      const spriteHeight = this._currentSprite.height?.baseVal?.value || this._currentSprite.getBoundingClientRect().height;
-      const screenFill = 0.8;
-      const containerWidth = container.clientWidth;
-      const containerHeight = container.clientHeight;
-      const targetWidth = containerWidth * screenFill;
-      const targetHeight = containerHeight * screenFill;
-      const scaleX = targetWidth / spriteWidth;
-      const scaleY = targetHeight / spriteHeight;
-      const scale = Math.max(
-        1,
-        Math.floor(Math.min(scaleX, scaleY))
-      );
-      const finalWidth = spriteWidth * scale;
-      const finalHeight = spriteHeight * scale;
-      const svg = this._currentSprite;
-      svg.setAttribute("width", finalWidth);
-      svg.setAttribute("height", finalHeight);
-    }
-    initFrank() {
       const root = this.shadowRoot;
       const config = this.config;
       const el = {
@@ -1477,8 +1358,8 @@ height: 100vh;
         this.stopDanceCycle();
         let dancePhase = 0;
         let currentRoutine = Math.floor(Math.random() * 8);
-        const currentBpm = Math.max(60, Math.min(200, bpm));
-        const beatMs = 60 / currentBpm * 1e3;
+        const currentBpm2 = Math.max(60, Math.min(200, bpm));
+        const beatMs = 60 / currentBpm2 * 1e3;
         const beatSec = beatMs / 1e3;
         let expectedNextTick = performance.now() + beatMs;
         const step = () => {
@@ -1570,7 +1451,36 @@ height: 100vh;
       };
       this.applyState("idle", 120);
     }
-    disconnectedCallback() {
+    updateSpriteScale() {
+      if (!this._currentSprite) {
+        console.log("[Frank] updateSpriteScale: no current sprite");
+        return;
+      }
+      const container = this.shadowRoot.querySelector("#desktop");
+      if (!container) {
+        console.log("[Frank] updateSpriteScale: no frank-card found");
+        return;
+      }
+      const spriteWidth = this._currentSprite.width?.baseVal?.value || this._currentSprite.getBoundingClientRect().width;
+      const spriteHeight = this._currentSprite.height?.baseVal?.value || this._currentSprite.getBoundingClientRect().height;
+      const screenFill = 0.8;
+      const containerWidth = container.clientWidth;
+      const containerHeight = container.clientHeight;
+      const targetWidth = containerWidth * screenFill;
+      const targetHeight = containerHeight * screenFill;
+      const scaleX = targetWidth / spriteWidth;
+      const scaleY = targetHeight / spriteHeight;
+      const scale = Math.max(
+        1,
+        Math.floor(Math.min(scaleX, scaleY))
+      );
+      const finalWidth = spriteWidth * scale;
+      const finalHeight = spriteHeight * scale;
+      const svg = this._currentSprite;
+      svg.setAttribute("width", finalWidth);
+      svg.setAttribute("height", finalHeight);
+    }
+    cleanup() {
       if (this.handleResize) {
         window.removeEventListener("resize", this.handleResize);
       }
@@ -1581,8 +1491,181 @@ height: 100vh;
     }
   };
 
-  // src/FrankCardEditor.js
-  var FrankCardEditor = class extends HTMLElement {
+  // src/FrankOSCard.js
+  var FrankOSCard = class extends HTMLElement {
+    // #region constructor
+    constructor() {
+      super();
+      this.attachShadow({ mode: "open" });
+      this.system = new System();
+      this.frankApp = new FrankApp();
+    }
+    // #endregion
+    // #region Lovelace methods
+    static getConfigElement() {
+      return document.createElement("frank-card-editor");
+    }
+    static getStubConfig() {
+      return { entity: "", media_entity: "", bpm_entity: "", respond_delay: 0, zoom: 85, transparent_bg: false };
+    }
+    static getCardSize() {
+      return 6;
+    }
+    // #endregion
+    // #region setConfig
+    setConfig(config) {
+      if (!config.entity && !this.config) {
+        this.config = { ...config, entity: "assist_satellite.example" };
+      } else {
+        this.config = config;
+      }
+      if (this.contentReady) {
+        this.init();
+      }
+    }
+    // #endregion
+    // #region hass setter
+    set hass(hass2) {
+      if (!hass2) return;
+      if (!this.contentReady) {
+        this.init();
+      }
+    }
+    // #endregion
+    // #region init
+    init() {
+      this.setupDOM();
+      this.system.init();
+      this.frankApp.init();
+    }
+    // #endregion
+    // #region setupDOM
+    setupDOM() {
+      this.shadowRoot.innerHTML = `
+    <style>
+        ${STYLES}
+    </style>
+
+    <div id="scene">
+        <div class="menubar">
+            <div class="menubar-left">
+                <div class="menubar-item" data-menu="apple">
+                    <!-- svg 12x12-->
+                </div>
+                <div class="menubar-item" data-menu="file">File</div>
+                <div class="menubar-item" data-menu="edit">Edit</div>
+                <div class="menubar-item" data-menu="view">View</div>
+                <div class="menubar-item" data-menu="help">Help</div>
+            </div>
+            <div class="menubar-right">
+                <div class="weather" id="weather"></div>
+                <div class="clock" id="clock"></div>
+                <div class="menubar-item app-menu" data-menu="application">
+                    <img src="/assets/images/MacSE.png" alt="" class="app-icon" id="current-app-icon" width="16" height="16">
+                    <span class="app-name" id="current-app-name">Finder</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="desktop" class="desktop">            
+            <div class="window">
+                <div class="title-bar"> 
+                    <h1 class="title">Frank</h1>
+                </div>
+                <div class="separator"></div>
+                
+                <div class="window-pane">
+                    <div id="frank-container">
+                        <!-- Frank's image will be injected here -->
+                    </div>
+                    <div id="state-display">
+                        <!-- display current state here -->
+                    </div>
+                </div>
+            </div>
+        </div>  
+    </div>
+    
+
+    `;
+    }
+    // #endregion
+    disconnectedCallback() {
+      this.frankApp.cleanup();
+    }
+  };
+  initializeSystem();
+  initializeEventListeners();
+  checkUrlParameters();
+  function initializeSystem() {
+    initializeClock();
+    initializeDesktop();
+    if (typeof MenuManager !== "undefined") {
+      MenuManager.init();
+    }
+  }
+  function checkUrlParameters() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const page = urlParams.get("page");
+    if (page) {
+      openPage(page);
+    }
+  }
+  function initializeClock() {
+    updateClock();
+    setInterval(updateClock, 1e3);
+  }
+  function updateClock() {
+    const now = /* @__PURE__ */ new Date();
+    const hours = now.getHours().toString().padStart(2, "0");
+    const minutes = now.getMinutes().toString().padStart(2, "0");
+    document.getElementById("clock").textContent = `${hours}:${minutes}`;
+  }
+  function initializeEventListeners() {
+    document.addEventListener("mousedown", (e) => {
+      if (!e.target.closest(".menubar-item") && !e.target.closest(".dropdown-menu")) {
+        if (typeof MenuManager !== "undefined") {
+          MenuManager.closeAllMenus();
+        }
+      }
+      if (e.target.id === "desktop") {
+        e.preventDefault();
+        e.stopPropagation();
+        document.querySelectorAll(".window").forEach((win) => {
+          win.classList.remove("active");
+          win.style.zIndex = "1";
+          win.querySelector(".window-titlebar").style.background = "var(--system7-titlebar-inactive)";
+        });
+        const appMenu = document.querySelector(".app-menu");
+        appMenu.querySelector(".app-icon").src = "/assets/images/MacSE.png";
+        appMenu.querySelector(".app-name").textContent = "Finder";
+        if (typeof MenuManager !== "undefined") {
+          MenuManager.forceFinderActive();
+        }
+      }
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        if (typeof MenuManager !== "undefined") {
+          MenuManager.closeAllMenus();
+        }
+      }
+    });
+    document.addEventListener("mousedown", (e) => {
+      const window2 = e.target.closest(".window");
+      if (window2) {
+        Array.from(document.querySelectorAll(".window")).forEach((w) => {
+          if (w !== window2) {
+            w.classList.remove("active");
+          }
+        });
+        window2.classList.add("active");
+      }
+    });
+  }
+
+  // src/FrankOSCardEditor.js
+  var FrankOSCardEditor = class extends HTMLElement {
     constructor() {
       super();
       this.attachShadow({ mode: "open" });
@@ -1591,12 +1674,12 @@ height: 100vh;
       this._config = config;
       this.render();
     }
-    set hass(hass) {
-      this._hass = hass;
+    set hass(hass2) {
+      this._hass = hass2;
       const pickers = this.shadowRoot.querySelectorAll("ha-entity-picker");
       if (pickers.length > 0) {
         pickers.forEach((picker) => {
-          picker.hass = hass;
+          picker.hass = hass2;
         });
       } else {
         this.render();
@@ -1753,836 +1836,9 @@ height: 100vh;
     }
   };
 
-  // src/windows.js
-  var Window2 = class _Window {
-    constructor(title, content, type = "document", x = 20, y = 50) {
-      this.element = document.createElement("div");
-      this.element.className = "window";
-      if (type === "folder") this.element.classList.add("folder-window");
-      this.element.style.left = x + "px";
-      this.element.style.top = y + "px";
-      if (title === "Macintosh HD") {
-        this.element.style.width = "500px";
-        this.element.style.height = "200px";
-      } else if (type === "document") {
-        this.element.style.width = "800px";
-        this.element.style.height = "600px";
-      } else {
-        this.element.style.width = "600px";
-        this.element.style.height = "400px";
-      }
-      this.element.innerHTML = `
-            <div class="window-titlebar">
-                <div class="window-close"></div>
-                <div class="window-title">${title}</div>
-            </div>
-            <div class="window-content">${content}</div>
-            <div class="window-resizer"></div>
-        `;
-      this.element.dataset.windowType = type;
-      this.makeDraggable();
-      this.makeCloseable();
-      this.makeActivatable();
-      this.makeResizable();
-      this.bringToFront();
-      document.getElementById("desktop").appendChild(this.element);
-      if (typeof MenuManager !== "undefined") {
-        MenuManager.updateApplicationMenu();
-      }
-    }
-    makeActivatable() {
-      this.element.addEventListener("mousedown", (e) => {
-        if (!e.target.classList.contains("window-close")) {
-          this.bringToFront();
-        }
-      });
-    }
-    makeDraggable() {
-      const titlebar = this.element.querySelector(".window-titlebar");
-      let isDragging = false;
-      let initialX, initialY;
-      titlebar.addEventListener("mousedown", (e) => {
-        isDragging = true;
-        initialX = e.clientX - this.element.offsetLeft;
-        initialY = e.clientY - this.element.offsetTop;
-        this.bringToFront();
-      });
-      document.addEventListener("mousemove", (e) => {
-        if (isDragging) {
-          e.preventDefault();
-          this.element.style.left = e.clientX - initialX + "px";
-          this.element.style.top = e.clientY - initialY + "px";
-        }
-      });
-      document.addEventListener("mouseup", () => {
-        if (isDragging) {
-          isDragging = false;
-          this.debouncedSaveState();
-        }
-      });
-    }
-    makeResizable() {
-      const resizer = this.element.querySelector(".window-resizer");
-      if (!resizer) return;
-      resizer.addEventListener("mousedown", (e) => {
-        e.preventDefault();
-        const startWidth = this.element.offsetWidth;
-        const startHeight = this.element.offsetHeight;
-        const startX = e.clientX;
-        const startY = e.clientY;
-        const onMouseMove = (moveEvent) => {
-          const newWidth = startWidth + (moveEvent.clientX - startX);
-          const newHeight = startHeight + (moveEvent.clientY - startY);
-          this.element.style.width = `${Math.max(200, newWidth)}px`;
-          this.element.style.height = `${Math.max(100, newHeight)}px`;
-        };
-        const onMouseUp = () => {
-          document.removeEventListener("mousemove", onMouseMove);
-          document.removeEventListener("mouseup", onMouseUp);
-          this.debouncedSaveState();
-        };
-        document.addEventListener("mousemove", onMouseMove);
-        document.addEventListener("mouseup", onMouseUp);
-      });
-    }
-    makeCloseable() {
-      const closeButton = this.element.querySelector(".window-close");
-      closeButton.addEventListener("click", () => {
-        if (typeof SoundManager !== "undefined") {
-          SoundManager.play("drop");
-        }
-        this.element.remove();
-        if (!document.querySelector(".window")) {
-          updateActiveApplication("Finder");
-        }
-        if (typeof MenuManager !== "undefined") {
-          MenuManager.updateApplicationMenu();
-        }
-        if (typeof StateManager !== "undefined") {
-          StateManager.saveState();
-        }
-      });
-    }
-    bringToFront() {
-      const windows = document.querySelectorAll(".window");
-      let maxZ = 0;
-      windows.forEach((win) => {
-        const z = parseInt(win.style.zIndex || 0);
-        maxZ = Math.max(maxZ, z);
-        win.classList.remove("active");
-        win.querySelector(".window-titlebar").style.background = "var(--system7-titlebar-inactive)";
-      });
-      this.element.style.zIndex = maxZ + 1;
-      this.element.classList.add("active");
-      this.element.querySelector(".window-titlebar").style.background = "var(--system7-titlebar-active)";
-      if (typeof MenuManager !== "undefined") {
-        MenuManager._finderActive = this.element.classList.contains("folder-window");
-        MenuManager.updateApplicationMenu();
-      }
-    }
-    debouncedSaveState() {
-      if (this.saveStateTimeout) {
-        clearTimeout(this.saveStateTimeout);
-      }
-      this.saveStateTimeout = setTimeout(() => {
-        if (typeof StateManager !== "undefined") {
-          StateManager.saveState();
-        }
-      }, 500);
-    }
-    static restore(windowState) {
-      return new _Window(
-        windowState.title,
-        windowState.content,
-        windowState.type,
-        parseInt(windowState.position.left),
-        parseInt(windowState.position.top)
-      );
-    }
-  };
-  function updateActiveApplication(windowTitle) {
-    const appName = document.getElementById("current-app-name");
-    if (appName) {
-      appName.textContent = windowTitle || "Finder";
-    }
-  }
-  function openPage(page) {
-    fetch(`/pages/${page}.html`).then((response) => response.text()).then((content) => {
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = content;
-      const mainContent = tempDiv.querySelector(".main-content");
-      const windowContent = mainContent ? mainContent.innerHTML : content;
-      const fileItem = findItem(fileSystem, page);
-      const windowTitle = fileItem ? fileItem.name : page;
-      new Window2(windowTitle, windowContent, "document");
-    }).catch((error) => console.error("Error loading page:", error));
-  }
-
-  // src/filesystem.js
-  var fileSystem = {
-    "Macintosh HD": {
-      type: "folder",
-      icon: "hd-icon.png",
-      contents: {}
-    }
-  };
-  function findItem(obj, searchName) {
-    if (obj.contents && obj.contents[searchName]) {
-      return obj.contents[searchName];
-    }
-    for (const value of Object.values(obj.contents || {})) {
-      if (value.contents) {
-        const found = findItem(value, searchName);
-        if (found) return found;
-      }
-    }
-    return null;
-  }
-  function createFolderContents(folder) {
-    let html = "";
-    Object.entries(folder.contents).forEach(([name, item]) => {
-      html += `
-            <div class="desktop-icon" data-type="${item.type}" data-name="${name}">
-                <img src="/assets/images/${item.icon}" alt="${name}">
-                <div class="desktop-icon-label">${name}</div>
-            </div>
-        `;
-    });
-    return html;
-  }
-  function handleDoubleClick(name) {
-    if (name === "Access main security grid") {
-      const videoContent = `
-            <video width="200" height="200" autoplay loop>
-                <source src="/assets/video/TheKing.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        `;
-      const jpWindow = new Window2(
-        "The King",
-        videoContent,
-        "document",
-        window.innerWidth / 2 - 115,
-        window.innerHeight / 2 - 125
-      );
-      jpWindow.element.style.width = "230px";
-      jpWindow.element.style.height = "250px";
-      jpWindow.element.style.resize = "none";
-      const resizeHandle = jpWindow.element.querySelector(".window-resizer");
-      if (resizeHandle) {
-        resizeHandle.remove();
-      }
-      return;
-    }
-    if (name === "Macintosh HD") {
-      const hdFolder = fileSystem["Macintosh HD"];
-      new Window2(name, createFolderContents(hdFolder), "folder");
-      return;
-    }
-    const item = findItem(fileSystem["Macintosh HD"], name);
-    if (item) {
-      if (item.type === "folder") {
-        new Window2(name, createFolderContents(item), "folder");
-      } else if (item.type === "document") {
-        openPage(item.file);
-      }
-    } else {
-      const fileMap = {
-        "Bus Tracker Display": "BusTideDisplay",
-        "Isolated Thermocouple": "IsoTherm",
-        "Citicar": "Citicar",
-        "CAN Car Conversion": "CANconversion"
-      };
-      if (fileMap[name]) {
-        openPage(fileMap[name]);
-      } else if (name === "JP") {
-        const videoContent = `
-                <video width="200" height="200" autoplay loop>
-                    <source src="/assets/videos/TheKing.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            `;
-        new Window2("TheKing", videoContent, "document", window.innerWidth / 2 - 100, window.innerHeight / 2 - 100);
-      }
-    }
-  }
-  function initializeDesktop() {
-    const desktop = document.getElementById("desktop");
-    const ICON_HEIGHT = 80;
-    let topPosition = 20;
-    const hdIcon = createDesktopIcon(
-      "Computer Chronicles",
-      "hd-icon.png",
-      false,
-      { right: "20px", top: `${topPosition}px` }
-    );
-    desktop.appendChild(hdIcon);
-    topPosition += ICON_HEIGHT;
-    const projects = [
-      { name: "Frank", icon: "frank_icon.png" }
-    ];
-    projects.forEach((project) => {
-      const icon = createDesktopIcon(
-        project.name,
-        project.icon,
-        true,
-        { right: "20px", top: `${topPosition}px` }
-      );
-      desktop.appendChild(icon);
-      topPosition += ICON_HEIGHT;
-    });
-  }
-  function createDesktopIcon(name, icon, isAlias = false, position = {}) {
-    const div = document.createElement("div");
-    div.className = "desktop-icon" + (isAlias ? " alias" : "");
-    Object.assign(div.style, position);
-    div.innerHTML = `
-        <img src="/assets/images/${icon}" alt="${name}">
-        <div class="desktop-icon-label">${name}</div>
-    `;
-    div.setAttribute("data-name", name);
-    div.setAttribute("data-type", isAlias ? "alias" : "folder");
-    return div;
-  }
-  document.addEventListener("dblclick", (e) => {
-    const icon = e.target.closest(".desktop-icon");
-    if (!icon) return;
-    const name = icon.dataset.name;
-    handleDoubleClick(name);
-  });
-
-  // src/menus.js
-  var MenuManager2 = {
-    init() {
-      this.initializeMenuListeners();
-      this.updateApplicationMenu();
-      this.addMenuStyles();
-    },
-    hideProgram(programName) {
-      if (!programName || programName === "Finder") return;
-      const windows = Array.from(document.querySelectorAll(".window"));
-      windows.forEach((window2) => {
-        const title = window2.querySelector(".window-title").textContent;
-        if (title === programName) {
-          window2.classList.add("hidden");
-          window2.style.display = "none";
-        }
-      });
-      this.updateApplicationMenu();
-    },
-    hideOthers() {
-      const activeWindow = this.getActiveWindow();
-      if (!activeWindow) return;
-      const currentProgram = activeWindow.querySelector(".window-title").textContent;
-      const windows = Array.from(document.querySelectorAll(".window"));
-      windows.forEach((window2) => {
-        const title = window2.querySelector(".window-title").textContent;
-        if (title !== currentProgram && !window2.classList.contains("folder-window")) {
-          window2.classList.add("hidden");
-          window2.style.display = "none";
-        }
-      });
-      this.updateApplicationMenu();
-    },
-    showAll() {
-      const windows = Array.from(document.querySelectorAll(".window.hidden"));
-      windows.forEach((window2) => {
-        window2.classList.remove("hidden");
-        window2.style.display = "block";
-      });
-      this.updateApplicationMenu();
-    },
-    initializeMenuListeners() {
-      document.querySelectorAll(".menubar-item").forEach((item) => {
-        item.addEventListener("mousedown", (e) => {
-          e.preventDefault();
-          const menuName = item.dataset.menu;
-          const menu = document.getElementById(menuName + "-menu");
-          if (menu) {
-            this.closeAllMenus();
-            const rect = item.getBoundingClientRect();
-            menu.style.display = "block";
-            if (menuName === "application") {
-              menu.style.right = "10px";
-              menu.style.left = "auto";
-              menu.style.top = `${rect.bottom}px`;
-            } else {
-              menu.style.left = `${rect.left}px`;
-              menu.style.right = "auto";
-              menu.style.top = `${rect.bottom}px`;
-            }
-            if (typeof SoundManager !== "undefined") {
-              SoundManager.play("click");
-            }
-            e.stopPropagation();
-          }
-        });
-      });
-      document.addEventListener("mousedown", (e) => {
-        if (!e.target.closest(".menubar-item") && !e.target.closest(".dropdown-menu")) {
-          this.closeAllMenus();
-        }
-      });
-      document.querySelectorAll(".dropdown-menu").forEach((menu) => {
-        menu.addEventListener("mousedown", (e) => {
-          const menuItem = e.target.closest(".dropdown-item");
-          if (menuItem) {
-            e.stopPropagation();
-            setTimeout(() => this.closeAllMenus(), 100);
-          }
-        });
-      });
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-          this.closeAllMenus();
-        }
-      });
-    },
-    closeAllMenus() {
-      document.querySelectorAll(".dropdown-menu").forEach((menu) => {
-        menu.style.display = "none";
-      });
-    },
-    getOpenPrograms() {
-      const windows = Array.from(document.querySelectorAll(".window"));
-      const programs = /* @__PURE__ */ new Map();
-      programs.set("Finder", {
-        name: "Finder",
-        icon: "MacSE.png",
-        windows: []
-      });
-      windows.forEach((window2) => {
-        if (window2.classList.contains("folder-window") || window2.querySelector(".window-title").textContent === "Get Info") {
-          return;
-        }
-        const title = window2.querySelector(".window-title").textContent;
-        const item = findItem(fileSystem, title);
-        const icon = item ? item.icon : "doc-icon.png";
-        if (!programs.has(title)) {
-          programs.set(title, {
-            name: title,
-            icon,
-            windows: [window2],
-            hidden: window2.classList.contains("hidden")
-          });
-        } else {
-          programs.get(title).windows.push(window2);
-          programs.get(title).hidden = programs.get(title).hidden && window2.classList.contains("hidden");
-        }
-      });
-      return Array.from(programs.values());
-    },
-    updateApplicationMenu() {
-      const appMenu = document.querySelector(".app-menu");
-      const appIcon = appMenu.querySelector(".app-icon");
-      const appName = appMenu.querySelector(".app-name");
-      const menu = document.getElementById("application-menu");
-      const programs = this.getOpenPrograms();
-      const activeProgram = this.getActiveProgram();
-      if (activeProgram === "Finder") {
-        appIcon.src = "/assets/images/MacSE.png";
-        appName.textContent = "Finder";
-      } else {
-        const item = findItem(fileSystem, activeProgram);
-        if (item && item.icon) {
-          appIcon.src = `/assets/images/${item.icon}`;
-        } else {
-          appIcon.src = "/assets/images/doc-icon.png";
-        }
-        appName.textContent = activeProgram;
-      }
-      let menuHTML = `
-            <div class="dropdown-item ${activeProgram === "Finder" ? "disabled" : ""}" 
-                onclick="MenuManager.hideProgram('${activeProgram}')">
-                Hide ${activeProgram}
-            </div>
-            <div class="dropdown-item" onclick="MenuManager.hideOthers()">
-                Hide Others
-            </div>
-            <div class="dropdown-item" onclick="MenuManager.showAll()">
-                Show All
-            </div>
-            <div class="dropdown-divider"></div>
-        `;
-      programs.forEach((program) => {
-        menuHTML += `
-                <div class="dropdown-item ${program.hidden ? "hidden-program" : ""}" 
-                    onclick="MenuManager.switchToProgram('${program.name}')">
-                    <span style="width: 16px; text-align: center;">
-                        ${program.name === activeProgram ? "\u2713" : ""}
-                    </span>
-                    <img src="/assets/images/${program.icon}" class="menu-icon" width="16" height="16">
-                    <span>${program.name}</span>
-                </div>
-            `;
-      });
-      menu.innerHTML = menuHTML;
-    },
-    addMenuStyles() {
-      const style = document.createElement("style");
-      style.textContent = `
-            .dropdown-item {
-                display: flex;
-                align-items: center;
-                gap: 5px;
-                padding: 2px 10px;
-                cursor: default;
-                white-space: nowrap;
-            }
-    
-            .dropdown-item.disabled {
-                color: #808080;
-                cursor: default;
-            }
-    
-            .dropdown-item.hidden-program {
-                color: #808080;
-            }
-    
-            .menu-icon {
-                width: 16px;
-                height: 16px;
-                object-fit: contain;
-            }
-    
-            .dropdown-divider {
-                height: 1px;
-                background: var(--system7-border);
-                margin: 2px 0;
-            }
-    
-            .window.hidden {
-                display: none;
-            }
-        `;
-      document.head.appendChild(style);
-    },
-    getActiveWindow() {
-      const highestZ = Math.max(
-        ...Array.from(document.querySelectorAll(".window")).map((el) => parseInt(el.style.zIndex) || 0)
-      );
-      return document.querySelector(`.window[style*="z-index: ${highestZ}"]`);
-    },
-    switchToProgram(programName) {
-      const windows = Array.from(document.querySelectorAll(".window"));
-      const highestZ = this.getHighestZIndex();
-      let newZ = highestZ + 1;
-      if (programName === "Finder") {
-        windows.forEach((window2) => {
-          window2.querySelector(".window-titlebar").style.background = "var(--system7-titlebar-inactive)";
-        });
-        const appMenu = document.querySelector(".app-menu");
-        appMenu.querySelector(".app-icon").src = "/assets/images/MacSE.png";
-        appMenu.querySelector(".app-name").textContent = "Finder";
-      } else {
-        windows.forEach((window2) => {
-          const title = window2.querySelector(".window-title").textContent;
-          if (title === programName) {
-            if (window2.classList.contains("hidden")) {
-              window2.classList.remove("hidden");
-              window2.style.visibility = "visible";
-            }
-            window2.style.zIndex = newZ++;
-            window2.querySelector(".window-titlebar").style.background = "var(--system7-titlebar-active)";
-          } else {
-            window2.querySelector(".window-titlebar").style.background = "var(--system7-titlebar-inactive)";
-          }
-        });
-      }
-      this.updateApplicationMenu();
-    },
-    getHighestZIndex() {
-      return Math.max(
-        ...Array.from(document.querySelectorAll(".window")).map((el) => parseInt(el.style.zIndex) || 0)
-      );
-    },
-    closeActiveWindow() {
-      const activeWindow = this.getActiveWindow();
-      if (activeWindow) {
-        if (typeof SoundManager !== "undefined") {
-          SoundManager.play("drop");
-        }
-        activeWindow.remove();
-        this.updateApplicationMenu();
-        if (typeof StateManager !== "undefined") {
-          StateManager.saveState();
-        }
-      }
-    },
-    getInfo() {
-      const activeWindow = this.getActiveWindow();
-      if (!activeWindow) return;
-      const title = activeWindow.querySelector(".window-title").textContent;
-      const type = activeWindow.classList.contains("folder-window") ? "Folder" : "Document";
-      const content = `
-            <div style="padding: 10px">
-                <p><strong>Name:</strong> ${title}</p>
-                <p><strong>Type:</strong> ${type}</p>
-                <p><strong>Created:</strong> ${(/* @__PURE__ */ new Date()).toLocaleDateString()}</p>
-            </div>
-        `;
-      new Window(
-        "Get Info",
-        content,
-        "info",
-        window.innerWidth / 2 - 150,
-        window.innerHeight / 2 - 100
-      );
-    },
-    getActiveProgram() {
-      if (this._finderActive) {
-        return "Finder";
-      }
-      const activeWindow = Array.from(document.querySelectorAll(".window")).find((win) => win.classList.contains("active"));
-      if (!activeWindow) {
-        return "Finder";
-      }
-      if (activeWindow.classList.contains("folder-window")) {
-        this._finderActive = true;
-        return "Finder";
-      }
-      return activeWindow.querySelector(".window-title").textContent;
-    }
-  };
-  
-  MenuManager2.init();
-
-  MenuManager2.hideProgram = function(programName) {
-    if (!programName || programName === "Finder") return;
-    const windows = Array.from(document.querySelectorAll(".window"));
-    windows.forEach((window2) => {
-      const title = window2.querySelector(".window-title").textContent;
-      if (title === programName && !window2.classList.contains("folder-window")) {
-        window2.style.visibility = "hidden";
-        window2.classList.add("hidden");
-      }
-    });
-    const programs = this.getOpenPrograms();
-    let foundCurrent = false;
-    let nextProgram = "Finder";
-    for (const program of programs) {
-      if (foundCurrent && !program.hidden) {
-        nextProgram = program.name;
-        break;
-      }
-      if (program.name === programName) {
-        foundCurrent = true;
-      }
-    }
-    if (nextProgram === "Finder" && foundCurrent) {
-      for (const program of programs) {
-        if (program.name === programName) {
-          break;
-        }
-        if (!program.hidden) {
-          nextProgram = program.name;
-        }
-      }
-    }
-    this.switchToProgram(nextProgram);
-    this.updateApplicationMenu();
-  };
-  MenuManager2.hideOthers = function() {
-    const activeWindow = this.getActiveWindow();
-    if (!activeWindow) return;
-    const currentProgram = activeWindow.querySelector(".window-title").textContent;
-    const windows = Array.from(document.querySelectorAll(".window"));
-    windows.forEach((window2) => {
-      const title = window2.querySelector(".window-title").textContent;
-      if (title !== currentProgram && !window2.classList.contains("folder-window")) {
-        window2.style.visibility = "hidden";
-        window2.classList.add("hidden");
-      }
-    });
-    this.updateApplicationMenu();
-  };
-  MenuManager2.showAll = function() {
-    const windows = Array.from(document.querySelectorAll(".window.hidden"));
-    windows.forEach((window2) => {
-      window2.classList.remove("hidden");
-      window2.style.visibility = "visible";
-    });
-    this.updateApplicationMenu();
-  };
-  MenuManager2.switchToProgram = function(programName) {
-    this._finderActive = programName === "Finder";
-    const windows = Array.from(document.querySelectorAll(".window"));
-    const highestZ = this.getHighestZIndex();
-    let newZ = highestZ + 1;
-    if (programName === "Finder") {
-      windows.forEach((window2) => {
-        window2.style.zIndex = Math.max(1, parseInt(window2.style.zIndex || 1) - newZ);
-        window2.querySelector(".window-titlebar").style.background = "var(--system7-titlebar-inactive)";
-      });
-      const appMenu = document.querySelector(".app-menu");
-      appMenu.querySelector(".app-icon").src = "/assets/images/MacSE.png";
-      appMenu.querySelector(".app-name").textContent = "Finder";
-    } else {
-      let foundMatchingWindow = false;
-      windows.forEach((window2) => {
-        const title = window2.querySelector(".window-title").textContent;
-        if (title === programName) {
-          foundMatchingWindow = true;
-          if (window2.classList.contains("hidden")) {
-            window2.classList.remove("hidden");
-            window2.style.visibility = "visible";
-          }
-          window2.style.zIndex = newZ++;
-          window2.querySelector(".window-titlebar").style.background = "var(--system7-titlebar-active)";
-        } else {
-          window2.querySelector(".window-titlebar").style.background = "var(--system7-titlebar-inactive)";
-          window2.style.zIndex = Math.max(1, parseInt(window2.style.zIndex || 1));
-        }
-      });
-      if (!foundMatchingWindow) {
-        this.switchToProgram("Finder");
-        return;
-      }
-    }
-    this.updateApplicationMenu();
-  };
-  MenuManager2.getActiveProgram = function() {
-    if (this._finderActive) {
-      return "Finder";
-    }
-    const activeWindow = Array.from(document.querySelectorAll(".window")).find((win) => win.classList.contains("active"));
-    if (!activeWindow) {
-      return "Finder";
-    }
-    if (activeWindow.classList.contains("folder-window")) {
-      this._finderActive = true;
-      return "Finder";
-    }
-    return activeWindow.querySelector(".window-title").textContent;
-  };
-  MenuManager2.areAllProgramsHidden = function() {
-    const windows = Array.from(document.querySelectorAll(".window"));
-    const programWindows = windows.filter(
-      (w) => !w.classList.contains("folder-window") && !w.classList.contains("utility-window")
-    );
-    return programWindows.length === 0 || programWindows.every((w) => w.classList.contains("hidden"));
-  };
-  MenuManager2.forceFinderActive = function() {
-    this._finderActive = true;
-    this.updateApplicationMenu();
-  };
-
-  // src/StateManager.js
-  var StateManager2 = {
-    STATE_KEY: "frankOS_State",
-    AUTO_SAVE_INTERVAL: 5e3,
-    saveState() {
-      try {
-        const windows = Array.from(document.querySelectorAll(".window")).map((window2) => ({
-          title: window2.querySelector(".window-title").textContent,
-          content: window2.querySelector(".window-content").innerHTML,
-          type: window2.dataset.windowType || (window2.classList.contains("folder-window") ? "folder" : "document"),
-          position: {
-            left: window2.style.left,
-            top: window2.style.top,
-            width: window2.style.width,
-            height: window2.style.height,
-            zIndex: window2.style.zIndex
-          }
-        }));
-        const desktop = {
-          background: document.getElementById("desktop").style.background,
-          backgroundSize: document.getElementById("desktop").style.backgroundSize
-        };
-        const menuState = {
-          activeApp: document.querySelector(".app-menu").textContent,
-          soundEnabled: localStorage.getItem("soundEnabled") !== "false"
-        };
-        const state = {
-          windows,
-          desktop,
-          menuState,
-          lastSaved: (/* @__PURE__ */ new Date()).toISOString()
-        };
-        localStorage.setItem(this.STATE_KEY, JSON.stringify(state));
-      } catch (error) {
-        console.error("Error saving state:", error);
-      }
-    },
-    loadState() {
-      try {
-        const savedState = localStorage.getItem(this.STATE_KEY);
-        if (!savedState) return;
-        const state = JSON.parse(savedState);
-        const desktop = document.getElementById("desktop");
-        if (desktop) {
-          desktop.style.background = state.desktop.background;
-          desktop.style.backgroundSize = state.desktop.backgroundSize;
-          const backgroundName = this.getBackgroundNameFromStyle(state.desktop.background);
-          if (backgroundName) {
-            this.updateBackgroundMenuCheckmark(backgroundName);
-          }
-        }
-        if (state.menuState) {
-          if (typeof SoundManager !== "undefined") {
-            SoundManager.setVolume(state.menuState.soundEnabled ? 0.5 : 0);
-          }
-          this.updateSoundMenuCheck(state.menuState.soundEnabled);
-        }
-        state.windows.forEach((windowState) => {
-          Window.restore(windowState);
-        });
-        if (typeof MenuManager !== "undefined") {
-          MenuManager.updateApplicationMenu();
-        }
-      } catch (error) {
-        console.error("Error loading state:", error);
-        localStorage.removeItem(this.STATE_KEY);
-      }
-    },
-    getBackgroundNameFromStyle(backgroundStyle) {
-      if (!backgroundStyle) return null;
-      const matches = backgroundStyle.match(/backgrounds\/(.*?)\./);
-      return matches ? matches[1] : null;
-    },
-    updateBackgroundMenuCheckmark(backgroundName) {
-      const viewMenuItems = document.querySelectorAll("#view-menu .dropdown-item");
-      viewMenuItems.forEach((item) => {
-        item.textContent = item.textContent.replace("\u2714 ", "");
-        if (item.textContent.includes(backgroundName)) {
-          item.textContent = "\u2714 " + item.textContent;
-        }
-      });
-    },
-    updateSoundMenuCheck(enabled) {
-      const menuItem = document.querySelector('#apple-menu .dropdown-item:contains("Sound")');
-      if (menuItem) {
-        menuItem.textContent = `Sound ${enabled ? "\u2713" : ""}`;
-      }
-    },
-    startAutoSave() {
-      if (this.autoSaveInterval) {
-        clearInterval(this.autoSaveInterval);
-      }
-      this.autoSaveInterval = setInterval(() => this.saveState(), this.AUTO_SAVE_INTERVAL);
-      window.addEventListener("beforeunload", () => this.saveState());
-      document.addEventListener("click", (e) => {
-        if (e.target.matches(".window-close")) {
-          setTimeout(() => this.saveState(), 100);
-        }
-      });
-      const viewMenuItems = document.querySelectorAll("#view-menu .dropdown-item");
-      viewMenuItems.forEach((item) => {
-        item.addEventListener("click", () => {
-          setTimeout(() => this.saveState(), 100);
-        });
-      });
-    },
-    clearState() {
-      localStorage.removeItem(this.STATE_KEY);
-    }
-  };
-  StateManager2.loadState();
-  StateManager2.startAutoSave();
-
   // src/main.js
-  customElements.define("frank-card-editor", FrankCardEditor);
-  customElements.define("frank-card", FrankCard);
+  customElements.define("frank-card-editor", FrankOSCardEditor);
+  customElements.define("frank-card", FrankOSCard);
   window.customCards = window.customCards || [];
   window.customCards.push({
     type: "frank-card",
@@ -2593,73 +1849,4 @@ height: 100vh;
   var styleElement = document.createElement("style");
   styleElement.textContent = STYLES;
   document.head.appendChild(styleElement);
-  initializeSystem();
-  initializeEventListeners();
-  checkUrlParameters();
-  function initializeSystem() {
-    initializeClock();
-    initializeDesktop();
-    if (typeof MenuManager2 !== "undefined") {
-      MenuManager2.init();
-    }
-  }
-  function checkUrlParameters() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const page = urlParams.get("page");
-    if (page) {
-      openPage(page);
-    }
-  }
-  function initializeClock() {
-    updateClock();
-    setInterval(updateClock, 1e3);
-  }
-  function updateClock() {
-    const now = /* @__PURE__ */ new Date();
-    const hours = now.getHours().toString().padStart(2, "0");
-    const minutes = now.getMinutes().toString().padStart(2, "0");
-    document.getElementById("clock").textContent = `${hours}:${minutes}`;
-  }
-  function initializeEventListeners() {
-    document.addEventListener("mousedown", (e) => {
-      if (!e.target.closest(".menubar-item") && !e.target.closest(".dropdown-menu")) {
-        if (typeof MenuManager2 !== "undefined") {
-          MenuManager2.closeAllMenus();
-        }
-      }
-      if (e.target.id === "desktop") {
-        e.preventDefault();
-        e.stopPropagation();
-        document.querySelectorAll(".window").forEach((win) => {
-          win.classList.remove("active");
-          win.style.zIndex = "1";
-          win.querySelector(".window-titlebar").style.background = "var(--system7-titlebar-inactive)";
-        });
-        const appMenu = document.querySelector(".app-menu");
-        appMenu.querySelector(".app-icon").src = "/assets/images/MacSE.png";
-        appMenu.querySelector(".app-name").textContent = "Finder";
-        if (typeof MenuManager2 !== "undefined") {
-          MenuManager2.forceFinderActive();
-        }
-      }
-    });
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        if (typeof MenuManager2 !== "undefined") {
-          MenuManager2.closeAllMenus();
-        }
-      }
-    });
-    document.addEventListener("mousedown", (e) => {
-      const window2 = e.target.closest(".window");
-      if (window2) {
-        Array.from(document.querySelectorAll(".window")).forEach((w) => {
-          if (w !== window2) {
-            w.classList.remove("active");
-          }
-        });
-        window2.classList.add("active");
-      }
-    });
-  }
 })();

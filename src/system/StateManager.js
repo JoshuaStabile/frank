@@ -1,7 +1,12 @@
-// State management for System 7 interface
-export const StateManager = {
-    STATE_KEY: 'frankOS_State',
-    AUTO_SAVE_INTERVAL: 5000,
+export class StateManager {
+    constructor() {
+        this.STATE_KEY = 'frankOS_State';
+        this.AUTO_SAVE_INTERVAL = 5000; // Auto-save every 5 seconds
+        
+        this.loadState();
+        this.startAutoSave();
+
+    }
 
     saveState() {
         try {
@@ -42,7 +47,7 @@ export const StateManager = {
         } catch (error) {
             console.error('Error saving state:', error);
         }
-    },
+    }
 
     loadState() {
         try {
@@ -87,13 +92,13 @@ export const StateManager = {
             // If there's an error loading state, remove the corrupted state
             localStorage.removeItem(this.STATE_KEY);
         }
-    },
+    }
 
     getBackgroundNameFromStyle(backgroundStyle) {
         if (!backgroundStyle) return null;
         const matches = backgroundStyle.match(/backgrounds\/(.*?)\./);
         return matches ? matches[1] : null;
-    },
+    }
 
     updateBackgroundMenuCheckmark(backgroundName) {
         const viewMenuItems = document.querySelectorAll('#view-menu .dropdown-item');
@@ -103,14 +108,14 @@ export const StateManager = {
                 item.textContent = '✔ ' + item.textContent;
             }
         });
-    },
+    }
 
     updateSoundMenuCheck(enabled) {
         const menuItem = document.querySelector('#apple-menu .dropdown-item:contains("Sound")');
         if (menuItem) {
             menuItem.textContent = `Sound ${enabled ? '✓' : ''}`;
         }
-    },
+    }
 
     startAutoSave() {
         // Clear any existing auto-save interval
@@ -138,12 +143,9 @@ export const StateManager = {
                 setTimeout(() => this.saveState(), 100);
             });
         });
-    },
+    }
 
     clearState() {
         localStorage.removeItem(this.STATE_KEY);
     }
 };
-
-StateManager.loadState();
-StateManager.startAutoSave();
