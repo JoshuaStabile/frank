@@ -42,6 +42,15 @@ svg { image-rendering: pixelated; image-rendering: crisp-edges; }
 }
 */
 
+#frank-container { 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  background: #ffffff; 
+  width: 100%; 
+  height: 100%; 
+}
+
 /**
  * system.css
  * Copyright (c) 2022 Sakun Acharige <sakun.co>
