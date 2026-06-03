@@ -86,12 +86,44 @@ export class FrankCard extends HTMLElement {
 
   setupDOM() {
     this.shadowRoot.innerHTML = `
-      <style>
+    <style>
         :host { display: flex; align-items: center; justify-content: center; background: #ffffff; border-radius: var(--ha-card-border-radius, 12px); overflow: hidden; width: 100%; height: 100%; }
         ${STYLES}
-      </style>
+    </style>
 
-      <div id="scene">
+    <div id="scene">
+        <div class="menubar">
+            <div class="menubar-left">
+                <div class="menubar-item" data-menu="apple">
+                    <!-- svg 12x12-->
+                </div>
+                <div class="menubar-item" data-menu="file">File</div>
+                <div class="menubar-item" data-menu="edit">Edit</div>
+                <div class="menubar-item" data-menu="view">View</div>
+                <div class="menubar-item" data-menu="help">Help</div>
+            </div>
+            <div class="menubar-right">
+                <div class="weather" id="weather"></div>
+                <div class="clock" id="clock"></div>
+                <div class="menubar-item app-menu" data-menu="application">
+                    <img src="/assets/images/MacSE.png" alt="" class="app-icon" id="current-app-icon" width="16" height="16">
+                    <span class="app-name" id="current-app-name">Finder</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="desktop" class="desktop">
+            <div class="desktop-icon" style="right: 20px; top: 20px;" data-name="Computer Chronicles" data-type="folder">
+                <img src="" alt="Computer Chronicles">
+                <div class="desktop-icon-label">Computer Chronicles</div>
+            </div>
+        <div class="desktop-icon alias" style="right: 20px; top: 100px;" data-name="Frank.app" data-type="alias">
+            <img src="" alt="Frank.app">
+            <div class="desktop-icon-label">Frank.app</div>
+        </div>
+            <!-- Frank's window will be injected here -->
+        </div>  
+
         <div class="window">
             <div class="title-bar" style="width:95%; height:95%; display:flex; align-items:center; justify-content:center;"> 
                 <h1 class="title">Frank</h1>
@@ -107,8 +139,7 @@ export class FrankCard extends HTMLElement {
                 </div>
             </div>
         </div>
-
-      </div>
+    </div>
     `;
   }
 

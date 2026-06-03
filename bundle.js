@@ -78,6 +78,7 @@
 #scene { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;}
 svg { image-rendering: pixelated; image-rendering: crisp-edges; }
 
+/*
 @font-face {
     font-family: 'ChicagoKare-Regular';
     src: url('/local/fonts/ChicagoKare-Regular.ttf') format('truetype');
@@ -86,6 +87,7 @@ svg { image-rendering: pixelated; image-rendering: crisp-edges; }
 #body {
   font-family: 'ChicagoKare-Regular' !important;
 }
+*/
 
 /* voice-satellite overrides */
 
@@ -93,6 +95,7 @@ svg { image-rendering: pixelated; image-rendering: crisp-edges; }
   display: none !important;
 }
 
+/*
 #voice-satellite-ui .vs-rainbow-bar {
   display: none;
 }
@@ -113,6 +116,7 @@ svg { image-rendering: pixelated; image-rendering: crisp-edges; }
   margin-left: auto !important;
   margin-right: auto !important;
 }
+*/
 
 /**
  * system.css
@@ -178,7 +182,7 @@ svg { image-rendering: pixelated; image-rendering: crisp-edges; }
 
 /* Fonts below are recreations by Giles Booth */
 @font-face {
-  font-family: ChicagoKare-Regular;
+  font-family: Chicago_12;
   src: url("fonts/ChiKareGo2.woff") format("woff");
   src: url("fonts/ChiKareGo2.woff2") format("woff2");
 }
@@ -354,7 +358,7 @@ h2 {
   text-align: center;
   background: var(--primary);
   cursor: default;
-  font-family: ChicagoKare-Regular;
+  font-family: Chicago_12;
 }
 
 .inactive-title-bar {
@@ -375,7 +379,7 @@ h2 {
   line-height: 1.1;
   text-align: center;
   cursor: default;
-  font-family: ChicagoKare-Regular;
+  font-family: Chicago_12;
   color: var(--tertiary);
 }
 
@@ -507,7 +511,7 @@ h2 {
   text-align: center;
   text-decoration: none;
   font-size: 18px;
-  font-family: ChicagoKare-Regular;
+  font-family: Chicago_12;
   cursor: pointer;
 }
 
@@ -515,7 +519,7 @@ h2 {
   background: var(--secondary);
   border-radius:6px;
   color: var(--primary);
-  font-family: ChicagoKare-Regular;
+  font-family: Chicago_12;
 }
 
 .btn:disabled {
@@ -530,7 +534,7 @@ h2 {
   text-align: center;
   text-decoration: none;
   font-size: 18px;
-  font-family: ChicagoKare-Regular;
+  font-family: Chicago_12;
 }
 
 .btn-default {
@@ -545,7 +549,7 @@ h2 {
 /* text input */
 input  {
   border: 1.5px solid var(--secondary);
-  font-family: ChicagoKare-Regular;
+  font-family: Chicago_12;
   font-size: 18px;
   padding-left: 5px;
 }
@@ -683,7 +687,7 @@ input[type="checkbox"][disabled]:checked + label::after {
 .field-row {
   display: flex;
   align-items: center;
-  font-family: ChicagoKare-Regular;
+  font-family: Chicago_12;
   font-size: 1em;
 }
 
@@ -716,7 +720,7 @@ select {
   border: 1.5px solid;
   height: auto;
   width: 10rem;
-  font-family: ChicagoKare-Regular;
+  font-family: Chicago_12;
   font-size: 18px;
   background-image: svg-load("./icon/select-button.svg");
   background-position: top 2px right 2px;
@@ -737,7 +741,7 @@ ul[role] {
   padding: 0;
   list-style: none;
   cursor: pointer;
-  font-family: ChicagoKare-Regular;
+  font-family: Chicago_12;
   font-size: 1em;
 }
 ul[role="menu-bar"] {
@@ -812,7 +816,6 @@ ul [role="menu-item"].divider::after {
 .menu-items > li {
   margin-bottom: 1rem;
 }
-
 `;
 
   // src/FrankCard.js
@@ -889,12 +892,44 @@ ul [role="menu-item"].divider::after {
     // #region setupDOM
     setupDOM() {
       this.shadowRoot.innerHTML = `
-      <style>
+    <style>
         :host { display: flex; align-items: center; justify-content: center; background: #ffffff; border-radius: var(--ha-card-border-radius, 12px); overflow: hidden; width: 100%; height: 100%; }
         ${STYLES}
-      </style>
+    </style>
 
-      <div id="scene">
+    <div id="scene">
+        <div class="menubar">
+            <div class="menubar-left">
+                <div class="menubar-item" data-menu="apple">
+                    <!-- svg 12x12-->
+                </div>
+                <div class="menubar-item" data-menu="file">File</div>
+                <div class="menubar-item" data-menu="edit">Edit</div>
+                <div class="menubar-item" data-menu="view">View</div>
+                <div class="menubar-item" data-menu="help">Help</div>
+            </div>
+            <div class="menubar-right">
+                <div class="weather" id="weather"></div>
+                <div class="clock" id="clock"></div>
+                <div class="menubar-item app-menu" data-menu="application">
+                    <img src="/assets/images/MacSE.png" alt="" class="app-icon" id="current-app-icon" width="16" height="16">
+                    <span class="app-name" id="current-app-name">Finder</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="desktop" class="desktop">
+            <div class="desktop-icon" style="right: 20px; top: 20px;" data-name="Computer Chronicles" data-type="folder">
+                <img src="" alt="Computer Chronicles">
+                <div class="desktop-icon-label">Computer Chronicles</div>
+            </div>
+        <div class="desktop-icon alias" style="right: 20px; top: 100px;" data-name="Frank.app" data-type="alias">
+            <img src="" alt="Frank.app">
+            <div class="desktop-icon-label">Frank.app</div>
+        </div>
+            <!-- Frank's window will be injected here -->
+        </div>  
+
         <div class="window">
             <div class="title-bar" style="width:95%; height:95%; display:flex; align-items:center; justify-content:center;"> 
                 <h1 class="title">Frank</h1>
@@ -910,8 +945,7 @@ ul [role="menu-item"].divider::after {
                 </div>
             </div>
         </div>
-
-      </div>
+    </div>
     `;
     }
     // #endregion

@@ -2,6 +2,7 @@ export const STYLES = `
 #scene { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;}
 svg { image-rendering: pixelated; image-rendering: crisp-edges; }
 
+/*
 @font-face {
     font-family: 'ChicagoKare-Regular';
     src: url('/local/fonts/ChicagoKare-Regular.ttf') format('truetype');
@@ -10,6 +11,7 @@ svg { image-rendering: pixelated; image-rendering: crisp-edges; }
 #body {
   font-family: 'ChicagoKare-Regular' !important;
 }
+*/
 
 /* voice-satellite overrides */
 
@@ -17,6 +19,7 @@ svg { image-rendering: pixelated; image-rendering: crisp-edges; }
   display: none !important;
 }
 
+/*
 #voice-satellite-ui .vs-rainbow-bar {
   display: none;
 }
@@ -37,6 +40,7 @@ svg { image-rendering: pixelated; image-rendering: crisp-edges; }
   margin-left: auto !important;
   margin-right: auto !important;
 }
+*/
 
 /**
  * system.css
@@ -102,7 +106,7 @@ svg { image-rendering: pixelated; image-rendering: crisp-edges; }
 
 /* Fonts below are recreations by Giles Booth */
 @font-face {
-  font-family: ChicagoKare-Regular;
+  font-family: Chicago_12;
   src: url("fonts/ChiKareGo2.woff") format("woff");
   src: url("fonts/ChiKareGo2.woff2") format("woff2");
 }
@@ -278,7 +282,7 @@ h2 {
   text-align: center;
   background: var(--primary);
   cursor: default;
-  font-family: ChicagoKare-Regular;
+  font-family: Chicago_12;
 }
 
 .inactive-title-bar {
@@ -299,7 +303,7 @@ h2 {
   line-height: 1.1;
   text-align: center;
   cursor: default;
-  font-family: ChicagoKare-Regular;
+  font-family: Chicago_12;
   color: var(--tertiary);
 }
 
@@ -431,7 +435,7 @@ h2 {
   text-align: center;
   text-decoration: none;
   font-size: 18px;
-  font-family: ChicagoKare-Regular;
+  font-family: Chicago_12;
   cursor: pointer;
 }
 
@@ -439,7 +443,7 @@ h2 {
   background: var(--secondary);
   border-radius:6px;
   color: var(--primary);
-  font-family: ChicagoKare-Regular;
+  font-family: Chicago_12;
 }
 
 .btn:disabled {
@@ -454,7 +458,7 @@ h2 {
   text-align: center;
   text-decoration: none;
   font-size: 18px;
-  font-family: ChicagoKare-Regular;
+  font-family: Chicago_12;
 }
 
 .btn-default {
@@ -469,7 +473,7 @@ h2 {
 /* text input */
 input  {
   border: 1.5px solid var(--secondary);
-  font-family: ChicagoKare-Regular;
+  font-family: Chicago_12;
   font-size: 18px;
   padding-left: 5px;
 }
@@ -607,7 +611,7 @@ input[type="checkbox"][disabled]:checked + label::after {
 .field-row {
   display: flex;
   align-items: center;
-  font-family: ChicagoKare-Regular;
+  font-family: Chicago_12;
   font-size: 1em;
 }
 
@@ -640,7 +644,7 @@ select {
   border: 1.5px solid;
   height: auto;
   width: 10rem;
-  font-family: ChicagoKare-Regular;
+  font-family: Chicago_12;
   font-size: 18px;
   background-image: svg-load("./icon/select-button.svg");
   background-position: top 2px right 2px;
@@ -661,7 +665,7 @@ ul[role] {
   padding: 0;
   list-style: none;
   cursor: pointer;
-  font-family: ChicagoKare-Regular;
+  font-family: Chicago_12;
   font-size: 1em;
 }
 ul[role="menu-bar"] {
@@ -737,4 +741,418 @@ ul [role="menu-item"].divider::after {
   margin-bottom: 1rem;
 }
 
+:root {
+    --system7-bg: #ffffff;
+    --system7-text: #000000;
+    --system7-window-bg: #ffffff;
+    --system7-border: #000000;
+    --system7-menubar-bg: #ffffff;
+    --system7-titlebar-active: linear-gradient(
+        to bottom,
+        #d8d8d8 0%,
+        #d8d8d8 4px,
+        #000000 4px,
+        #000000 5px,
+        #d8d8d8 5px,
+        #d8d8d8 7px,
+        #000000 7px,
+        #000000 8px,
+        #d8d8d8 8px,
+        #d8d8d8 10px,
+        #000000 10px,
+        #000000 11px,
+        #d8d8d8 11px,
+        #d8d8d8 13px,
+        #000000 13px,
+        #000000 14px,
+        #d8d8d8 14px,
+        #d8d8d8 16px,
+        #000000 16px,
+        #000000 17px,
+        #d8d8d8 17px,
+        #d8d8d8 19px,
+        #000000 19px,
+        #000000 20px,
+        #d8d8d8 20px,
+        #d8d8d8 22px
+    );
+    --system7-titlebar-inactive: #FFFFFF;
+}
+
+html, body {
+margin: 0;
+padding: 0;
+overflow: hidden;
+height: 100vh;
+}
+
+.system7 {
+    background-color: var(--system7-bg);
+    font-family: 'ChicagoFLF', -apple-system, sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.menubar {
+    position: relative;  /* Important for dropdown positioning */
+    height: 22px;
+    background: var(--system7-menubar-bg);
+    border-bottom: 1px solid var(--system7-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+    z-index: 1000;
+}
+
+.menu-icon {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+}
+
+.menubar-left {
+    display: flex;
+    align-items: center;
+}
+
+.menubar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 10px;
+}
+
+.desktop {
+    flex: 1;
+    position: relative;
+    overflow: hidden !important;
+    overflow-y: hidden;
+    background: url('/assets/images/backgrounds/MacOS.jpg') no-repeat center center fixed;
+    background-size: cover;
+    padding-right: 20px;
+}
+
+.menubar-item {
+    padding: 2px 8px;
+    cursor: default;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.menubar-item:hover {
+    background: #000;
+    color: #fff;
+}
+
+.menubar-item img {
+    width: 16px; /* Increased width */
+    height: 16px; /* Increased height */
+}
+
+.window {
+    position: absolute;
+    background: var(--system7-window-bg);
+    border: 1px solid var(--system7-border);
+    min-width: 200px;
+    min-height: 100px;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+    resize: both;
+    overflow: hidden;
+}
+
+.window-titlebar {
+    background: var(--system7-titlebar-active);
+    color: white;
+    padding: 2px 5px;
+    cursor: move;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 20px;
+    position: relative;
+}
+
+.window-title {
+    text-align: center;
+    flex-grow: 1;
+    background: #ffffff;
+    color: black;
+    padding: 0 5px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+
+.window-titlebar.inactive .window-title {
+    background: #ffffff;
+}
+
+.window-close {
+    width: 12px;
+    height: 12px;
+    border: 1px solid #000;
+    background: #fff;
+    cursor: pointer;
+    position: relative;
+}
+
+.window-close:active {
+    background: #000;
+}
+
+
+.window-content {
+    padding: 10px;
+    overflow: auto;
+    height: calc(100% - 42px);
+    position: relative;
+    font-family: Arial, Geneva, sans-serif; /* Ensure text uses Arial */
+}
+
+.window-content img {
+    max-width: 100%; /* Ensure images resize to the current width of the page */
+    height: auto;
+}
+
+.window-content::-webkit-scrollbar-button:vertical:increment {
+    display: none;
+}
+
+/* Resize handle 
+.window {
+    resize: both;
+}
+*/
+
+.window-resizer {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 14px;
+    height: 14px;
+    background: #dedede;
+    border: 1px solid #000;
+    box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #bcbcbc;
+    cursor: se-resize;
+    z-index: 1;
+}
+
+
+.window.resizable::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 14px;
+    height: 14px;
+    background: #c0c0c0;
+    border: 1px solid #000;
+    cursor: se-resize;
+}
+
+/* Icons in folder windows keep their grid layout */
+.folder-window .desktop-icon {
+    position: relative;
+    width: 100px; /* Adjusted width */
+    height: 100px; /* Adjusted height */
+}
+
+/* Desktop-specific icon styling */
+.desktop > .desktop-icon {
+    position: absolute;
+    right: 20px;
+    width: 100px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+
+.folder-window .window-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 100px); /* Adjusted column width */
+    grid-auto-rows: 100px; /* Adjusted row height */
+    gap: 10px;
+    padding: 10px;
+    justify-content: start;
+}
+
+.desktop-icon {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.desktop-icon:hover .desktop-icon-label {
+    background: #000;
+    color: #fff;
+}
+
+.desktop-icon img {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 5px;
+    pointer-events: none;
+}
+
+.desktop-icon-label {
+    text-align: center;
+    color: var(--system7-text);
+    font-size: 12px;
+    word-wrap: break-word;
+    padding: 1px 4px;
+    pointer-events: none;
+    font-family: Arial, Geneva, sans-serif;
+    background: #fff;
+    border: 1px solid #000;
+    max-width: 90px;
+    overflow-wrap: break-word;
+}
+
+.desktop-icon.alias .desktop-icon-label {
+    font-style: italic;
+}
+
+.dropdown-menu {
+    position: fixed;  /* Changed from absolute */
+    display: none;
+    background: var(--system7-menubar-bg);
+    border: 1px solid var(--system7-border);
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+    padding: 2px 0;
+    min-width: 160px;
+    z-index: 1001;  /* Above menubar */
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 20px;
+    cursor: default;
+    white-space: nowrap;
+}
+
+.dropdown-item:hover {
+    background: #000;
+    color: #fff;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: var(--system7-border);
+    margin: 2px 0;
+}
+
+
+@media (max-width: 768px) {
+    .window {
+        width: calc(100% - 20px) !important; /* Add 10px padding on each side */
+        height: calc(100% - 30px) !important; /* Adjusted for top bar + padding */
+        top: 25px !important; /* Slightly more space from the top */
+        left: 10px !important; /* Add left padding */
+        resize: none;
+        max-width: 500px; /* Prevent windows from getting too wide */
+        margin: 0 auto; /* Center the window if screen is wider than max-width */
+    }
+
+    /* Make sure content fits nicely */
+    .window-content {
+        padding: 8px;
+        font-size: 14px; /* Slightly smaller text on mobile */
+    }
+
+    /* Ensure the About window specifically isn't too large */
+    .window[style*="width: 400px"][style*="height: 225px"] {
+        width: calc(100% - 40px) !important;
+        max-width: 400px !important;
+        max-height: 225px !important;
+        left: 50% !important;
+        transform: translateX(-50%);
+    }
+
+    /* Ensure the Access main security grid window specifically isn't too large */
+    .window[style*="width: 230px"][style*="height: 250px"] {
+        width: 230px !important;
+        height: 250px !important;
+        left: 50% !important;
+        transform: translateX(-50%);
+        resize: none !important;
+    }
+}
+
+.clock {
+    padding: 0 10px;
+    color: var(--system7-text);
+    font-family: 'ChicagoFLF', -apple-system, sans-serif;
+}
+
+/* Application menu specific styles */
+.app-menu {
+    padding: 2px 8px;
+    min-width: 24px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.app-menu .app-icon {
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+}
+
+.app-menu .app-name {
+    display: block;
+}
+
+#application-menu {
+    min-width: 200px;
+}
+
+.window-content p.callout-sidebar {
+    float: right;
+    clear: both;
+    width: 280px;
+    margin: 2.5em 0 1.5em 1.5em;
+    background: white;
+    border: 1px solid black;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+    font-family: 'ChicagoFLF', sans-serif;
+    font-size: 13px;
+    font-style: normal;
+    position: relative;
+    padding-top: 22px; /* matches titlebar height */
+    padding: 22px 10px 10px 10px;
+}
+
+/* Flat System 7-style titlebar */
+.window-content p.callout-sidebar::before {
+    content: "Sidenote";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    background: #d8d8d8;
+    border-bottom: 1px solid black;
+    font-weight: bold;
+    font-size: 16px;
+    font-family: 'ChicagoFLF', sans-serif;
+    color: black;
+}
 `;
