@@ -28,12 +28,9 @@ const styleElement = document.createElement('style');
 styleElement.textContent = STYLES;
 document.head.appendChild(styleElement);
 
-// Initialize the System7 interface
-document.addEventListener('DOMContentLoaded', () => {
-    initializeSystem();
-    initializeEventListeners();
-    checkUrlParameters();
-});
+initializeSystem();
+initializeEventListeners();
+checkUrlParameters();
 
 function initializeSystem() {
     initializeClock();

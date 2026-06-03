@@ -1343,16 +1343,7 @@ height: 100vh;
             </div>
         </div>
 
-        <div id="desktop" class="desktop">
-            <div class="desktop-icon" style="right: 20px; top: 20px;" data-name="Computer Chronicles" data-type="folder">
-                <img src="" alt="Computer Chronicles">
-                <div class="desktop-icon-label">Computer Chronicles</div>
-            </div>
-            <div class="desktop-icon alias" style="right: 20px; top: 100px;" data-name="Frank.app" data-type="alias">
-                <img src="" alt="Frank.app">
-                <div class="desktop-icon-label">Frank.app</div>
-            </div>
-            
+        <div id="desktop" class="desktop">            
             <div class="window">
                 <div class="title-bar"> 
                     <h1 class="title">Frank</h1>
@@ -2353,9 +2344,9 @@ height: 100vh;
       return activeWindow.querySelector(".window-title").textContent;
     }
   };
-  document.addEventListener("DOMContentLoaded", () => {
-    MenuManager2.init();
-  });
+  
+  MenuManager2.init();
+
   MenuManager2.hideProgram = function(programName) {
     if (!programName || programName === "Finder") return;
     const windows = Array.from(document.querySelectorAll(".window"));
@@ -2586,10 +2577,8 @@ height: 100vh;
       localStorage.removeItem(this.STATE_KEY);
     }
   };
-  document.addEventListener("DOMContentLoaded", () => {
-    StateManager2.loadState();
-    StateManager2.startAutoSave();
-  });
+  StateManager2.loadState();
+  StateManager2.startAutoSave();
 
   // src/main.js
   customElements.define("frank-card-editor", FrankCardEditor);
@@ -2604,11 +2593,9 @@ height: 100vh;
   var styleElement = document.createElement("style");
   styleElement.textContent = STYLES;
   document.head.appendChild(styleElement);
-  document.addEventListener("DOMContentLoaded", () => {
-    initializeSystem();
-    initializeEventListeners();
-    checkUrlParameters();
-  });
+  initializeSystem();
+  initializeEventListeners();
+  checkUrlParameters();
   function initializeSystem() {
     initializeClock();
     initializeDesktop();

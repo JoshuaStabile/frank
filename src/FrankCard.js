@@ -111,16 +111,7 @@ export class FrankCard extends HTMLElement {
             </div>
         </div>
 
-        <div id="desktop" class="desktop">
-            <div class="desktop-icon" style="right: 20px; top: 20px;" data-name="Computer Chronicles" data-type="folder">
-                <img src="" alt="Computer Chronicles">
-                <div class="desktop-icon-label">Computer Chronicles</div>
-            </div>
-            <div class="desktop-icon alias" style="right: 20px; top: 100px;" data-name="Frank.app" data-type="alias">
-                <img src="" alt="Frank.app">
-                <div class="desktop-icon-label">Frank.app</div>
-            </div>
-            
+        <div id="desktop" class="desktop">            
             <div class="window">
                 <div class="title-bar"> 
                     <h1 class="title">Frank</h1>

@@ -145,8 +145,5 @@ export const StateManager = {
     }
 };
 
-// Initialize state management when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    StateManager.loadState();
-    StateManager.startAutoSave();
-});
+StateManager.loadState();
+StateManager.startAutoSave();
