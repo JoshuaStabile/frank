@@ -51,6 +51,7 @@ svg { image-rendering: pixelated; image-rendering: crisp-edges; }
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  color: var(--system7-text);
 }}
 
 /**
