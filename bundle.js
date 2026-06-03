@@ -118,14 +118,16 @@ svg { image-rendering: pixelated; image-rendering: crisp-edges; }
 }
 */
 
-#frank-container { 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  background: #ffffff; 
-  width: 100%; 
-  height: 100%; 
-}
+#scene {
+  background-color: var(--system7-bg);
+  font-family: 'ChicagoFLF', -apple-system, sans-serif;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}}
 
 /**
  * system.css
@@ -1320,52 +1322,55 @@ height: 100vh;
         ${STYLES}
     </style>
 
-    <div class="menubar">
-        <div class="menubar-left">
-            <div class="menubar-item" data-menu="apple">
-                <!-- svg 12x12-->
+    <div id="scene">
+        <div class="menubar">
+            <div class="menubar-left">
+                <div class="menubar-item" data-menu="apple">
+                    <!-- svg 12x12-->
+                </div>
+                <div class="menubar-item" data-menu="file">File</div>
+                <div class="menubar-item" data-menu="edit">Edit</div>
+                <div class="menubar-item" data-menu="view">View</div>
+                <div class="menubar-item" data-menu="help">Help</div>
             </div>
-            <div class="menubar-item" data-menu="file">File</div>
-            <div class="menubar-item" data-menu="edit">Edit</div>
-            <div class="menubar-item" data-menu="view">View</div>
-            <div class="menubar-item" data-menu="help">Help</div>
-        </div>
-        <div class="menubar-right">
-            <div class="weather" id="weather"></div>
-            <div class="clock" id="clock"></div>
-            <div class="menubar-item app-menu" data-menu="application">
-                <img src="/assets/images/MacSE.png" alt="" class="app-icon" id="current-app-icon" width="16" height="16">
-                <span class="app-name" id="current-app-name">Finder</span>
+            <div class="menubar-right">
+                <div class="weather" id="weather"></div>
+                <div class="clock" id="clock"></div>
+                <div class="menubar-item app-menu" data-menu="application">
+                    <img src="/assets/images/MacSE.png" alt="" class="app-icon" id="current-app-icon" width="16" height="16">
+                    <span class="app-name" id="current-app-name">Finder</span>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div id="desktop" class="desktop">
-        <div class="desktop-icon" style="right: 20px; top: 20px;" data-name="Computer Chronicles" data-type="folder">
-            <img src="" alt="Computer Chronicles">
-            <div class="desktop-icon-label">Computer Chronicles</div>
-        </div>
-        <div class="desktop-icon alias" style="right: 20px; top: 100px;" data-name="Frank.app" data-type="alias">
-            <img src="" alt="Frank.app">
-            <div class="desktop-icon-label">Frank.app</div>
-        </div>
-        
-        <div class="window">
-            <div class="title-bar"> 
-                <h1 class="title">Frank</h1>
+        <div id="desktop" class="desktop">
+            <div class="desktop-icon" style="right: 20px; top: 20px;" data-name="Computer Chronicles" data-type="folder">
+                <img src="" alt="Computer Chronicles">
+                <div class="desktop-icon-label">Computer Chronicles</div>
             </div>
-            <div class="separator"></div>
+            <div class="desktop-icon alias" style="right: 20px; top: 100px;" data-name="Frank.app" data-type="alias">
+                <img src="" alt="Frank.app">
+                <div class="desktop-icon-label">Frank.app</div>
+            </div>
             
-            <div class="window-pane">
-                <div id="frank-container">
-                    <!-- Frank's image will be injected here -->
+            <div class="window">
+                <div class="title-bar"> 
+                    <h1 class="title">Frank</h1>
                 </div>
-                <div id="state-display">
-                    <!-- display current state here -->
+                <div class="separator"></div>
+                
+                <div class="window-pane">
+                    <div id="frank-container">
+                        <!-- Frank's image will be injected here -->
+                    </div>
+                    <div id="state-display">
+                        <!-- display current state here -->
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>  
+        </div>  
+    </div>
+    
 
     `;
     }

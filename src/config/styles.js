@@ -42,14 +42,16 @@ svg { image-rendering: pixelated; image-rendering: crisp-edges; }
 }
 */
 
-#frank-container { 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  background: #ffffff; 
-  width: 100%; 
-  height: 100%; 
-}
+#scene {
+  background-color: var(--system7-bg);
+  font-family: 'ChicagoFLF', -apple-system, sans-serif;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}}
 
 /**
  * system.css
