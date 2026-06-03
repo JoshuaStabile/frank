@@ -1,5 +1,4 @@
 export const STYLES = `
-#scene { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;}
 svg { image-rendering: pixelated; image-rendering: crisp-edges; }
 
 /*
