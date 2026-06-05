@@ -46,12 +46,11 @@ export class FrankApp extends App {
             if (this.applyState) this.applyState(effectiveState, currentBpm);
         }
 
-        const root = this.shadowRoot;
         const config = this.config;
 
         const el = {
-            desktop: root.getElementById('desktop'),
-            frankContainer: root.getElementById('frank-container'),
+            desktop: document.getElementById('desktop'),
+            frankContainer: document.getElementById('frank-container'),
         };
 
         this.handleResize = () => {
@@ -252,7 +251,7 @@ export class FrankApp extends App {
         }
 
         // container is the frank card elm
-        const container = this.shadowRoot.querySelector('#desktop');
+        const container = document.querySelector('#desktop');
 
         if (!container) {
             console.log('[Frank] updateSpriteScale: no frank-card found');
