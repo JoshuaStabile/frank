@@ -4,12 +4,16 @@ import { AppManager } from './AppManager.js';
 
 export class System {
     constructor() {
-        this.menubar = new MenuBar();
-        this.stateManager = new StateManager(this.menubar);
-        this.appManager = new AppManager();
+        this.menubar = null;
+        this.stateManager = null;
+        this.appManager = null;
     }
 
     init() {
+        this.menubar = new MenuBar();
+        this.stateManager = new StateManager(this.menubar);
+        this.appManager = new AppManager();
+        
         this.initializeEventListeners();
     }
 

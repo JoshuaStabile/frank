@@ -281,11 +281,14 @@
   // src/system/System.js
   var System = class {
     constructor() {
+      this.menubar = null;
+      this.stateManager = null;
+      this.appManager = null;
+    }
+    init() {
       this.menubar = new MenuBar();
       this.stateManager = new StateManager(this.menubar);
       this.appManager = new AppManager();
-    }
-    init() {
       this.initializeEventListeners();
     }
     // Initialize desktop and event listeners
