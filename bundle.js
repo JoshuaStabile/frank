@@ -1170,340 +1170,6 @@ height: 100vh;
 }
 `;
 
-  // src/system/applications/App.js
-  var App = class {
-    constructor(id, window2) {
-      this.id = id;
-      this.window = window2;
-    }
-    renderContent() {
-      return "";
-    }
-  };
-
-  // src/config/sprites.js
-  var SPRITES = {
-    FRANK: {
-      IDLE: [
-        `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="idle" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
-    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
--80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
-400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M200 180 l0 -20 20 0 20 0
-0 -20 0 -20 80 0 80 0 0 20 0 20 20 0 20 0 0 20 0 20 -20 0 -20 0 0 -20 0 -20
--80 0 -80 0 0 20 0 20 -20 0 -20 0 0 -20z"/>
-  </g></svg>`
-      ],
-      NEUTRAL: [
-        `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="neutral" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
-    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
--80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
-400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M240 140 l0 -20 80 0 80 0
-0 20 0 20 -80 0 -80 0 0 -20z"/>
-  </g>
-</svg>`
-      ],
-      JIBJAB: [
-        `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="jibjab_1" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
-    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
--80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
-400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M240 180 l0 -20 -20 0 -20
-0 0 -20 0 -20 20 0 20 0 0 -20 0 -20 80 0 80 0 0 20 0 20 20 0 20 0 0 20 0 20
--20 0 -20 0 0 20 0 20 -80 0 -80 0 0 -20z m160 -40 l0 -20 -80 0 -80 0 0 20 0
-20 80 0 80 0 0 -20z"/>
-  </g>
-</svg>`,
-        `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="jibjab_2" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
-    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
--80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
-400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M280 180 l0 -20 -20 0 -20
-0 0 -20 0 -20 20 0 20 0 0 -20 0 -20 40 0 40 0 0 20 0 20 20 0 20 0 0 20 0 20
--20 0 -20 0 0 20 0 20 -40 0 -40 0 0 -20z m80 -40 l0 -20 -40 0 -40 0 0 20 0
-20 40 0 40 0 0 -20z"/>
-  </g>
-</svg>`,
-        `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="jibjab_3" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
-    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
--80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
-400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M280 180 l0 -20 -20 0 -20
-0 0 -40 0 -40 20 0 20 0 0 -20 0 -20 40 0 40 0 0 20 0 20 20 0 20 0 0 40 0 40
--20 0 -20 0 0 20 0 20 -40 0 -40 0 0 -20z m80 -60 l0 -40 -40 0 -40 0 0 40 0
-40 40 0 40 0 0 -40z"/>
-  </g>
-</svg>`,
-        `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="jibjab_4" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
-    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
--80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
-400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M280 180 l0 -20 -20 0 -20
-0 0 -20 0 -20 20 0 20 0 0 -20 0 -20 40 0 40 0 0 20 0 20 20 0 20 0 0 20 0 20
--20 0 -20 0 0 20 0 20 -40 0 -40 0 0 -20z m80 -40 l0 -20 -40 0 -40 0 0 20 0
-20 40 0 40 0 0 -20z"/>
-  </g>
-</svg>`
-      ]
-    }
-  };
-
-  // src/system/applications/FrankApp.js
-  var FrankApp2 = class extends App {
-    constructor() {
-      const id = "frank_app";
-      super(id, new Window(id, "Frank", `<div id="frank-container"></div>`));
-      this._lastHassVoice = null;
-      this._lastHassMedia = null;
-      this._lastHassBpm = null;
-      this._lastSprite = null;
-      this._currentSprite = null;
-    }
-    init() {
-      const entity = this.config.entity;
-      const mediaEntity = this.config.media_entity;
-      const bpmEntity = this.config.bpm_entity;
-      const weatherEntity = this.config.weather_entity;
-      const newVoiceState = entity && hass.states[entity] ? hass.states[entity].state.toLowerCase() : "idle";
-      const newMediaState = mediaEntity && hass.states[mediaEntity] ? hass.states[mediaEntity].state.toLowerCase() : "paused";
-      const newBpmState = bpmEntity && hass.states[bpmEntity] ? hass.states[bpmEntity].state : "120";
-      if (this._lastHassVoice === newVoiceState && this._lastHassMedia === newMediaState && this._lastHassBpm === newBpmState) return;
-      this._lastHassVoice = newVoiceState;
-      this._lastHassMedia = newMediaState;
-      this._lastHassBpm = newBpmState;
-      const currentBpm = isNaN(parseFloat(newBpmState)) ? 120 : parseFloat(newBpmState);
-      let effectiveState = "idle";
-      if (["listen", "wake", "process", "think", "respond", "speak", "tts"].some((s) => newVoiceState.includes(s))) {
-        effectiveState = newVoiceState;
-      } else if (newMediaState === "playing") {
-        effectiveState = "dancing";
-      }
-      if (this._currentState !== effectiveState || effectiveState === "dancing" && this._currentBpm !== currentBpm) {
-        this._currentState = effectiveState;
-        this._currentBpm = currentBpm;
-        if (this.applyState) this.applyState(effectiveState, currentBpm);
-      }
-      const root = this.shadowRoot;
-      const config = this.config;
-      const el = {
-        desktop: root.getElementById("desktop"),
-        frankContainer: root.getElementById("frank-container")
-      };
-      this.handleResize = () => {
-        this.updateSpriteScale();
-      };
-      window.addEventListener("resize", this.handleResize);
-      let stateNow = "idle";
-      let currentBaseLid = 0;
-      const setSprite = (spr) => {
-        el.frankContainer.innerHTML = spr;
-        const svg = el.frankContainer.querySelector("svg");
-        if (!svg) {
-          console.log("[Frank] setSprite: no SVG found after injection");
-          return;
-        }
-        this._lastSprite = this._currentSprite;
-        this._currentSprite = svg;
-        this.updateSpriteScale();
-      };
-      function idle_smile() {
-        setSprite(SPRITES.FRANK.IDLE[0]);
-      }
-      this.idleTimer = null;
-      this.danceTimer = null;
-      this.danceLedTimer = null;
-      this.talkAnim = null;
-      this.respondTimer = null;
-      const IDLE_BEHAVIORS = [
-        { name: "smile", exec() {
-          idle_smile();
-        }, min: 5e3, max: 1e4, weight: 1 }
-      ];
-      const runNextIdleBehavior = () => {
-        if (stateNow !== "idle") return;
-        let r = Math.random() * IDLE_BEHAVIORS.reduce((s, b) => s + b.weight, 0), chosen = IDLE_BEHAVIORS[0];
-        for (const b of IDLE_BEHAVIORS) {
-          r -= b.weight;
-          if (r <= 0) {
-            chosen = b;
-            break;
-          }
-        }
-        chosen.exec();
-        this.idleTimer = setTimeout(runNextIdleBehavior, chosen.min + Math.random() * (chosen.max - chosen.min));
-      };
-      this.startIdleCycle = () => {
-        this.stopIdleCycle();
-        this.idleTimer = setTimeout(runNextIdleBehavior, 2e3 + Math.random() * 3e3);
-      };
-      this.stopIdleCycle = () => {
-        if (this.idleTimer) {
-          clearTimeout(this.idleTimer);
-          this.idleTimer = null;
-        }
-        if (this.pupilTimer) {
-          clearTimeout(this.pupilTimer);
-          this.pupilTimer = null;
-        }
-        if (this.glitchRaf) {
-          cancelAnimationFrame(this.glitchRaf);
-          this.glitchRaf = null;
-        }
-      };
-      this.stopDanceCycle = () => {
-        if (this.danceTimer) {
-          clearTimeout(this.danceTimer);
-          this.danceTimer = null;
-        }
-        if (this.danceLedTimer) {
-          clearTimeout(this.danceLedTimer);
-          this.danceLedTimer = null;
-        }
-      };
-      this.startDanceCycle = (bpm) => {
-        this.stopDanceCycle();
-        let dancePhase = 0;
-        let currentRoutine = Math.floor(Math.random() * 8);
-        const currentBpm2 = Math.max(60, Math.min(200, bpm));
-        const beatMs = 60 / currentBpm2 * 1e3;
-        const beatSec = beatMs / 1e3;
-        let expectedNextTick = performance.now() + beatMs;
-        const step = () => {
-          if (stateNow !== "dancing") return;
-          if (dancePhase > 0 && dancePhase % 16 === 0) {
-            let nextRoutine;
-            do {
-              nextRoutine = Math.floor(Math.random() * 8);
-            } while (nextRoutine === currentRoutine);
-            currentRoutine = nextRoutine;
-          }
-          const choreoBlock = currentRoutine;
-          const isDownBeat = dancePhase % 2 === 0;
-          const isQuadBeat = dancePhase % 4 === 0;
-          const phaseMod4 = dancePhase % 4;
-          const phaseMod8 = dancePhase % 8;
-          let dirX = isDownBeat ? 1 : -1;
-          if (this.danceLedTimer) clearTimeout(this.danceLedTimer);
-          this.danceLedTimer = setTimeout(() => {
-            if (stateNow === "dancing") {
-            }
-          }, beatMs * 0.3);
-          let moveDur = beatSec;
-          let bodyDur = beatSec * 2;
-          const executeTick = () => {
-            dancePhase++;
-            const now = performance.now();
-            expectedNextTick += beatMs;
-            const delay = Math.max(0, expectedNextTick - now);
-            this.danceTimer = setTimeout(step, delay);
-          };
-          executeTick();
-        };
-        step();
-      };
-      const startRespondAnim = () => {
-        if (this.talkAnim) clearTimeout(this.talkAnim);
-        const step = () => {
-          if (this._currentSprite?.id !== "neutral") {
-            setSprite(SPRITES.FRANK.NEUTRAL[0]);
-          } else {
-            const nextSprite = SPRITES.FRANK.JIBJAB[Math.floor(Math.random() * SPRITES.FRANK.JIBJAB.length)];
-            setSprite(nextSprite);
-          }
-          const talkSpeed = config.talk_speed !== void 0 ? parseFloat(config.talk_speed) : 200;
-          this.talkAnim = setTimeout(step, talkSpeed);
-        };
-        step();
-      };
-      const animateFrank = (state, bpm) => {
-        stateNow = state;
-        if (this.talkAnim) clearTimeout(this.talkAnim);
-        this.stopIdleCycle();
-        this.stopDanceCycle();
-        if (state === "idle") {
-          this.startIdleCycle();
-        } else if (state === "dancing") {
-        } else if (state === "listening") {
-          this.displayState(state);
-        } else if (state === "processing") {
-          this.displayState(state);
-        } else if (state === "responding") {
-          startRespondAnim();
-        }
-      };
-      this.applyState = (raw, bpm) => {
-        const s = (raw || "idle").toLowerCase();
-        let mapped = "idle";
-        if (s.includes("respond") || s.includes("speak") || s.includes("tts")) mapped = "responding";
-        else if (s.includes("listen") || s.includes("wake")) mapped = "listening";
-        else if (s.includes("process") || s.includes("think")) mapped = "processing";
-        else if (s === "dancing") mapped = "dancing";
-        if (this.respondTimer) {
-          clearTimeout(this.respondTimer);
-          this.respondTimer = null;
-        }
-        const delayMs = config.respond_delay !== void 0 ? parseFloat(config.respond_delay) : 0;
-        if (mapped === "responding" && this._lastEffectiveState !== "responding" && delayMs > 0) {
-          this.respondTimer = setTimeout(() => {
-            this._lastEffectiveState = "responding";
-            animateFrank("responding", bpm);
-          }, delayMs);
-          return;
-        }
-        this._lastEffectiveState = mapped;
-        animateFrank(mapped, bpm);
-      };
-      this.displayState = (state) => {
-      };
-      this.applyState("idle", 120);
-    }
-    updateSpriteScale() {
-      if (!this._currentSprite) {
-        console.log("[Frank] updateSpriteScale: no current sprite");
-        return;
-      }
-      const container = this.shadowRoot.querySelector("#desktop");
-      if (!container) {
-        console.log("[Frank] updateSpriteScale: no frank-card found");
-        return;
-      }
-      const spriteWidth = this._currentSprite.width?.baseVal?.value || this._currentSprite.getBoundingClientRect().width;
-      const spriteHeight = this._currentSprite.height?.baseVal?.value || this._currentSprite.getBoundingClientRect().height;
-      const screenFill = 0.8;
-      const containerWidth = container.clientWidth;
-      const containerHeight = container.clientHeight;
-      const targetWidth = containerWidth * screenFill;
-      const targetHeight = containerHeight * screenFill;
-      const scaleX = targetWidth / spriteWidth;
-      const scaleY = targetHeight / spriteHeight;
-      const scale = Math.max(
-        1,
-        Math.floor(Math.min(scaleX, scaleY))
-      );
-      const finalWidth = spriteWidth * scale;
-      const finalHeight = spriteHeight * scale;
-      const svg = this._currentSprite;
-      svg.setAttribute("width", finalWidth);
-      svg.setAttribute("height", finalHeight);
-    }
-    cleanup() {
-      if (this.handleResize) {
-        window.removeEventListener("resize", this.handleResize);
-      }
-      if (this.stopIdleCycle) this.stopIdleCycle();
-      if (this.stopDanceCycle) this.stopDanceCycle();
-      if (this.respondTimer) clearTimeout(this.respondTimer);
-      if (this.talkAnim) clearTimeout(this.talkAnim);
-    }
-  };
-
   // src/system/MenuBar.js
   var MenuBar = class {
     constructor() {
@@ -1559,7 +1225,7 @@ height: 100vh;
   };
 
   // src/system/Window.js
-  var Window2 = class {
+  var Window = class {
     constructor(title, content, type = "document", x = 20, y = 50) {
       this.element = document.createElement("div");
       this.element.className = "window";
@@ -1727,7 +1393,7 @@ height: 100vh;
           }
         }
         state.windows.forEach((windowState) => {
-          new Window2(
+          new Window(
             windowState.title,
             windowState.content,
             windowState.type,
@@ -1865,8 +1531,6 @@ height: 100vh;
     constructor() {
       super();
       this.attachShadow({ mode: "open" });
-      this.system = new System();
-      this.frankApp = new FrankApp2();
     }
     // #endregion
     // #region Lovelace methods
@@ -1893,8 +1557,8 @@ height: 100vh;
     }
     // #endregion
     // #region hass setter
-    set hass(hass2) {
-      if (!hass2) return;
+    set hass(hass) {
+      if (!hass) return;
       if (!this.contentReady) {
         this.init();
       }
@@ -1903,8 +1567,8 @@ height: 100vh;
     // #region init
     init() {
       this.setupDOM();
+      this.system = new System();
       this.system.init();
-      this.frankApp.init();
     }
     // #endregion
     // #region setupDOM
@@ -1928,7 +1592,6 @@ height: 100vh;
     // #endregion
     disconnectedCallback() {
       this.system.cleanup();
-      this.frankApp.cleanup();
     }
   };
 
@@ -1942,12 +1605,12 @@ height: 100vh;
       this._config = config;
       this.render();
     }
-    set hass(hass2) {
-      this._hass = hass2;
+    set hass(hass) {
+      this._hass = hass;
       const pickers = this.shadowRoot.querySelectorAll("ha-entity-picker");
       if (pickers.length > 0) {
         pickers.forEach((picker) => {
-          picker.hass = hass2;
+          picker.hass = hass;
         });
       } else {
         this.render();

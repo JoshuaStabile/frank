@@ -12,6 +12,8 @@ export class FrankApp extends App {
         this._lastHassBpm = null;
         this._lastSprite = null;
         this._currentSprite = null;
+
+        init();
     }
 
     init() {

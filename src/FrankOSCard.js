@@ -1,5 +1,4 @@
 import { STYLES } from './config/styles.js';
-import { FrankApp } from './system/applications/FrankApp.js';
 import { System } from './system/System.js';
 
 // #region FrankOSCard Class Definition
@@ -10,9 +9,6 @@ export class FrankOSCard extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
-
-    this.system = new System();
-    this.frankApp = new FrankApp();
   }
   // #endregion
 
@@ -52,8 +48,8 @@ export class FrankOSCard extends HTMLElement {
 
   init() {
     this.setupDOM();
+    this.system = new System();
     this.system.init();
-    this.frankApp.init();
   }
 
   // #endregion
@@ -82,7 +78,6 @@ export class FrankOSCard extends HTMLElement {
 
   disconnectedCallback() {
     this.system.cleanup();
-    this.frankApp.cleanup();
   }
 }
 
