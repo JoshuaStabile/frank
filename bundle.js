@@ -1,4 +1,602 @@
 (() => {
+  // src/system/MenuBar.js
+  var MenuBar = class {
+    constructor() {
+      this.element = document.getElementById("menubar");
+      this.renderContent();
+      this.resetApplicationName();
+      this.initializeClock();
+    }
+    renderContent() {
+      this.element.innerHTML = `
+            <div class="menubar-left">
+                <div class="menubar-item" data-menu="apple">
+                    <!-- svg 12x12-->
+                </div>
+                <div class="menubar-item" data-menu="file">File</div>
+                <div class="menubar-item" data-menu="edit">Edit</div>
+                <div class="menubar-item" data-menu="view">View</div>
+                <div class="menubar-item" data-menu="special">Special</div>
+            </div>
+            <div class="menubar-right">
+                <div class="weather" id="weather"></div>
+                <div class="clock" id="clock"></div>
+                <div class="menubar-item app-menu" data-menu="application">
+                    <span class="app-name" id="current-app-name"></span>
+                </div>
+            </div>
+        `;
+    }
+    setApplicationName(name) {
+      const appNameElement = document.getElementById("current-app-name");
+      if (appNameElement) {
+        appNameElement.textContent = name;
+      }
+    }
+    resetApplicationName() {
+      this.setApplicationName("Desktop");
+    }
+    closeAllMenus() {
+      document.querySelectorAll(".dropdown-menu").forEach((menu) => {
+        menu.style.display = "none";
+      });
+    }
+    // Clock functionality
+    initializeClock() {
+      this.updateClock();
+      setInterval(() => this.updateClock(), 1e3);
+    }
+    updateClock() {
+      const now = /* @__PURE__ */ new Date();
+      const hours = now.getHours().toString().padStart(2, "0");
+      const minutes = now.getMinutes().toString().padStart(2, "0");
+      document.getElementById("clock").textContent = `${hours}:${minutes}`;
+    }
+  };
+
+  // src/system/Window.js
+  var Window = class {
+    constructor(title, content, type = "document", x = 20, y = 50) {
+      this.element = document.createElement("div");
+      this.element.className = "window";
+      if (type === "folder") this.element.classList.add("folder-window");
+      this.element.style.left = x + "px";
+      this.element.style.top = y + "px";
+      if (title === "Macintosh HD") {
+        this.element.style.width = "500px";
+        this.element.style.height = "200px";
+      } else if (type === "document") {
+        this.element.style.width = "800px";
+        this.element.style.height = "600px";
+      } else {
+        this.element.style.width = "600px";
+        this.element.style.height = "400px";
+      }
+      this.element.innerHTML = `
+            <div class="window-titlebar" data-app-id="${title}}">
+                <div class="window-close"></div>
+                <div class="window-title">${title}</div>
+            </div>
+            <div class="window-content">${content}</div>
+            <div class="window-resizer"></div>
+        `;
+      this.element.dataset.windowType = type;
+      this.makeDraggable();
+      this.makeCloseable();
+      this.makeActivatable();
+      this.makeResizable();
+      this.bringToFront();
+    }
+    makeActivatable() {
+      this.element.addEventListener("mousedown", (e) => {
+        if (!e.target.classList.contains("window-close")) {
+          this.bringToFront();
+        }
+      });
+    }
+    makeDraggable() {
+      const titlebar = this.element.querySelector(".window-titlebar");
+      let isDragging = false;
+      let initialX, initialY;
+      titlebar.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        initialX = e.clientX - this.element.offsetLeft;
+        initialY = e.clientY - this.element.offsetTop;
+        this.bringToFront();
+      });
+      document.addEventListener("mousemove", (e) => {
+        if (isDragging) {
+          e.preventDefault();
+          this.element.style.left = e.clientX - initialX + "px";
+          this.element.style.top = e.clientY - initialY + "px";
+        }
+      });
+      document.addEventListener("mouseup", () => {
+        if (isDragging) {
+          isDragging = false;
+        }
+      });
+    }
+    makeResizable() {
+      const resizer = this.element.querySelector(".window-resizer");
+      if (!resizer) return;
+      resizer.addEventListener("mousedown", (e) => {
+        e.preventDefault();
+        const startWidth = this.element.offsetWidth;
+        const startHeight = this.element.offsetHeight;
+        const startX = e.clientX;
+        const startY = e.clientY;
+        const onMouseMove = (moveEvent) => {
+          const newWidth = startWidth + (moveEvent.clientX - startX);
+          const newHeight = startHeight + (moveEvent.clientY - startY);
+          this.element.style.width = `${Math.max(200, newWidth)}px`;
+          this.element.style.height = `${Math.max(100, newHeight)}px`;
+        };
+        const onMouseUp = () => {
+          document.removeEventListener("mousemove", onMouseMove);
+          document.removeEventListener("mouseup", onMouseUp);
+        };
+        document.addEventListener("mousemove", onMouseMove);
+        document.addEventListener("mouseup", onMouseUp);
+      });
+    }
+    makeCloseable() {
+      const closeButton = this.element.querySelector(".window-close");
+      closeButton.addEventListener("click", () => {
+        this.close();
+      });
+    }
+    bringToFront() {
+      const windows = document.querySelectorAll(".window");
+      let maxZ = 0;
+      windows.forEach((win) => {
+        const z = parseInt(win.style.zIndex || 0);
+        maxZ = Math.max(maxZ, z);
+        win.classList.remove("active");
+        win.querySelector(".window-titlebar").style.background = "var(--system7-titlebar-inactive)";
+      });
+      this.element.style.zIndex = maxZ + 1;
+      this.element.classList.add("active");
+      this.element.querySelector(".window-titlebar").style.background = "var(--system7-titlebar-active)";
+    }
+    close() {
+      this.element.remove();
+    }
+    open() {
+      document.getElementById("desktop").appendChild(this.element);
+      this.bringToFront();
+    }
+  };
+
+  // src/system/StateManager.js
+  var StateManager = class {
+    constructor(menubar) {
+      this.menubar = menubar;
+      this.STATE_KEY = "frankOS_State";
+      this.AUTO_SAVE_INTERVAL = 5e3;
+      this.loadState();
+      this.startAutoSave();
+    }
+    saveState() {
+      try {
+        const windows = Array.from(document.querySelectorAll(".window")).map((window2) => ({
+          title: window2.querySelector(".window-title").textContent,
+          content: window2.querySelector(".window-content").innerHTML,
+          type: window2.dataset.windowType || (window2.classList.contains("folder-window") ? "folder" : "document"),
+          position: {
+            left: window2.style.left,
+            top: window2.style.top,
+            width: window2.style.width,
+            height: window2.style.height,
+            zIndex: window2.style.zIndex
+          }
+        }));
+        const desktop = {};
+        const menuState = {
+          activeApp: document.querySelector(".app-menu").textContent
+        };
+        const state = {
+          windows,
+          desktop,
+          menuState,
+          lastSaved: (/* @__PURE__ */ new Date()).toISOString()
+        };
+        localStorage.setItem(this.STATE_KEY, JSON.stringify(state));
+      } catch (error) {
+        console.error("Error saving state:", error);
+      }
+    }
+    loadState() {
+      try {
+        const savedState = localStorage.getItem(this.STATE_KEY);
+        if (!savedState) return;
+        const state = JSON.parse(savedState);
+        const desktop = document.getElementById("desktop");
+        if (desktop) {
+        }
+        if (state.menuState) {
+          const activeApp = state.menuState.activeApp;
+          if (activeApp && activeApp !== "Desktop") {
+            this.menubar.setApplicationName(activeApp);
+          } else {
+            this.menubar.resetApplicationName();
+          }
+        }
+        state.windows.forEach((windowState) => {
+          new Window(
+            windowState.title,
+            windowState.content,
+            windowState.type,
+            parseInt(windowState.position.left) || 100,
+            parseInt(windowState.position.top) || 100
+          );
+        });
+      } catch (error) {
+        console.error("Error loading state:", error);
+        localStorage.removeItem(this.STATE_KEY);
+      }
+    }
+    startAutoSave() {
+      if (this.autoSaveInterval) {
+        clearInterval(this.autoSaveInterval);
+      }
+      this.autoSaveInterval = setInterval(() => this.saveState(), this.AUTO_SAVE_INTERVAL);
+    }
+    clearState() {
+      localStorage.removeItem(this.STATE_KEY);
+    }
+  };
+
+  // src/system/AppManager.js
+  var AppManager = class {
+    constructor() {
+      this.apps = {};
+      this.appClasses = {
+        "about_app": AboutApp,
+        "finder_app": FinderApp,
+        "frank_app": FrankApp
+      };
+    }
+    registerApp(appId, appInstance) {
+      this.apps[appId] = appInstance;
+    }
+    openApp(appId) {
+      if (!this.apps[appId]) {
+        registerApp(appId, new appClasses[appId]());
+      }
+      if (this.apps[appId]) {
+        this.apps[appId].window.open();
+      }
+    }
+    closeApp(appId) {
+      if (this.apps[appId]) {
+        this.apps[appId].window.close();
+        delete this.apps[appId];
+      } else {
+        console.warn(`App with ID ${appId} not found.`);
+      }
+    }
+  };
+
+  // src/system/System.js
+  var System = class {
+    constructor() {
+      this.menubar = new MenuBar();
+      this.stateManager = new StateManager(this.menubar);
+      this.appManager = new AppManager();
+    }
+    init() {
+      this.initializeEventListeners();
+    }
+    // Initialize desktop and event listeners
+    initializeEventListeners() {
+      document.addEventListener("click", (e) => this.handleGlobalClick(e));
+      document.addEventListener("keydown", (e) => this.handleGlobalKeydown(e));
+      window.addEventListener("beforeunload", () => this.handleBeforeUnload());
+    }
+    handleGlobalClick(e) {
+      if (!e.target.closest(".menubar-item") && !e.target.closest(".dropdown-menu")) {
+        this.menubar.closeAllMenus();
+      }
+      if (e.target.id === "desktop") {
+        e.preventDefault();
+        e.stopPropagation();
+        document.querySelectorAll(".window").forEach((win) => {
+          win.classList.remove("active");
+          win.style.zIndex = "1";
+          win.querySelector(".window-titlebar").style.background = "var(--system7-titlebar-inactive)";
+        });
+        this.menubar.resetApplicationName();
+      }
+      const window2 = e.target.closest(".window");
+      if (window2) {
+        Array.from(document.querySelectorAll(".window")).forEach((w) => {
+          if (w !== window2) {
+            w.classList.remove("active");
+          }
+        });
+        window2.classList.add("active");
+      }
+      if (e.target.matches(".window-close")) {
+        const appId = e.target.closest(".window").dataset.appId;
+        if (appId) {
+          this.appManager.closeApp(appId);
+        }
+      }
+    }
+    handleGlobalDblClick(e) {
+      const icon = e.target.closest(".desktop-icon");
+      if (!icon) return;
+      const name = icon.dataset.name;
+      const type = icon.dataset.type;
+      if (type === "folder") {
+        this.appManager.openApp("finder_app");
+      } else if (type === "alias") {
+        if (name === "Frank") {
+          this.appManager.openApp("frank_app");
+        } else if (name === "Trash") {
+          this.appManager.openApp("trash_app");
+        }
+      }
+    }
+    handleGlobalKeydown(e) {
+      if (e.key === "Escape") {
+        this.menubar.closeAllMenus();
+      }
+    }
+    handleBeforeUnload(e) {
+      this.stateManager.saveState();
+    }
+    cleanup() {
+      document.removeEventListener("click", this.handleGlobalClick);
+      document.removeEventListener("dblclick", this.handleGlobalDblClick);
+      document.removeEventListener("keydown", this.handleGlobalKeydown);
+      document.removeEventListener("beforeunload", this.handleBeforeUnload);
+    }
+  };
+
+  // src/FrankOSCard.js
+  var FrankOSCard = class extends HTMLElement {
+    // #region constructor
+    constructor() {
+      super();
+    }
+    // #endregion
+    // #region Lovelace methods
+    static getConfigElement() {
+      return document.createElement("frank-card-editor");
+    }
+    static getStubConfig() {
+      return { entity: "", media_entity: "", bpm_entity: "", respond_delay: 0, zoom: 85, transparent_bg: false };
+    }
+    static getCardSize() {
+      return 6;
+    }
+    // #endregion
+    // #region setConfig
+    setConfig(config) {
+      console.log("Entering setConfig");
+      if (!config.entity && !this.config) {
+        this.config = { ...config, entity: "assist_satellite.example" };
+      } else {
+        this.config = config;
+      }
+      if (this.contentReady) {
+        this.init();
+      }
+    }
+    // #endregion
+    // #region hass setter
+    set hass(hass) {
+      console.log("Entering hass setter");
+      if (!hass) return;
+      if (!this.contentReady) {
+        this.init();
+        this.contentReady = true;
+      }
+    }
+    // #endregion
+    // #region init
+    init() {
+      console.log("Initializing FrankOSCard");
+      this.setupDOM();
+      this.system = new System();
+      this.system.init();
+    }
+    // #endregion
+    // #region setupDOM
+    setupDOM() {
+      console.log("Setting up DOM");
+      this.innerHTML = `
+    <div id="scene">
+        <div id="menubar" class="menubar">
+            <!-- Menubar content will be injected here -->
+        </div>
+
+        <div id="desktop" class="desktop">            
+            <!-- Windows will be injected here -->
+        </div>  
+    </div>
+    `;
+    }
+    // #endregion
+    disconnectedCallback() {
+      this.system.cleanup();
+    }
+  };
+
+  // src/FrankOSCardEditor.js
+  var FrankOSCardEditor = class extends HTMLElement {
+    constructor() {
+      super();
+      this.attachShadow({ mode: "open" });
+    }
+    setConfig(config) {
+      this._config = config;
+      this.render();
+    }
+    set hass(hass) {
+      this._hass = hass;
+      const pickers = this.shadowRoot.querySelectorAll("ha-entity-picker");
+      if (pickers.length > 0) {
+        pickers.forEach((picker) => {
+          picker.hass = hass;
+        });
+      } else {
+        this.render();
+      }
+    }
+    configChanged(configKey, value) {
+      if (!this._config) return;
+      const newConfig = { ...this._config };
+      if (value === "" || value === void 0 || value === null) {
+        delete newConfig[configKey];
+      } else {
+        newConfig[configKey] = value;
+      }
+      this._config = newConfig;
+      this.dispatchEvent(new CustomEvent("config-changed", {
+        detail: { config: this._config },
+        bubbles: true,
+        composed: true
+      }));
+    }
+    render() {
+      if (!this._config || !this._hass) return;
+      this.shadowRoot.innerHTML = `
+      <style>
+        .card-config {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+        .side-by-side {
+          display: flex;
+          gap: 16px;
+          margin-top: 8px;
+        }
+        .side-by-side > div {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+        }
+        label {
+          font-family: var(--paper-font-body1_-_font-family, sans-serif);
+          font-size: 14px;
+          color: var(--primary-text-color);
+        }
+        .secondary {
+          font-size: 12px;
+          color: var(--secondary-text-color);
+          margin-top: 2px;
+        }
+      </style>
+      <div class="card-config">
+        <ha-entity-picker
+          id="entity-picker"
+          label="Voice Assistant Entity (Required)"
+          allow-custom-entity
+        ></ha-entity-picker>
+
+        <ha-entity-picker
+          id="media-picker"
+          label="Media Player Entity (Optional)"
+          allow-custom-entity
+        ></ha-entity-picker>
+
+        <ha-entity-picker
+          id="bpm-picker"
+          label="BPM Sensor Entity (Optional)"
+          allow-custom-entity
+        ></ha-entity-picker>
+
+        <ha-entity-picker
+          id="weather-picker"
+          label="Weather Entity (Optional)"
+          allow-custom-entity
+        ></ha-entity-picker>
+
+        <div>
+          <ha-textfield
+            id="delay-input"
+            label="Response Delay"
+            type="number"
+            min="0"
+            max="16"
+            step="0.5"
+            suffix="s"
+            value="${this._config.respond_delay ?? 0}"
+          ></ha-textfield>
+
+          <div class="secondary">
+            Time (ms) before frank starts talking.
+          </div>
+        </div>
+
+        <div>
+          <ha-textfield
+            id="talk-speed-input"
+            label="Talk Speed"
+            type="number"
+            min="10"
+            max="1000"
+            step="1"
+            suffix="ms"
+            value="${this._config.talk_speed ?? 200}"
+          ></ha-textfield>
+
+          <div class="secondary">
+            Time (ms) it takes for frank's talking sprites to cycle back to neutral.
+          </div>
+        </div>
+
+        <ha-formfield label="Transparent Background">
+          <ha-switch id="bg-switch"></ha-switch>
+        </ha-formfield>
+      </div>
+    `;
+      const entityPicker = this.shadowRoot.querySelector("#entity-picker");
+      entityPicker.hass = this._hass;
+      entityPicker.value = this._config.entity;
+      entityPicker.includeDomains = ["assist_satellite"];
+      entityPicker.addEventListener("value-changed", (ev) => this.configChanged("entity", ev.detail.value));
+      const mediaPicker = this.shadowRoot.querySelector("#media-picker");
+      mediaPicker.hass = this._hass;
+      mediaPicker.value = this._config.media_entity;
+      mediaPicker.includeDomains = ["media_player"];
+      mediaPicker.addEventListener("value-changed", (ev) => this.configChanged("media_entity", ev.detail.value));
+      const bpmPicker = this.shadowRoot.querySelector("#bpm-picker");
+      bpmPicker.hass = this._hass;
+      bpmPicker.value = this._config.bpm_entity;
+      bpmPicker.includeDomains = ["sensor"];
+      bpmPicker.addEventListener("value-changed", (ev) => this.configChanged("bpm_entity", ev.detail.value));
+      const weatherPicker = this.shadowRoot.querySelector("#weather-picker");
+      weatherPicker.hass = this._hass;
+      weatherPicker.value = this._config.weather_entity;
+      weatherPicker.includeDomains = ["weather"];
+      weatherPicker.addEventListener("value-changed", (ev) => this.configChanged("weather_entity", ev.detail.value));
+      const delayInput = this.shadowRoot.querySelector("#delay-input");
+      delayInput.addEventListener("change", (ev) => {
+        this.configChanged(
+          "respond_delay",
+          Number(ev.target.value)
+        );
+      });
+      const talkSpeedInput = this.shadowRoot.querySelector("#talk-speed-input");
+      talkSpeedInput.addEventListener("change", (ev) => {
+        this.configChanged(
+          "talk_speed",
+          Number(ev.target.value)
+        );
+      });
+      const bgSwitch = this.shadowRoot.querySelector("#bg-switch");
+      bgSwitch.checked = this._config.transparent_bg === true;
+      bgSwitch.addEventListener("change", (ev) => {
+        this.configChanged("transparent_bg", ev.target.checked);
+      });
+    }
+  };
+
   // src/config/styles.js
   var STYLES = `
 svg { image-rendering: pixelated; image-rendering: crisp-edges; }
@@ -1169,608 +1767,6 @@ height: 100vh;
     color: black;
 }
 `;
-
-  // src/system/MenuBar.js
-  var MenuBar = class {
-    constructor() {
-      this.element = document.getElementById("menubar");
-      this.renderContent();
-      this.resetApplicationName();
-      this.initializeClock();
-    }
-    renderContent() {
-      this.element.innerHTML = `
-            <div class="menubar-left">
-                <div class="menubar-item" data-menu="apple">
-                    <!-- svg 12x12-->
-                </div>
-                <div class="menubar-item" data-menu="file">File</div>
-                <div class="menubar-item" data-menu="edit">Edit</div>
-                <div class="menubar-item" data-menu="view">View</div>
-                <div class="menubar-item" data-menu="special">Special</div>
-            </div>
-            <div class="menubar-right">
-                <div class="weather" id="weather"></div>
-                <div class="clock" id="clock"></div>
-                <div class="menubar-item app-menu" data-menu="application">
-                    <span class="app-name" id="current-app-name"></span>
-                </div>
-            </div>
-        `;
-    }
-    setApplicationName(name) {
-      const appNameElement = document.getElementById("current-app-name");
-      if (appNameElement) {
-        appNameElement.textContent = name;
-      }
-    }
-    resetApplicationName() {
-      this.setApplicationName("Desktop");
-    }
-    closeAllMenus() {
-      document.querySelectorAll(".dropdown-menu").forEach((menu) => {
-        menu.style.display = "none";
-      });
-    }
-    // Clock functionality
-    initializeClock() {
-      this.updateClock();
-      setInterval(() => this.updateClock(), 1e3);
-    }
-    updateClock() {
-      const now = /* @__PURE__ */ new Date();
-      const hours = now.getHours().toString().padStart(2, "0");
-      const minutes = now.getMinutes().toString().padStart(2, "0");
-      document.getElementById("clock").textContent = `${hours}:${minutes}`;
-    }
-  };
-
-  // src/system/Window.js
-  var Window = class {
-    constructor(title, content, type = "document", x = 20, y = 50) {
-      this.element = document.createElement("div");
-      this.element.className = "window";
-      if (type === "folder") this.element.classList.add("folder-window");
-      this.element.style.left = x + "px";
-      this.element.style.top = y + "px";
-      if (title === "Macintosh HD") {
-        this.element.style.width = "500px";
-        this.element.style.height = "200px";
-      } else if (type === "document") {
-        this.element.style.width = "800px";
-        this.element.style.height = "600px";
-      } else {
-        this.element.style.width = "600px";
-        this.element.style.height = "400px";
-      }
-      this.element.innerHTML = `
-            <div class="window-titlebar" data-app-id="${title}}">
-                <div class="window-close"></div>
-                <div class="window-title">${title}</div>
-            </div>
-            <div class="window-content">${content}</div>
-            <div class="window-resizer"></div>
-        `;
-      this.element.dataset.windowType = type;
-      this.makeDraggable();
-      this.makeCloseable();
-      this.makeActivatable();
-      this.makeResizable();
-      this.bringToFront();
-    }
-    makeActivatable() {
-      this.element.addEventListener("mousedown", (e) => {
-        if (!e.target.classList.contains("window-close")) {
-          this.bringToFront();
-        }
-      });
-    }
-    makeDraggable() {
-      const titlebar = this.element.querySelector(".window-titlebar");
-      let isDragging = false;
-      let initialX, initialY;
-      titlebar.addEventListener("mousedown", (e) => {
-        isDragging = true;
-        initialX = e.clientX - this.element.offsetLeft;
-        initialY = e.clientY - this.element.offsetTop;
-        this.bringToFront();
-      });
-      document.addEventListener("mousemove", (e) => {
-        if (isDragging) {
-          e.preventDefault();
-          this.element.style.left = e.clientX - initialX + "px";
-          this.element.style.top = e.clientY - initialY + "px";
-        }
-      });
-      document.addEventListener("mouseup", () => {
-        if (isDragging) {
-          isDragging = false;
-        }
-      });
-    }
-    makeResizable() {
-      const resizer = this.element.querySelector(".window-resizer");
-      if (!resizer) return;
-      resizer.addEventListener("mousedown", (e) => {
-        e.preventDefault();
-        const startWidth = this.element.offsetWidth;
-        const startHeight = this.element.offsetHeight;
-        const startX = e.clientX;
-        const startY = e.clientY;
-        const onMouseMove = (moveEvent) => {
-          const newWidth = startWidth + (moveEvent.clientX - startX);
-          const newHeight = startHeight + (moveEvent.clientY - startY);
-          this.element.style.width = `${Math.max(200, newWidth)}px`;
-          this.element.style.height = `${Math.max(100, newHeight)}px`;
-        };
-        const onMouseUp = () => {
-          document.removeEventListener("mousemove", onMouseMove);
-          document.removeEventListener("mouseup", onMouseUp);
-        };
-        document.addEventListener("mousemove", onMouseMove);
-        document.addEventListener("mouseup", onMouseUp);
-      });
-    }
-    makeCloseable() {
-      const closeButton = this.element.querySelector(".window-close");
-      closeButton.addEventListener("click", () => {
-        this.close();
-      });
-    }
-    bringToFront() {
-      const windows = document.querySelectorAll(".window");
-      let maxZ = 0;
-      windows.forEach((win) => {
-        const z = parseInt(win.style.zIndex || 0);
-        maxZ = Math.max(maxZ, z);
-        win.classList.remove("active");
-        win.querySelector(".window-titlebar").style.background = "var(--system7-titlebar-inactive)";
-      });
-      this.element.style.zIndex = maxZ + 1;
-      this.element.classList.add("active");
-      this.element.querySelector(".window-titlebar").style.background = "var(--system7-titlebar-active)";
-    }
-    close() {
-      this.element.remove();
-    }
-    open() {
-      document.getElementById("desktop").appendChild(this.element);
-      this.bringToFront();
-    }
-  };
-
-  // src/system/StateManager.js
-  var StateManager = class {
-    constructor(menubar) {
-      this.menubar = menubar;
-      this.STATE_KEY = "frankOS_State";
-      this.AUTO_SAVE_INTERVAL = 5e3;
-      this.loadState();
-      this.startAutoSave();
-    }
-    saveState() {
-      try {
-        const windows = Array.from(document.querySelectorAll(".window")).map((window2) => ({
-          title: window2.querySelector(".window-title").textContent,
-          content: window2.querySelector(".window-content").innerHTML,
-          type: window2.dataset.windowType || (window2.classList.contains("folder-window") ? "folder" : "document"),
-          position: {
-            left: window2.style.left,
-            top: window2.style.top,
-            width: window2.style.width,
-            height: window2.style.height,
-            zIndex: window2.style.zIndex
-          }
-        }));
-        const desktop = {};
-        const menuState = {
-          activeApp: document.querySelector(".app-menu").textContent
-        };
-        const state = {
-          windows,
-          desktop,
-          menuState,
-          lastSaved: (/* @__PURE__ */ new Date()).toISOString()
-        };
-        localStorage.setItem(this.STATE_KEY, JSON.stringify(state));
-      } catch (error) {
-        console.error("Error saving state:", error);
-      }
-    }
-    loadState() {
-      try {
-        const savedState = localStorage.getItem(this.STATE_KEY);
-        if (!savedState) return;
-        const state = JSON.parse(savedState);
-        const desktop = document.getElementById("desktop");
-        if (desktop) {
-        }
-        if (state.menuState) {
-          const activeApp = state.menuState.activeApp;
-          if (activeApp && activeApp !== "Desktop") {
-            this.menubar.setApplicationName(activeApp);
-          } else {
-            this.menubar.resetApplicationName();
-          }
-        }
-        state.windows.forEach((windowState) => {
-          new Window(
-            windowState.title,
-            windowState.content,
-            windowState.type,
-            parseInt(windowState.position.left) || 100,
-            parseInt(windowState.position.top) || 100
-          );
-        });
-      } catch (error) {
-        console.error("Error loading state:", error);
-        localStorage.removeItem(this.STATE_KEY);
-      }
-    }
-    startAutoSave() {
-      if (this.autoSaveInterval) {
-        clearInterval(this.autoSaveInterval);
-      }
-      this.autoSaveInterval = setInterval(() => this.saveState(), this.AUTO_SAVE_INTERVAL);
-    }
-    clearState() {
-      localStorage.removeItem(this.STATE_KEY);
-    }
-  };
-
-  // src/system/AppManager.js
-  var AppManager = class {
-    constructor() {
-      this.apps = {};
-      this.appClasses = {
-        "about_app": AboutApp,
-        "finder_app": FinderApp,
-        "frank_app": FrankApp
-      };
-    }
-    registerApp(appId, appInstance) {
-      this.apps[appId] = appInstance;
-    }
-    openApp(appId) {
-      if (!this.apps[appId]) {
-        registerApp(appId, new appClasses[appId]());
-      }
-      if (this.apps[appId]) {
-        this.apps[appId].window.open();
-      }
-    }
-    closeApp(appId) {
-      if (this.apps[appId]) {
-        this.apps[appId].window.close();
-        delete this.apps[appId];
-      } else {
-        console.warn(`App with ID ${appId} not found.`);
-      }
-    }
-  };
-
-  // src/system/System.js
-  var System = class {
-    constructor() {
-      this.menubar = new MenuBar();
-      this.stateManager = new StateManager(this.menubar);
-      this.appManager = new AppManager();
-    }
-    init() {
-      this.initializeEventListeners();
-    }
-    // Initialize desktop and event listeners
-    initializeEventListeners() {
-      document.addEventListener("click", (e) => this.handleGlobalClick(e));
-      document.addEventListener("keydown", (e) => this.handleGlobalKeydown(e));
-      window.addEventListener("beforeunload", () => this.handleBeforeUnload());
-    }
-    handleGlobalClick(e) {
-      if (!e.target.closest(".menubar-item") && !e.target.closest(".dropdown-menu")) {
-        this.menubar.closeAllMenus();
-      }
-      if (e.target.id === "desktop") {
-        e.preventDefault();
-        e.stopPropagation();
-        document.querySelectorAll(".window").forEach((win) => {
-          win.classList.remove("active");
-          win.style.zIndex = "1";
-          win.querySelector(".window-titlebar").style.background = "var(--system7-titlebar-inactive)";
-        });
-        this.menubar.resetApplicationName();
-      }
-      const window2 = e.target.closest(".window");
-      if (window2) {
-        Array.from(document.querySelectorAll(".window")).forEach((w) => {
-          if (w !== window2) {
-            w.classList.remove("active");
-          }
-        });
-        window2.classList.add("active");
-      }
-      if (e.target.matches(".window-close")) {
-        const appId = e.target.closest(".window").dataset.appId;
-        if (appId) {
-          this.appManager.closeApp(appId);
-        }
-      }
-    }
-    handleGlobalDblClick(e) {
-      const icon = e.target.closest(".desktop-icon");
-      if (!icon) return;
-      const name = icon.dataset.name;
-      const type = icon.dataset.type;
-      if (type === "folder") {
-        this.appManager.openApp("finder_app");
-      } else if (type === "alias") {
-        if (name === "Frank") {
-          this.appManager.openApp("frank_app");
-        } else if (name === "Trash") {
-          this.appManager.openApp("trash_app");
-        }
-      }
-    }
-    handleGlobalKeydown(e) {
-      if (e.key === "Escape") {
-        this.menubar.closeAllMenus();
-      }
-    }
-    handleBeforeUnload(e) {
-      this.stateManager.saveState();
-    }
-    cleanup() {
-      document.removeEventListener("click", this.handleGlobalClick);
-      document.removeEventListener("dblclick", this.handleGlobalDblClick);
-      document.removeEventListener("keydown", this.handleGlobalKeydown);
-      document.removeEventListener("beforeunload", this.handleBeforeUnload);
-    }
-  };
-
-  // src/FrankOSCard.js
-  var FrankOSCard = class extends HTMLElement {
-    // #region constructor
-    constructor() {
-      super();
-      this.attachShadow({ mode: "open" });
-    }
-    // #endregion
-    // #region Lovelace methods
-    static getConfigElement() {
-      return document.createElement("frank-card-editor");
-    }
-    static getStubConfig() {
-      return { entity: "", media_entity: "", bpm_entity: "", respond_delay: 0, zoom: 85, transparent_bg: false };
-    }
-    static getCardSize() {
-      return 6;
-    }
-    // #endregion
-    // #region setConfig
-    setConfig(config) {
-      console.log("Entering setConfig");
-      if (!config.entity && !this.config) {
-        this.config = { ...config, entity: "assist_satellite.example" };
-      } else {
-        this.config = config;
-      }
-      if (this.contentReady) {
-        this.init();
-      }
-    }
-    // #endregion
-    // #region hass setter
-    set hass(hass) {
-      console.log("Entering hass setter");
-      if (!hass) return;
-      if (!this.contentReady) {
-        this.init();
-        this.contentReady = true;
-      }
-    }
-    // #endregion
-    // #region init
-    init() {
-      console.log("Initializing FrankOSCard");
-      this.setupDOM();
-      this.system = new System();
-      this.system.init();
-    }
-    // #endregion
-    // #region setupDOM
-    setupDOM() {
-      this.shadowRoot.innerHTML = `
-    <style>
-        ${STYLES}
-    </style>
-
-    <div id="scene">
-        <div id="menubar" class="menubar">
-            <!-- Menubar content will be injected here -->
-        </div>
-
-        <div id="desktop" class="desktop">            
-            <!-- Windows will be injected here -->
-        </div>  
-    </div>
-    `;
-    }
-    // #endregion
-    disconnectedCallback() {
-      this.system.cleanup();
-    }
-  };
-
-  // src/FrankOSCardEditor.js
-  var FrankOSCardEditor = class extends HTMLElement {
-    constructor() {
-      super();
-      this.attachShadow({ mode: "open" });
-    }
-    setConfig(config) {
-      this._config = config;
-      this.render();
-    }
-    set hass(hass) {
-      this._hass = hass;
-      const pickers = this.shadowRoot.querySelectorAll("ha-entity-picker");
-      if (pickers.length > 0) {
-        pickers.forEach((picker) => {
-          picker.hass = hass;
-        });
-      } else {
-        this.render();
-      }
-    }
-    configChanged(configKey, value) {
-      if (!this._config) return;
-      const newConfig = { ...this._config };
-      if (value === "" || value === void 0 || value === null) {
-        delete newConfig[configKey];
-      } else {
-        newConfig[configKey] = value;
-      }
-      this._config = newConfig;
-      this.dispatchEvent(new CustomEvent("config-changed", {
-        detail: { config: this._config },
-        bubbles: true,
-        composed: true
-      }));
-    }
-    render() {
-      if (!this._config || !this._hass) return;
-      this.shadowRoot.innerHTML = `
-      <style>
-        .card-config {
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-        }
-        .side-by-side {
-          display: flex;
-          gap: 16px;
-          margin-top: 8px;
-        }
-        .side-by-side > div {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-        }
-        label {
-          font-family: var(--paper-font-body1_-_font-family, sans-serif);
-          font-size: 14px;
-          color: var(--primary-text-color);
-        }
-        .secondary {
-          font-size: 12px;
-          color: var(--secondary-text-color);
-          margin-top: 2px;
-        }
-      </style>
-      <div class="card-config">
-        <ha-entity-picker
-          id="entity-picker"
-          label="Voice Assistant Entity (Required)"
-          allow-custom-entity
-        ></ha-entity-picker>
-
-        <ha-entity-picker
-          id="media-picker"
-          label="Media Player Entity (Optional)"
-          allow-custom-entity
-        ></ha-entity-picker>
-
-        <ha-entity-picker
-          id="bpm-picker"
-          label="BPM Sensor Entity (Optional)"
-          allow-custom-entity
-        ></ha-entity-picker>
-
-        <ha-entity-picker
-          id="weather-picker"
-          label="Weather Entity (Optional)"
-          allow-custom-entity
-        ></ha-entity-picker>
-
-        <div>
-          <ha-textfield
-            id="delay-input"
-            label="Response Delay"
-            type="number"
-            min="0"
-            max="16"
-            step="0.5"
-            suffix="s"
-            value="${this._config.respond_delay ?? 0}"
-          ></ha-textfield>
-
-          <div class="secondary">
-            Time (ms) before frank starts talking.
-          </div>
-        </div>
-
-        <div>
-          <ha-textfield
-            id="talk-speed-input"
-            label="Talk Speed"
-            type="number"
-            min="10"
-            max="1000"
-            step="1"
-            suffix="ms"
-            value="${this._config.talk_speed ?? 200}"
-          ></ha-textfield>
-
-          <div class="secondary">
-            Time (ms) it takes for frank's talking sprites to cycle back to neutral.
-          </div>
-        </div>
-
-        <ha-formfield label="Transparent Background">
-          <ha-switch id="bg-switch"></ha-switch>
-        </ha-formfield>
-      </div>
-    `;
-      const entityPicker = this.shadowRoot.querySelector("#entity-picker");
-      entityPicker.hass = this._hass;
-      entityPicker.value = this._config.entity;
-      entityPicker.includeDomains = ["assist_satellite"];
-      entityPicker.addEventListener("value-changed", (ev) => this.configChanged("entity", ev.detail.value));
-      const mediaPicker = this.shadowRoot.querySelector("#media-picker");
-      mediaPicker.hass = this._hass;
-      mediaPicker.value = this._config.media_entity;
-      mediaPicker.includeDomains = ["media_player"];
-      mediaPicker.addEventListener("value-changed", (ev) => this.configChanged("media_entity", ev.detail.value));
-      const bpmPicker = this.shadowRoot.querySelector("#bpm-picker");
-      bpmPicker.hass = this._hass;
-      bpmPicker.value = this._config.bpm_entity;
-      bpmPicker.includeDomains = ["sensor"];
-      bpmPicker.addEventListener("value-changed", (ev) => this.configChanged("bpm_entity", ev.detail.value));
-      const weatherPicker = this.shadowRoot.querySelector("#weather-picker");
-      weatherPicker.hass = this._hass;
-      weatherPicker.value = this._config.weather_entity;
-      weatherPicker.includeDomains = ["weather"];
-      weatherPicker.addEventListener("value-changed", (ev) => this.configChanged("weather_entity", ev.detail.value));
-      const delayInput = this.shadowRoot.querySelector("#delay-input");
-      delayInput.addEventListener("change", (ev) => {
-        this.configChanged(
-          "respond_delay",
-          Number(ev.target.value)
-        );
-      });
-      const talkSpeedInput = this.shadowRoot.querySelector("#talk-speed-input");
-      talkSpeedInput.addEventListener("change", (ev) => {
-        this.configChanged(
-          "talk_speed",
-          Number(ev.target.value)
-        );
-      });
-      const bgSwitch = this.shadowRoot.querySelector("#bg-switch");
-      bgSwitch.checked = this._config.transparent_bg === true;
-      bgSwitch.addEventListener("change", (ev) => {
-        this.configChanged("transparent_bg", ev.target.checked);
-      });
-    }
-  };
 
   // src/main.js
   customElements.define("frank-card-editor", FrankOSCardEditor);

@@ -1,4 +1,3 @@
-import { STYLES } from './config/styles.js';
 import { System } from './system/System.js';
 
 // #region FrankOSCard Class Definition
@@ -8,7 +7,6 @@ export class FrankOSCard extends HTMLElement {
   // #region constructor
   constructor() {
     super();
-    this.attachShadow({ mode: 'open' });
   }
   // #endregion
 
@@ -61,11 +59,8 @@ export class FrankOSCard extends HTMLElement {
   // #region setupDOM
 
   setupDOM() {
-    this.shadowRoot.innerHTML = `
-    <style>
-        ${STYLES}
-    </style>
-
+    console.log('Setting up DOM');
+    this.innerHTML = `
     <div id="scene">
         <div id="menubar" class="menubar">
             <!-- Menubar content will be injected here -->
