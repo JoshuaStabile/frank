@@ -1,5 +1,5 @@
 import { STYLES } from './config/styles.js';
-import { FrankApp } from './applications/FrankApp.js';
+import { FrankApp } from './system/applications/FrankApp.js';
 import { System } from './system/System.js';
 
 // #region FrankOSCard Class Definition
@@ -12,7 +12,6 @@ export class FrankOSCard extends HTMLElement {
     this.attachShadow({ mode: 'open' });
 
     this.system = new System();
-
     this.frankApp = new FrankApp();
   }
   // #endregion
@@ -68,46 +67,14 @@ export class FrankOSCard extends HTMLElement {
     </style>
 
     <div id="scene">
-        <div class="menubar">
-            <div class="menubar-left">
-                <div class="menubar-item" data-menu="apple">
-                    <!-- svg 12x12-->
-                </div>
-                <div class="menubar-item" data-menu="file">File</div>
-                <div class="menubar-item" data-menu="edit">Edit</div>
-                <div class="menubar-item" data-menu="view">View</div>
-                <div class="menubar-item" data-menu="help">Help</div>
-            </div>
-            <div class="menubar-right">
-                <div class="weather" id="weather"></div>
-                <div class="clock" id="clock"></div>
-                <div class="menubar-item app-menu" data-menu="application">
-                    <img src="/assets/images/MacSE.png" alt="" class="app-icon" id="current-app-icon" width="16" height="16">
-                    <span class="app-name" id="current-app-name">Finder</span>
-                </div>
-            </div>
+        <div id="menubar" class="menubar">
+            <!-- Menubar content will be injected here -->
         </div>
 
         <div id="desktop" class="desktop">            
-            <div class="window">
-                <div class="title-bar"> 
-                    <h1 class="title">Frank</h1>
-                </div>
-                <div class="separator"></div>
-                
-                <div class="window-pane">
-                    <div id="frank-container">
-                        <!-- Frank's image will be injected here -->
-                    </div>
-                    <div id="state-display">
-                        <!-- display current state here -->
-                    </div>
-                </div>
-            </div>
+            <!-- Windows will be injected here -->
         </div>  
     </div>
-    
-
     `;
   }
 

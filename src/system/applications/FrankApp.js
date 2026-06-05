@@ -1,8 +1,12 @@
 import { App } from './App.js';
-import { SPRITES } from '../config/sprites.js';
+import { SPRITES } from '../../config/sprites.js';
 
 export class FrankApp extends App {
     constructor() {
+        const id = 'frank_app';
+
+        super(id, new Window(id, 'Frank', `<div id="frank-container"></div>`));
+
         this._lastHassVoice = null;
         this._lastHassMedia = null;
         this._lastHassBpm = null;

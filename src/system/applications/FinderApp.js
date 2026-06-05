@@ -1,10 +1,12 @@
 // File System Structure
-export class FileManager {
+export class FinderApp extends App {
 
-    constructor(windowManager) {
-        this.windowManager = windowManager;
+    constructor() {
+        const id = 'finder_app';
+
+        super(id, new Window(id, 'Finder', ``));
         this.fileSystem = {
-            'Macintosh HD': {
+            'Computer Chronicles': {
                 type: 'folder',
                 icon: 'hd-icon.png',
                 contents: {
@@ -96,6 +98,7 @@ export class FileManager {
         // Add aliases to main projects
         const projects = [
             { name: 'Frank', icon: 'frank_icon.png' },
+            { name: 'Trash', icon: 'trash_icon.png' },
         ];
 
         projects.forEach((project) => {

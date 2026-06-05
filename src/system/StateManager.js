@@ -1,6 +1,9 @@
+import { MenuBar } from './MenuBar.js';
+import { Window } from './Window.js';
+
 export class StateManager {
-    constructor(windowManager) {
-        this.windowManager = windowManager;
+    constructor(menubar) {
+        this.menubar = menubar;
         this.STATE_KEY = 'frankOS_State';
         this.AUTO_SAVE_INTERVAL = 5000; // Auto-save every 5 seconds
         
@@ -27,14 +30,11 @@ export class StateManager {
 
             // Capture desktop state
             const desktop = {
-                background: document.getElementById('desktop').style.background,
-                backgroundSize: document.getElementById('desktop').style.backgroundSize
             };
 
             // Capture menu state
             const menuState = {
                 activeApp: document.querySelector('.app-menu').textContent,
-                soundEnabled: localStorage.getItem('soundEnabled') !== 'false'
             };
 
             const state = {
@@ -60,28 +60,22 @@ export class StateManager {
             // Restore desktop background
             const desktop = document.getElementById('desktop');
             if (desktop) {
-                desktop.style.background = state.desktop.background;
-                desktop.style.backgroundSize = state.desktop.backgroundSize;
-
-                // Update menu checkmark
-                const backgroundName = this.getBackgroundNameFromStyle(state.desktop.background);
-                if (backgroundName) {
-                    this.updateBackgroundMenuCheckmark(backgroundName);
-                }
             }
 
             // Restore menu state
             if (state.menuState) {
-                // Restore sound state
-                if (typeof SoundManager !== 'undefined') {
-                    SoundManager.setVolume(state.menuState.soundEnabled ? 0.5 : 0);
+                const activeApp = state.menuState.activeApp;
+                if (activeApp && activeApp !== 'Desktop') {
+                    this.menubar.setApplicationName(activeApp);
                 }
-                this.updateSoundMenuCheck(state.menuState.soundEnabled);
+                else {
+                    this.menubar.resetApplicationName();
+                }
             }
 
             // Restore windows
             state.windows.forEach(windowState => {
-                this.windowManager.createWindow(
+                new Window(
                     windowState.title,
                     windowState.content,
                     windowState.type,
@@ -89,38 +83,10 @@ export class StateManager {
                     parseInt(windowState.position.top) || 100
                 );
             });
-
-            // Update application menu after windows are restored
-            if (typeof MenuManager !== 'undefined') {
-                MenuManager.updateApplicationMenu();
-            }
         } catch (error) {
             console.error('Error loading state:', error);
             // If there's an error loading state, remove the corrupted state
             localStorage.removeItem(this.STATE_KEY);
-        }
-    }
-
-    getBackgroundNameFromStyle(backgroundStyle) {
-        if (!backgroundStyle) return null;
-        const matches = backgroundStyle.match(/backgrounds\/(.*?)\./);
-        return matches ? matches[1] : null;
-    }
-
-    updateBackgroundMenuCheckmark(backgroundName) {
-        const viewMenuItems = document.querySelectorAll('#view-menu .dropdown-item');
-        viewMenuItems.forEach(item => {
-            item.textContent = item.textContent.replace('✔ ', '');
-            if (item.textContent.includes(backgroundName)) {
-                item.textContent = '✔ ' + item.textContent;
-            }
-        });
-    }
-
-    updateSoundMenuCheck(enabled) {
-        const menuItem = document.querySelector('#apple-menu .dropdown-item:contains("Sound")');
-        if (menuItem) {
-            menuItem.textContent = `Sound ${enabled ? '✓' : ''}`;
         }
     }
 
@@ -132,24 +98,6 @@ export class StateManager {
         
         // Start new auto-save interval
         this.autoSaveInterval = setInterval(() => this.saveState(), this.AUTO_SAVE_INTERVAL);
-
-        // Save state before page unload
-        window.addEventListener('beforeunload', () => this.saveState());
-
-        // Save state when windows are closed
-        document.addEventListener('click', (e) => {
-            if (e.target.matches('.window-close')) {
-                setTimeout(() => this.saveState(), 100);
-            }
-        });
-
-        // Save state when background is changed
-        const viewMenuItems = document.querySelectorAll('#view-menu .dropdown-item');
-        viewMenuItems.forEach(item => {
-            item.addEventListener('click', () => {
-                setTimeout(() => this.saveState(), 100);
-            });
-        });
     }
 
     clearState() {

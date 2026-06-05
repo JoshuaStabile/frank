@@ -1170,8 +1170,15 @@ height: 100vh;
 }
 `;
 
-  // src/applications/App.js
+  // src/system/applications/App.js
   var App = class {
+    constructor(id, window2) {
+      this.id = id;
+      this.window = window2;
+    }
+    renderContent() {
+      return "";
+    }
   };
 
   // src/config/sprites.js
@@ -1248,9 +1255,11 @@ height: 100vh;
     }
   };
 
-  // src/applications/FrankApp.js
-  var FrankApp = class extends App {
+  // src/system/applications/FrankApp.js
+  var FrankApp2 = class extends App {
     constructor() {
+      const id = "frank_app";
+      super(id, new Window(id, "Frank", `<div id="frank-container"></div>`));
       this._lastHassVoice = null;
       this._lastHassMedia = null;
       this._lastHassBpm = null;
@@ -1495,304 +1504,178 @@ height: 100vh;
     }
   };
 
-  // src/system/MenuManager.js
-  var MenuManager2 = class {
+  // src/system/MenuBar.js
+  var MenuBar = class {
     constructor() {
-      this.initializeMenuListeners();
-      this.updateApplicationMenu();
-      this.addMenuStyles();
+      this.renderContent();
+      this.resetApplicationName();
+      this.initializeClock();
     }
-    hideProgram(programName) {
-      if (!programName || programName === "Finder") return;
-      const windows = Array.from(document.querySelectorAll(".window"));
-      windows.forEach((window2) => {
-        const title = window2.querySelector(".window-title").textContent;
-        if (title === programName) {
-          window2.classList.add("hidden");
-          window2.style.display = "none";
-        }
-      });
-      this.updateApplicationMenu();
+    renderContent() {
+      return `
+            <div class="menubar-left">
+                <div class="menubar-item" data-menu="apple">
+                    <!-- svg 12x12-->
+                </div>
+                <div class="menubar-item" data-menu="file">File</div>
+                <div class="menubar-item" data-menu="edit">Edit</div>
+                <div class="menubar-item" data-menu="view">View</div>
+                <div class="menubar-item" data-menu="special">Special</div>
+            </div>
+            <div class="menubar-right">
+                <div class="weather" id="weather"></div>
+                <div class="clock" id="clock"></div>
+                <div class="menubar-item app-menu" data-menu="application">
+                    <span class="app-name" id="current-app-name"></span>
+                </div>
+            </div>
+        `;
     }
-    hideOthers() {
-      const activeWindow = this.getActiveWindow();
-      if (!activeWindow) return;
-      const currentProgram = activeWindow.querySelector(".window-title").textContent;
-      const windows = Array.from(document.querySelectorAll(".window"));
-      windows.forEach((window2) => {
-        const title = window2.querySelector(".window-title").textContent;
-        if (title !== currentProgram && !window2.classList.contains("folder-window")) {
-          window2.classList.add("hidden");
-          window2.style.display = "none";
-        }
-      });
-      this.updateApplicationMenu();
+    setApplicationName(name) {
+      const appNameElement = document.getElementById("current-app-name");
+      if (appNameElement) {
+        appNameElement.textContent = name;
+      }
     }
-    showAll() {
-      const windows = Array.from(document.querySelectorAll(".window.hidden"));
-      windows.forEach((window2) => {
-        window2.classList.remove("hidden");
-        window2.style.display = "block";
-      });
-      this.updateApplicationMenu();
-    }
-    initializeMenuListeners() {
-      document.querySelectorAll(".menubar-item").forEach((item) => {
-        item.addEventListener("mousedown", (e) => {
-          e.preventDefault();
-          const menuName = item.dataset.menu;
-          const menu = document.getElementById(menuName + "-menu");
-          if (menu) {
-            this.closeAllMenus();
-            const rect = item.getBoundingClientRect();
-            menu.style.display = "block";
-            if (menuName === "application") {
-              menu.style.right = "10px";
-              menu.style.left = "auto";
-              menu.style.top = `${rect.bottom}px`;
-            } else {
-              menu.style.left = `${rect.left}px`;
-              menu.style.right = "auto";
-              menu.style.top = `${rect.bottom}px`;
-            }
-            if (typeof SoundManager !== "undefined") {
-              SoundManager.play("click");
-            }
-            e.stopPropagation();
-          }
-        });
-      });
-      document.addEventListener("mousedown", (e) => {
-        if (!e.target.closest(".menubar-item") && !e.target.closest(".dropdown-menu")) {
-          this.closeAllMenus();
-        }
-      });
-      document.querySelectorAll(".dropdown-menu").forEach((menu) => {
-        menu.addEventListener("mousedown", (e) => {
-          const menuItem = e.target.closest(".dropdown-item");
-          if (menuItem) {
-            e.stopPropagation();
-            setTimeout(() => this.closeAllMenus(), 100);
-          }
-        });
-      });
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-          this.closeAllMenus();
-        }
-      });
+    resetApplicationName() {
+      this.setApplicationName("Desktop");
     }
     closeAllMenus() {
       document.querySelectorAll(".dropdown-menu").forEach((menu) => {
         menu.style.display = "none";
       });
     }
-    getOpenPrograms() {
-      const windows = Array.from(document.querySelectorAll(".window"));
-      const programs = /* @__PURE__ */ new Map();
-      programs.set("Finder", {
-        name: "Finder",
-        icon: "MacSE.png",
-        windows: []
-      });
-      windows.forEach((window2) => {
-        if (window2.classList.contains("folder-window") || window2.querySelector(".window-title").textContent === "Get Info") {
-          return;
-        }
-        const title = window2.querySelector(".window-title").textContent;
-        const item = findItem(fileSystem, title);
-        const icon = item ? item.icon : "doc-icon.png";
-        if (!programs.has(title)) {
-          programs.set(title, {
-            name: title,
-            icon,
-            windows: [window2],
-            hidden: window2.classList.contains("hidden")
-          });
-        } else {
-          programs.get(title).windows.push(window2);
-          programs.get(title).hidden = programs.get(title).hidden && window2.classList.contains("hidden");
-        }
-      });
-      return Array.from(programs.values());
+    // Clock functionality
+    initializeClock() {
+      this.updateClock();
+      setInterval(() => this.updateClock(), 1e3);
     }
-    updateApplicationMenu() {
-      const appMenu = document.querySelector(".app-menu");
-      const appIcon = appMenu.querySelector(".app-icon");
-      const appName = appMenu.querySelector(".app-name");
-      const menu = document.getElementById("application-menu");
-      const programs = this.getOpenPrograms();
-      const activeProgram = this.getActiveProgram();
-      if (activeProgram === "Finder") {
-        appIcon.src = "/assets/images/MacSE.png";
-        appName.textContent = "Finder";
+    updateClock() {
+      const now = /* @__PURE__ */ new Date();
+      const hours = now.getHours().toString().padStart(2, "0");
+      const minutes = now.getMinutes().toString().padStart(2, "0");
+      document.getElementById("clock").textContent = `${hours}:${minutes}`;
+    }
+  };
+
+  // src/system/Window.js
+  var Window2 = class {
+    constructor(title, content, type = "document", x = 20, y = 50) {
+      this.element = document.createElement("div");
+      this.element.className = "window";
+      if (type === "folder") this.element.classList.add("folder-window");
+      this.element.style.left = x + "px";
+      this.element.style.top = y + "px";
+      if (title === "Macintosh HD") {
+        this.element.style.width = "500px";
+        this.element.style.height = "200px";
+      } else if (type === "document") {
+        this.element.style.width = "800px";
+        this.element.style.height = "600px";
       } else {
-        const item = findItem(fileSystem, activeProgram);
-        if (item && item.icon) {
-          appIcon.src = `/assets/images/${item.icon}`;
-        } else {
-          appIcon.src = "/assets/images/doc-icon.png";
-        }
-        appName.textContent = activeProgram;
+        this.element.style.width = "600px";
+        this.element.style.height = "400px";
       }
-      let menuHTML = `
-            <div class="dropdown-item ${activeProgram === "Finder" ? "disabled" : ""}" 
-                onclick="MenuManager.hideProgram('${activeProgram}')">
-                Hide ${activeProgram}
+      this.element.innerHTML = `
+            <div class="window-titlebar" data-app-id="${title}}">
+                <div class="window-close"></div>
+                <div class="window-title">${title}</div>
             </div>
-            <div class="dropdown-item" onclick="MenuManager.hideOthers()">
-                Hide Others
-            </div>
-            <div class="dropdown-item" onclick="MenuManager.showAll()">
-                Show All
-            </div>
-            <div class="dropdown-divider"></div>
+            <div class="window-content">${content}</div>
+            <div class="window-resizer"></div>
         `;
-      programs.forEach((program) => {
-        menuHTML += `
-                <div class="dropdown-item ${program.hidden ? "hidden-program" : ""}" 
-                    onclick="MenuManager.switchToProgram('${program.name}')">
-                    <span style="width: 16px; text-align: center;">
-                        ${program.name === activeProgram ? "\u2713" : ""}
-                    </span>
-                    <img src="/assets/images/${program.icon}" class="menu-icon" width="16" height="16">
-                    <span>${program.name}</span>
-                </div>
-            `;
+      this.element.dataset.windowType = type;
+      this.makeDraggable();
+      this.makeCloseable();
+      this.makeActivatable();
+      this.makeResizable();
+      this.bringToFront();
+    }
+    makeActivatable() {
+      this.element.addEventListener("mousedown", (e) => {
+        if (!e.target.classList.contains("window-close")) {
+          this.bringToFront();
+        }
       });
-      menu.innerHTML = menuHTML;
     }
-    addMenuStyles() {
-      const style = document.createElement("style");
-      style.textContent = `
-            .dropdown-item {
-                display: flex;
-                align-items: center;
-                gap: 5px;
-                padding: 2px 10px;
-                cursor: default;
-                white-space: nowrap;
-            }
-    
-            .dropdown-item.disabled {
-                color: #808080;
-                cursor: default;
-            }
-    
-            .dropdown-item.hidden-program {
-                color: #808080;
-            }
-    
-            .menu-icon {
-                width: 16px;
-                height: 16px;
-                object-fit: contain;
-            }
-    
-            .dropdown-divider {
-                height: 1px;
-                background: var(--system7-border);
-                margin: 2px 0;
-            }
-    
-            .window.hidden {
-                display: none;
-            }
-        `;
-      document.head.appendChild(style);
-    }
-    getActiveWindow() {
-      const highestZ = Math.max(
-        ...Array.from(document.querySelectorAll(".window")).map((el) => parseInt(el.style.zIndex) || 0)
-      );
-      return document.querySelector(`.window[style*="z-index: ${highestZ}"]`);
-    }
-    switchToProgram(programName) {
-      const windows = Array.from(document.querySelectorAll(".window"));
-      const highestZ = this.getHighestZIndex();
-      let newZ = highestZ + 1;
-      if (programName === "Finder") {
-        windows.forEach((window2) => {
-          window2.querySelector(".window-titlebar").style.background = "var(--system7-titlebar-inactive)";
-        });
-        const appMenu = document.querySelector(".app-menu");
-        appMenu.querySelector(".app-icon").src = "/assets/images/MacSE.png";
-        appMenu.querySelector(".app-name").textContent = "Finder";
-      } else {
-        windows.forEach((window2) => {
-          const title = window2.querySelector(".window-title").textContent;
-          if (title === programName) {
-            if (window2.classList.contains("hidden")) {
-              window2.classList.remove("hidden");
-              window2.style.visibility = "visible";
-            }
-            window2.style.zIndex = newZ++;
-            window2.querySelector(".window-titlebar").style.background = "var(--system7-titlebar-active)";
-          } else {
-            window2.querySelector(".window-titlebar").style.background = "var(--system7-titlebar-inactive)";
-          }
-        });
-      }
-      this.updateApplicationMenu();
-    }
-    getHighestZIndex() {
-      return Math.max(
-        ...Array.from(document.querySelectorAll(".window")).map((el) => parseInt(el.style.zIndex) || 0)
-      );
-    }
-    closeActiveWindow() {
-      const activeWindow = this.getActiveWindow();
-      if (activeWindow) {
-        if (typeof SoundManager !== "undefined") {
-          SoundManager.play("drop");
+    makeDraggable() {
+      const titlebar = this.element.querySelector(".window-titlebar");
+      let isDragging = false;
+      let initialX, initialY;
+      titlebar.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        initialX = e.clientX - this.element.offsetLeft;
+        initialY = e.clientY - this.element.offsetTop;
+        this.bringToFront();
+      });
+      document.addEventListener("mousemove", (e) => {
+        if (isDragging) {
+          e.preventDefault();
+          this.element.style.left = e.clientX - initialX + "px";
+          this.element.style.top = e.clientY - initialY + "px";
         }
-        activeWindow.remove();
-        this.updateApplicationMenu();
-        if (typeof StateManager !== "undefined") {
-          StateManager.saveState();
+      });
+      document.addEventListener("mouseup", () => {
+        if (isDragging) {
+          isDragging = false;
         }
-      }
+      });
     }
-    getInfo() {
-      const activeWindow = this.getActiveWindow();
-      if (!activeWindow) return;
-      const title = activeWindow.querySelector(".window-title").textContent;
-      const type = activeWindow.classList.contains("folder-window") ? "Folder" : "Document";
-      const content = `
-            <div style="padding: 10px">
-                <p><strong>Name:</strong> ${title}</p>
-                <p><strong>Type:</strong> ${type}</p>
-                <p><strong>Created:</strong> ${(/* @__PURE__ */ new Date()).toLocaleDateString()}</p>
-            </div>
-        `;
-      new Window(
-        "Get Info",
-        content,
-        "info",
-        window.innerWidth / 2 - 150,
-        window.innerHeight / 2 - 100
-      );
+    makeResizable() {
+      const resizer = this.element.querySelector(".window-resizer");
+      if (!resizer) return;
+      resizer.addEventListener("mousedown", (e) => {
+        e.preventDefault();
+        const startWidth = this.element.offsetWidth;
+        const startHeight = this.element.offsetHeight;
+        const startX = e.clientX;
+        const startY = e.clientY;
+        const onMouseMove = (moveEvent) => {
+          const newWidth = startWidth + (moveEvent.clientX - startX);
+          const newHeight = startHeight + (moveEvent.clientY - startY);
+          this.element.style.width = `${Math.max(200, newWidth)}px`;
+          this.element.style.height = `${Math.max(100, newHeight)}px`;
+        };
+        const onMouseUp = () => {
+          document.removeEventListener("mousemove", onMouseMove);
+          document.removeEventListener("mouseup", onMouseUp);
+        };
+        document.addEventListener("mousemove", onMouseMove);
+        document.addEventListener("mouseup", onMouseUp);
+      });
     }
-    getActiveProgram() {
-      if (this._finderActive) {
-        return "Finder";
-      }
-      const activeWindow = Array.from(document.querySelectorAll(".window")).find((win) => win.classList.contains("active"));
-      if (!activeWindow) {
-        return "Finder";
-      }
-      if (activeWindow.classList.contains("folder-window")) {
-        this._finderActive = true;
-        return "Finder";
-      }
-      return activeWindow.querySelector(".window-title").textContent;
+    makeCloseable() {
+      const closeButton = this.element.querySelector(".window-close");
+      closeButton.addEventListener("click", () => {
+        this.close();
+      });
+    }
+    bringToFront() {
+      const windows = document.querySelectorAll(".window");
+      let maxZ = 0;
+      windows.forEach((win) => {
+        const z = parseInt(win.style.zIndex || 0);
+        maxZ = Math.max(maxZ, z);
+        win.classList.remove("active");
+        win.querySelector(".window-titlebar").style.background = "var(--system7-titlebar-inactive)";
+      });
+      this.element.style.zIndex = maxZ + 1;
+      this.element.classList.add("active");
+      this.element.querySelector(".window-titlebar").style.background = "var(--system7-titlebar-active)";
+    }
+    close() {
+      this.element.remove();
+    }
+    open() {
+      document.getElementById("desktop").appendChild(this.element);
+      this.bringToFront();
     }
   };
 
   // src/system/StateManager.js
-  var StateManager2 = class {
-    constructor(windowManager) {
-      this.windowManager = windowManager;
+  var StateManager = class {
+    constructor(menubar) {
+      this.menubar = menubar;
       this.STATE_KEY = "frankOS_State";
       this.AUTO_SAVE_INTERVAL = 5e3;
       this.loadState();
@@ -1812,13 +1695,9 @@ height: 100vh;
             zIndex: window2.style.zIndex
           }
         }));
-        const desktop = {
-          background: document.getElementById("desktop").style.background,
-          backgroundSize: document.getElementById("desktop").style.backgroundSize
-        };
+        const desktop = {};
         const menuState = {
-          activeApp: document.querySelector(".app-menu").textContent,
-          soundEnabled: localStorage.getItem("soundEnabled") !== "false"
+          activeApp: document.querySelector(".app-menu").textContent
         };
         const state = {
           windows,
@@ -1838,21 +1717,17 @@ height: 100vh;
         const state = JSON.parse(savedState);
         const desktop = document.getElementById("desktop");
         if (desktop) {
-          desktop.style.background = state.desktop.background;
-          desktop.style.backgroundSize = state.desktop.backgroundSize;
-          const backgroundName = this.getBackgroundNameFromStyle(state.desktop.background);
-          if (backgroundName) {
-            this.updateBackgroundMenuCheckmark(backgroundName);
-          }
         }
         if (state.menuState) {
-          if (typeof SoundManager !== "undefined") {
-            SoundManager.setVolume(state.menuState.soundEnabled ? 0.5 : 0);
+          const activeApp = state.menuState.activeApp;
+          if (activeApp && activeApp !== "Desktop") {
+            this.menubar.setApplicationName(activeApp);
+          } else {
+            this.menubar.resetApplicationName();
           }
-          this.updateSoundMenuCheck(state.menuState.soundEnabled);
         }
         state.windows.forEach((windowState) => {
-          this.windowManager.createWindow(
+          new Window2(
             windowState.title,
             windowState.content,
             windowState.type,
@@ -1860,32 +1735,9 @@ height: 100vh;
             parseInt(windowState.position.top) || 100
           );
         });
-        if (typeof MenuManager !== "undefined") {
-          MenuManager.updateApplicationMenu();
-        }
       } catch (error) {
         console.error("Error loading state:", error);
         localStorage.removeItem(this.STATE_KEY);
-      }
-    }
-    getBackgroundNameFromStyle(backgroundStyle) {
-      if (!backgroundStyle) return null;
-      const matches = backgroundStyle.match(/backgrounds\/(.*?)\./);
-      return matches ? matches[1] : null;
-    }
-    updateBackgroundMenuCheckmark(backgroundName) {
-      const viewMenuItems = document.querySelectorAll("#view-menu .dropdown-item");
-      viewMenuItems.forEach((item) => {
-        item.textContent = item.textContent.replace("\u2714 ", "");
-        if (item.textContent.includes(backgroundName)) {
-          item.textContent = "\u2714 " + item.textContent;
-        }
-      });
-    }
-    updateSoundMenuCheck(enabled) {
-      const menuItem = document.querySelector('#apple-menu .dropdown-item:contains("Sound")');
-      if (menuItem) {
-        menuItem.textContent = `Sound ${enabled ? "\u2713" : ""}`;
       }
     }
     startAutoSave() {
@@ -1893,188 +1745,51 @@ height: 100vh;
         clearInterval(this.autoSaveInterval);
       }
       this.autoSaveInterval = setInterval(() => this.saveState(), this.AUTO_SAVE_INTERVAL);
-      window.addEventListener("beforeunload", () => this.saveState());
-      document.addEventListener("click", (e) => {
-        if (e.target.matches(".window-close")) {
-          setTimeout(() => this.saveState(), 100);
-        }
-      });
-      const viewMenuItems = document.querySelectorAll("#view-menu .dropdown-item");
-      viewMenuItems.forEach((item) => {
-        item.addEventListener("click", () => {
-          setTimeout(() => this.saveState(), 100);
-        });
-      });
     }
     clearState() {
       localStorage.removeItem(this.STATE_KEY);
     }
   };
 
-  // src/system/WindowManager.js
-  var WindowManager = class {
+  // src/system/applications/AppManager.js
+  var AppManager = class {
     constructor() {
-      this.windows = [];
-    }
-    createWindow(title, content, type = "document", left = 100, top = 100) {
-      const newWindow = new Window(title, content, type, left, top);
-      this.windows.push(newWindow);
-      return newWindow;
-    }
-    // Add this function to update the application name
-    updateActiveApplication(windowTitle) {
-      const appName = document.getElementById("current-app-name");
-      if (appName) {
-        appName.textContent = windowTitle || "Finder";
-      }
-    }
-    // Find the function that handles window focus and add the update call
-    // This might be in your window click handler or focus handler
-    setActiveWindow(window2) {
-      this.updateActiveApplication(window2.querySelector(".window-title").textContent);
-    }
-    // Function to open a page in a new window
-    openPage(page) {
-      fetch(`/pages/${page}.html`).then((response) => response.text()).then((content) => {
-        const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = content;
-        const mainContent = tempDiv.querySelector(".main-content");
-        const windowContent = mainContent ? mainContent.innerHTML : content;
-        const fileItem = findItem(fileSystem, page);
-        const windowTitle = fileItem ? fileItem.name : page;
-        this.createWindow(windowTitle, windowContent, "document");
-      }).catch((error) => console.error("Error loading page:", error));
-    }
-  };
-
-  // src/system/FileManager.js
-  var FileManager = class {
-    constructor(windowManager) {
-      this.windowManager = windowManager;
-      this.fileSystem = {
-        "Macintosh HD": {
-          type: "folder",
-          icon: "hd-icon.png",
-          contents: {}
-        }
+      this.apps = {};
+      this.appClasses = {
+        "about_app": AboutApp,
+        "finder_app": FinderApp,
+        "frank_app": FrankApp
       };
-      this.initializeDesktop();
     }
-    // File system helper functions
-    findItem(obj, searchName) {
-      if (obj.contents && obj.contents[searchName]) {
-        return obj.contents[searchName];
-      }
-      for (const value of Object.values(obj.contents || {})) {
-        if (value.contents) {
-          const found = findItem(value, searchName);
-          if (found) return found;
-        }
-      }
-      return null;
+    registerApp(appId, appInstance) {
+      this.apps[appId] = appInstance;
     }
-    createFolderContents(folder) {
-      let html = "";
-      Object.entries(folder.contents).forEach(([name, item]) => {
-        html += `
-            <div class="desktop-icon" data-type="${item.type}" data-name="${name}">
-                <img src="/assets/images/${item.icon}" alt="${name}">
-                <div class="desktop-icon-label">${name}</div>
-            </div>
-        `;
-      });
-      return html;
-    }
-    handleDoubleClick(name) {
-      if (name === "Macintosh HD") {
-        const hdFolder = fileSystem["Macintosh HD"];
-        this.windowManager.createWindow(name, createFolderContents(hdFolder), "folder");
-        return;
+    openApp(appId) {
+      if (!this.apps[appId]) {
+        registerApp(appId, new appClasses[appId]());
       }
-      const item = findItem(fileSystem["Macintosh HD"], name);
-      if (item) {
-        if (item.type === "folder") {
-          this.windowManager.createWindow(name, createFolderContents(item), "folder");
-        } else if (item.type === "document") {
-          this.windowManager.openPage(item.file);
-        }
+      if (this.apps[appId]) {
+        this.apps[appId].window.open();
+      }
+    }
+    closeApp(appId) {
+      if (this.apps[appId]) {
+        this.apps[appId].window.close();
+        delete this.apps[appId];
       } else {
-        const fileMap = {
-          "Bus Tracker Display": "BusTideDisplay",
-          "Isolated Thermocouple": "IsoTherm",
-          "Citicar": "Citicar",
-          "CAN Car Conversion": "CANconversion"
-        };
-        if (fileMap[name]) {
-          this.windowManager.openPage(fileMap[name]);
-        }
+        console.warn(`App with ID ${appId} not found.`);
       }
-    }
-    // Desktop initialization and icon management
-    initializeDesktop() {
-      const desktop = document.getElementById("desktop");
-      const ICON_HEIGHT = 80;
-      let topPosition = 20;
-      const hdIcon = createDesktopIcon(
-        "Computer Chronicles",
-        "hd-icon.png",
-        false,
-        { right: "20px", top: `${topPosition}px` }
-      );
-      desktop.appendChild(hdIcon);
-      topPosition += ICON_HEIGHT;
-      const projects = [
-        { name: "Frank", icon: "frank_icon.png" }
-      ];
-      projects.forEach((project) => {
-        const icon = createDesktopIcon(
-          project.name,
-          project.icon,
-          true,
-          { right: "20px", top: `${topPosition}px` }
-        );
-        desktop.appendChild(icon);
-        topPosition += ICON_HEIGHT;
-      });
-    }
-    createDesktopIcon(name, icon, isAlias = false, position = {}) {
-      const div = document.createElement("div");
-      div.className = "desktop-icon" + (isAlias ? " alias" : "");
-      Object.assign(div.style, position);
-      div.innerHTML = `
-        <img src="/assets/images/${icon}" alt="${name}">
-        <div class="desktop-icon-label">${name}</div>
-    `;
-      div.setAttribute("data-name", name);
-      div.setAttribute("data-type", isAlias ? "alias" : "folder");
-      return div;
-    }
-  };
-  document.addEventListener("dblclick", (e) => {
-    const icon = e.target.closest(".desktop-icon");
-    if (!icon) return;
-    const name = icon.dataset.name;
-    handleDoubleClick(name);
-  });
-
-  // src/system/SoundManager.js
-  var SoundManager2 = class {
-    constructor() {
     }
   };
 
   // src/system/System.js
   var System = class {
     constructor() {
-      this.windowManager = new WindowManager();
-      this.stateManager = new StateManager2(this.windowManager);
-      this.menuManager = new MenuManager2(this.windowManager);
-      this.fileManager = new FileManager(this.windowManager);
-      this.soundManager = new SoundManager2();
-      this.init();
+      this.menubar = new MenuBar();
+      this.stateManager = new StateManager(this.menubar);
+      this.appManager = new AppManager();
     }
     init() {
-      this.initializeClock();
       this.initializeEventListeners();
       this.checkUrlParameters();
     }
@@ -2085,131 +1800,54 @@ height: 100vh;
         this.windowManager.openPage(page);
       }
     }
-    // Clock functionality
-    initializeClock() {
-      this.updateClock();
-      setInterval(() => this.updateClock(), 1e3);
-    }
-    updateClock() {
-      const now = /* @__PURE__ */ new Date();
-      const hours = now.getHours().toString().padStart(2, "0");
-      const minutes = now.getMinutes().toString().padStart(2, "0");
-      document.getElementById("clock").textContent = `${hours}:${minutes}`;
-    }
-    // Background Management
-    setBackground(image) {
-      const desktop = document.getElementById("desktop");
-      const viewMenuItems = document.querySelectorAll("#view-menu .dropdown-item");
-      viewMenuItems.forEach((item) => {
-        item.textContent = item.textContent.replace("\u2714 ", "");
-      });
-      const backgrounds = {
-        MacOS: { url: "MacOS.jpg", repeat: "no-repeat center center fixed", size: "cover" },
-        cats: { url: "cats.png", repeat: "repeat", size: "auto" },
-        circuits: { url: "circuits.png", repeat: "repeat", size: "auto" },
-        grass: { url: "grass.png", repeat: "repeat", size: "auto" },
-        pebbles: { url: "pebbles.png", repeat: "repeat", size: "auto" },
-        plaid: { url: "plaid.png", repeat: "repeat", size: "auto" }
-      };
-      const bg = backgrounds[image];
-      if (bg) {
-        desktop.style.background = `url('/assets/images/backgrounds/${bg.url}') ${bg.repeat}`;
-        desktop.style.backgroundSize = bg.size;
-        document.querySelector(`#view-menu .dropdown-item:contains('${image}')`).textContent = `\u2714 ${image}`;
-        if (typeof StateManager2 !== "undefined") {
-          StateManager2.saveState();
-        }
-      }
-    }
-    // About Window
-    showAboutWindow() {
-      const content = `
-        <div style="display: flex; align-items: center;">
-            <img src="/assets/images/moof.png" alt="Moof" style="width: 64px; height: 64px; margin-right: 20px;">
-            <div>
-                <p>This is my design portfolio, built in Jekyll and a bit of CSS.</p>
-                <p>While I have experience in classic Mac OS programming, CSS is far more frustrating than Metrowerks Codewarrior and ResEdit.</p>
-            </div>
-        </div>
-    `;
-      const aboutWindow = this.windowManager.createWindow(
-        "About This Website",
-        content,
-        "about",
-        window.innerWidth / 2 - 200,
-        window.innerHeight / 2 - 150
-      );
-      aboutWindow.element.style.resize = "none";
-      aboutWindow.element.style.width = "400px";
-      aboutWindow.element.style.height = "200px";
-      aboutWindow.element.querySelector(".window-resizer")?.remove();
-      aboutWindow.element.querySelector(".window-content").style.overflow = "hidden";
-      if (typeof this.SoundManager !== "undefined") {
-        this.SoundManager.play("click");
-      }
-    }
-    // Sound Management
-    toggleSound() {
-      const enabled = localStorage.getItem("soundEnabled") !== "false";
-      localStorage.setItem("soundEnabled", !enabled);
-      if (typeof this.SoundManager !== "undefined") {
-        this.SoundManager.setVolume(!enabled ? 0.5 : 0);
-      }
-      if (typeof this.StateManager !== "undefined") {
-        StateManager2.updateSoundMenuCheck(!enabled);
-      }
-    }
-    // Theme Toggle
-    toggleTheme() {
-      window.location.href = "/";
-    }
     // Initialize desktop and event listeners
     initializeEventListeners() {
-      document.addEventListener("mousedown", (e) => {
-        if (!e.target.closest(".menubar-item") && !e.target.closest(".dropdown-menu")) {
-          if (typeof this.MenuManager !== "undefined") {
-            this.MenuManager.closeAllMenus();
+      document.addEventListener("click", (e) => this.handleGlobalClick(e));
+      document.addEventListener("keydown", (e) => this.handleGlobalKeydown(e));
+      window.addEventListener("beforeunload", () => this.handleBeforeUnload());
+    }
+    handleGlobalClick(e) {
+      if (!e.target.closest(".menubar-item") && !e.target.closest(".dropdown-menu")) {
+        this.menubar.closeAllMenus();
+      }
+      if (e.target.id === "desktop") {
+        e.preventDefault();
+        e.stopPropagation();
+        document.querySelectorAll(".window").forEach((win) => {
+          win.classList.remove("active");
+          win.style.zIndex = "1";
+          win.querySelector(".window-titlebar").style.background = "var(--system7-titlebar-inactive)";
+        });
+        this.menubar.resetApplicationName();
+      }
+      const window2 = e.target.closest(".window");
+      if (window2) {
+        Array.from(document.querySelectorAll(".window")).forEach((w) => {
+          if (w !== window2) {
+            w.classList.remove("active");
           }
+        });
+        window2.classList.add("active");
+      }
+      if (e.target.matches(".window-close")) {
+        const appId = e.target.closest(".window").dataset.appId;
+        if (appId) {
+          this.appManager.closeApp(appId);
         }
-        if (e.target.id === "desktop") {
-          e.preventDefault();
-          e.stopPropagation();
-          document.querySelectorAll(".window").forEach((win) => {
-            win.classList.remove("active");
-            win.style.zIndex = "1";
-            win.querySelector(".window-titlebar").style.background = "var(--system7-titlebar-inactive)";
-          });
-          const appMenu = document.querySelector(".app-menu");
-          appMenu.querySelector(".app-icon").src = "/assets/images/MacSE.png";
-          appMenu.querySelector(".app-name").textContent = "Finder";
-          if (typeof this.MenuManager !== "undefined") {
-            this.MenuManager.forceFinderActive();
-          }
-        }
-      });
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-          if (typeof this.MenuManager !== "undefined") {
-            this.MenuManager.closeAllMenus();
-          }
-        }
-      });
-      document.addEventListener("mousedown", (e) => {
-        const window2 = e.target.closest(".window");
-        if (window2) {
-          Array.from(document.querySelectorAll(".window")).forEach((w) => {
-            if (w !== window2) {
-              w.classList.remove("active");
-            }
-          });
-          window2.classList.add("active");
-        }
-      });
+      }
+    }
+    handleGlobalKeydown(e) {
+      if (e.key === "Escape") {
+        this.menubar.closeAllMenus();
+      }
+    }
+    handleBeforeUnload(e) {
+      this.stateManager.saveState();
     }
     cleanup() {
-      document.removeEventListener("mousedown", this.handleGlobalClick);
+      document.removeEventListener("click", this.handleGlobalClick);
       document.removeEventListener("keydown", this.handleGlobalKeydown);
-      clearInterval(this.clockInterval);
+      document.removeEventListener("beforeunload", this.handleBeforeUnload);
     }
   };
 
@@ -2220,7 +1858,7 @@ height: 100vh;
       super();
       this.attachShadow({ mode: "open" });
       this.system = new System();
-      this.frankApp = new FrankApp();
+      this.frankApp = new FrankApp2();
     }
     // #endregion
     // #region Lovelace methods
@@ -2269,46 +1907,14 @@ height: 100vh;
     </style>
 
     <div id="scene">
-        <div class="menubar">
-            <div class="menubar-left">
-                <div class="menubar-item" data-menu="apple">
-                    <!-- svg 12x12-->
-                </div>
-                <div class="menubar-item" data-menu="file">File</div>
-                <div class="menubar-item" data-menu="edit">Edit</div>
-                <div class="menubar-item" data-menu="view">View</div>
-                <div class="menubar-item" data-menu="help">Help</div>
-            </div>
-            <div class="menubar-right">
-                <div class="weather" id="weather"></div>
-                <div class="clock" id="clock"></div>
-                <div class="menubar-item app-menu" data-menu="application">
-                    <img src="/assets/images/MacSE.png" alt="" class="app-icon" id="current-app-icon" width="16" height="16">
-                    <span class="app-name" id="current-app-name">Finder</span>
-                </div>
-            </div>
+        <div id="menubar" class="menubar">
+            <!-- Menubar content will be injected here -->
         </div>
 
         <div id="desktop" class="desktop">            
-            <div class="window">
-                <div class="title-bar"> 
-                    <h1 class="title">Frank</h1>
-                </div>
-                <div class="separator"></div>
-                
-                <div class="window-pane">
-                    <div id="frank-container">
-                        <!-- Frank's image will be injected here -->
-                    </div>
-                    <div id="state-display">
-                        <!-- display current state here -->
-                    </div>
-                </div>
-            </div>
+            <!-- Windows will be injected here -->
         </div>  
     </div>
-    
-
     `;
     }
     // #endregion

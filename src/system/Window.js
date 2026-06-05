@@ -22,7 +22,7 @@ export class Window {
 
         // Create window structure
         this.element.innerHTML = `
-            <div class="window-titlebar">
+            <div class="window-titlebar" data-app-id="${title}}">
                 <div class="window-close"></div>
                 <div class="window-title">${title}</div>
             </div>
@@ -39,14 +39,6 @@ export class Window {
         this.makeActivatable();
         this.makeResizable();
         this.bringToFront();
-        
-        // Add to desktop
-        document.getElementById('desktop').appendChild(this.element);
-
-        // Update application menu immediately after window creation
-        if (typeof MenuManager !== 'undefined') {
-            MenuManager.updateApplicationMenu();
-        }
     }
 
     makeActivatable() {
@@ -81,7 +73,6 @@ export class Window {
         document.addEventListener('mouseup', () => {
             if (isDragging) {
                 isDragging = false;
-                this.debouncedSaveState();
             }
         });
     }
@@ -107,7 +98,6 @@ export class Window {
             const onMouseUp = () => {
                 document.removeEventListener('mousemove', onMouseMove);
                 document.removeEventListener('mouseup', onMouseUp);
-                this.debouncedSaveState();
             };
             
             document.addEventListener('mousemove', onMouseMove);
@@ -118,27 +108,7 @@ export class Window {
     makeCloseable() {
         const closeButton = this.element.querySelector('.window-close');
         closeButton.addEventListener('click', () => {
-            // Play close sound if available
-            if (typeof this.soundManager !== 'undefined') {
-                this.soundManager.play('drop');
-            }
-            
-            this.element.remove();
-            
-            // Reset application name to Finder if no windows are active
-            if (!document.querySelector('.window')) {
-                this.updateActiveApplication('Finder');
-            }
-            
-            // Update application menu
-            if (typeof this.menuManager !== 'undefined') {
-                this.menuManager.updateApplicationMenu();
-            }
-
-            // Save state
-            if (typeof this.stateManager !== 'undefined') {
-                this.stateManager.saveState();
-            }
+            this.close();
         });
     }
 
@@ -157,22 +127,14 @@ export class Window {
         this.element.classList.add('active');
         this.element.querySelector('.window-titlebar').style.background = 
             'var(--system7-titlebar-active)';
-
-        // Update MenuManager
-        if (typeof MenuManager !== 'undefined') {
-            MenuManager._finderActive = this.element.classList.contains('folder-window');
-            MenuManager.updateApplicationMenu();
-        }
     }
 
-    debouncedSaveState() {
-        if (this.saveStateTimeout) {
-            clearTimeout(this.saveStateTimeout);
-        }
-        this.saveStateTimeout = setTimeout(() => {
-            if (typeof this.stateManager !== 'undefined') {
-                this.stateManager.saveState();
-            }
-        }, 500);
+    close() {
+        this.element.remove();
+    }
+
+    open() {
+        document.getElementById('desktop').appendChild(this.element);
+        this.bringToFront();
     }
 }
