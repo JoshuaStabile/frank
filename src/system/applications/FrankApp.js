@@ -2,10 +2,10 @@ import { App } from './App.js';
 import { SPRITES } from '../../config/sprites.js';
 
 export class FrankApp extends App {
-    constructor() {
+    constructor(root) {
         const id = 'frank_app';
 
-        super(id, new Window(id, 'Frank', `<div id="frank-container"></div>`));
+        super(root, id, new Window(id, 'Frank', `<div id="frank-container"></div>`));
 
         this._lastHassVoice = null;
         this._lastHassMedia = null;
@@ -49,8 +49,8 @@ export class FrankApp extends App {
         const config = this.config;
 
         const el = {
-            desktop: document.getElementById('desktop'),
-            frankContainer: document.getElementById('frank-container'),
+            desktop: this.root.getElementById('desktop'),
+            frankContainer: this.root.getElementById('frank-container'),
         };
 
         this.handleResize = () => {
@@ -251,7 +251,7 @@ export class FrankApp extends App {
         }
 
         // container is the frank card elm
-        const container = document.querySelector('#desktop');
+        const container = this.root.querySelector('#desktop');
 
         if (!container) {
             console.log('[Frank] updateSpriteScale: no frank-card found');

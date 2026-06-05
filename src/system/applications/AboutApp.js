@@ -3,7 +3,7 @@ import { Window } from '../Window.js';
 
 export class AboutApp extends App {
 
-    constructor() {
+    constructor(root) {
         const id = 'about_app';
 
         const content = `
@@ -15,7 +15,7 @@ export class AboutApp extends App {
             </div>
         `;
 
-        super(id, new Window(id, 'About', content, 'about', window.innerWidth / 2 - 200, window.innerHeight / 2 - 150));
+        super(root, id, new Window(id, 'About', content, 'about', window.innerWidth / 2 - 200, window.innerHeight / 2 - 150));
     }
 
 }

@@ -1,5 +1,10 @@
+import { AboutApp } from './applications/AboutApp.js';
+import { FinderApp } from './applications/FinderApp.js';
+import { FrankApp } from './applications/FrankApp.js';
+
 export class AppManager {
-    constructor () {
+    constructor (root) {
+        this.root = root;
         this.apps = {};
 
         this.appClasses = {
@@ -15,7 +20,7 @@ export class AppManager {
 
     openApp(appId) {
         if (!this.apps[appId]) {
-            registerApp(appId, new appClasses[appId]());
+            this.registerApp(appId, new this.appClasses[appId](this.root));
         }
 
         if (this.apps[appId]) {

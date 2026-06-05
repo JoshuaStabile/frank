@@ -1,6 +1,7 @@
 export class MenuBar {
-    constructor() {
-        this.element = document.getElementById('menubar');
+    constructor(root) {
+        this.root = root;
+        this.element = this.root.getElementById('menubar');
 
         this.renderContent();
         this.resetApplicationName();
@@ -30,7 +31,7 @@ export class MenuBar {
     }
 
     setApplicationName(name) {
-        const appNameElement = document.getElementById('current-app-name');
+        const appNameElement = this.root.getElementById('current-app-name');
         if (appNameElement) {
             appNameElement.textContent = name;
         }
@@ -41,7 +42,7 @@ export class MenuBar {
     }
 
     closeAllMenus() {
-        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+        this.root.querySelectorAll('.dropdown-menu').forEach(menu => {
             menu.style.display = 'none';
         });
     }
@@ -56,7 +57,7 @@ export class MenuBar {
         const now = new Date();
         const hours = now.getHours().toString().padStart(2, '0');
         const minutes = now.getMinutes().toString().padStart(2, '0');
-        document.getElementById('clock').textContent = `${hours}:${minutes}`;
+        this.root.getElementById('clock').textContent = `${hours}:${minutes}`;
     }
 
 }

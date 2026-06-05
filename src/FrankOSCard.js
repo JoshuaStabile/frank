@@ -7,6 +7,8 @@ export class FrankOSCard extends HTMLElement {
   // #region constructor
   constructor() {
     super();
+    this.system = null;
+    this.attachShadow({ mode: 'open' });
   }
   // #endregion
 
@@ -58,7 +60,7 @@ export class FrankOSCard extends HTMLElement {
 
   setupDOM() {
     console.log('Setting up DOM');
-    this.innerHTML = `
+    this.shadowRoot.innerHTML = `
     <div id="scene">
         <div id="menubar" class="menubar">
             <!-- Menubar content will be injected here -->
@@ -75,13 +77,14 @@ export class FrankOSCard extends HTMLElement {
 
   connectedCallback() {
     console.log('FrankOSCard connected to DOM');
-    this.system = new System();
-    this.system.init();
+    this.system = new System(this.shadowRoot);
   }
 
   disconnectedCallback() {
     console.log('FrankOSCard disconnected from DOM');
-    this.system.cleanup();
+    if (this.system) {
+      this.system.cleanup();
+    }
   }
 }
 

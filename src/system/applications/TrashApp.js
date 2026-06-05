@@ -1,8 +1,8 @@
 export class TrashApp extends App {
     
-    constructor() {
+    constructor(root) {
         const id = 'trash_app';
-
+        
     }
 
 }

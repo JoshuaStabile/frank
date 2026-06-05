@@ -1,8 +1,9 @@
 (() => {
   // src/system/MenuBar.js
   var MenuBar = class {
-    constructor() {
-      this.element = document.getElementById("menubar");
+    constructor(root) {
+      this.root = root;
+      this.element = this.root.getElementById("menubar");
       this.renderContent();
       this.resetApplicationName();
       this.initializeClock();
@@ -28,7 +29,7 @@
         `;
     }
     setApplicationName(name) {
-      const appNameElement = document.getElementById("current-app-name");
+      const appNameElement = this.root.getElementById("current-app-name");
       if (appNameElement) {
         appNameElement.textContent = name;
       }
@@ -37,7 +38,7 @@
       this.setApplicationName("Desktop");
     }
     closeAllMenus() {
-      document.querySelectorAll(".dropdown-menu").forEach((menu) => {
+      this.root.querySelectorAll(".dropdown-menu").forEach((menu) => {
         menu.style.display = "none";
       });
     }
@@ -50,14 +51,27 @@
       const now = /* @__PURE__ */ new Date();
       const hours = now.getHours().toString().padStart(2, "0");
       const minutes = now.getMinutes().toString().padStart(2, "0");
-      document.getElementById("clock").textContent = `${hours}:${minutes}`;
+      this.root.getElementById("clock").textContent = `${hours}:${minutes}`;
+    }
+  };
+
+  // src/system/applications/App.js
+  var App2 = class {
+    constructor(root, id, window2) {
+      this.root = root;
+      this.id = id;
+      this.window = window2;
+    }
+    renderContent() {
+      return "";
     }
   };
 
   // src/system/Window.js
-  var Window = class {
-    constructor(title, content, type = "document", x = 20, y = 50) {
-      this.element = document.createElement("div");
+  var Window2 = class {
+    constructor(root, id, title, content, type = "document", x = 20, y = 50) {
+      this.root = root;
+      this.element = this.root.createElement("div");
       this.element.className = "window";
       if (type === "folder") this.element.classList.add("folder-window");
       this.element.style.left = x + "px";
@@ -73,7 +87,7 @@
         this.element.style.height = "400px";
       }
       this.element.innerHTML = `
-            <div class="window-titlebar" data-app-id="${title}}">
+            <div class="window-titlebar" data-app-id="${id}">}">
                 <div class="window-close"></div>
                 <div class="window-title">${title}</div>
             </div>
@@ -104,14 +118,14 @@
         initialY = e.clientY - this.element.offsetTop;
         this.bringToFront();
       });
-      document.addEventListener("mousemove", (e) => {
+      this.root.addEventListener("mousemove", (e) => {
         if (isDragging) {
           e.preventDefault();
           this.element.style.left = e.clientX - initialX + "px";
           this.element.style.top = e.clientY - initialY + "px";
         }
       });
-      document.addEventListener("mouseup", () => {
+      this.root.addEventListener("mouseup", () => {
         if (isDragging) {
           isDragging = false;
         }
@@ -133,11 +147,11 @@
           this.element.style.height = `${Math.max(100, newHeight)}px`;
         };
         const onMouseUp = () => {
-          document.removeEventListener("mousemove", onMouseMove);
-          document.removeEventListener("mouseup", onMouseUp);
+          this.root.removeEventListener("mousemove", onMouseMove);
+          this.root.removeEventListener("mouseup", onMouseUp);
         };
-        document.addEventListener("mousemove", onMouseMove);
-        document.addEventListener("mouseup", onMouseUp);
+        this.root.addEventListener("mousemove", onMouseMove);
+        this.root.addEventListener("mouseup", onMouseUp);
       });
     }
     makeCloseable() {
@@ -147,7 +161,7 @@
       });
     }
     bringToFront() {
-      const windows = document.querySelectorAll(".window");
+      const windows = this.root.querySelectorAll(".window");
       let maxZ = 0;
       windows.forEach((win) => {
         const z = parseInt(win.style.zIndex || 0);
@@ -163,14 +177,465 @@
       this.element.remove();
     }
     open() {
-      document.getElementById("desktop").appendChild(this.element);
+      this.root.getElementById("desktop").appendChild(this.element);
       this.bringToFront();
+    }
+  };
+
+  // src/system/applications/AboutApp.js
+  var AboutApp = class extends App2 {
+    constructor(root) {
+      const id = "about_app";
+      const content = `
+            <div style="display: flex; align-items: center;">
+                <img src="/assets/images/moof.png" alt="Moof" style="width: 64px; height: 64px; margin-right: 20px;">
+                <div>
+                    <p>Frank OS</p>
+                </div>
+            </div>
+        `;
+      super(root, id, new Window2(id, "About", content, "about", window.innerWidth / 2 - 200, window.innerHeight / 2 - 150));
+    }
+  };
+
+  // src/system/applications/FinderApp.js
+  var FinderApp = class extends App {
+    constructor(root) {
+      const id = "finder_app";
+      super(root, id, new Window(id, "Finder", ``));
+      this.fileSystem = {
+        "Computer Chronicles": {
+          type: "folder",
+          icon: "hd-icon.png",
+          contents: {}
+        }
+      };
+      this.initializeDesktop();
+    }
+    // File system helper functions
+    findItem(obj, searchName) {
+      if (obj.contents && obj.contents[searchName]) {
+        return obj.contents[searchName];
+      }
+      for (const value of Object.values(obj.contents || {})) {
+        if (value.contents) {
+          const found = findItem(value, searchName);
+          if (found) return found;
+        }
+      }
+      return null;
+    }
+    createFolderContents(folder) {
+      let html = "";
+      Object.entries(folder.contents).forEach(([name, item]) => {
+        html += `
+            <div class="desktop-icon" data-type="${item.type}" data-name="${name}">
+                <img src="/assets/images/${item.icon}" alt="${name}">
+                <div class="desktop-icon-label">${name}</div>
+            </div>
+        `;
+      });
+      return html;
+    }
+  };
+
+  // src/config/sprites.js
+  var SPRITES = {
+    FRANK: {
+      IDLE: [
+        `<?xml version="1.0" encoding="UTF-8"?>
+<svg id="idle" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
+    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
+-80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
+400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M200 180 l0 -20 20 0 20 0
+0 -20 0 -20 80 0 80 0 0 20 0 20 20 0 20 0 0 20 0 20 -20 0 -20 0 0 -20 0 -20
+-80 0 -80 0 0 20 0 20 -20 0 -20 0 0 -20z"/>
+  </g></svg>`
+      ],
+      NEUTRAL: [
+        `<?xml version="1.0" encoding="UTF-8"?>
+<svg id="neutral" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
+    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
+-80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
+400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M240 140 l0 -20 80 0 80 0
+0 20 0 20 -80 0 -80 0 0 -20z"/>
+  </g>
+</svg>`
+      ],
+      JIBJAB: [
+        `<?xml version="1.0" encoding="UTF-8"?>
+<svg id="jibjab_1" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
+    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
+-80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
+400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M240 180 l0 -20 -20 0 -20
+0 0 -20 0 -20 20 0 20 0 0 -20 0 -20 80 0 80 0 0 20 0 20 20 0 20 0 0 20 0 20
+-20 0 -20 0 0 20 0 20 -80 0 -80 0 0 -20z m160 -40 l0 -20 -80 0 -80 0 0 20 0
+20 80 0 80 0 0 -20z"/>
+  </g>
+</svg>`,
+        `<?xml version="1.0" encoding="UTF-8"?>
+<svg id="jibjab_2" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
+    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
+-80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
+400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M280 180 l0 -20 -20 0 -20
+0 0 -20 0 -20 20 0 20 0 0 -20 0 -20 40 0 40 0 0 20 0 20 20 0 20 0 0 20 0 20
+-20 0 -20 0 0 20 0 20 -40 0 -40 0 0 -20z m80 -40 l0 -20 -40 0 -40 0 0 20 0
+20 40 0 40 0 0 -20z"/>
+  </g>
+</svg>`,
+        `<?xml version="1.0" encoding="UTF-8"?>
+<svg id="jibjab_3" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
+    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
+-80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
+400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M280 180 l0 -20 -20 0 -20
+0 0 -40 0 -40 20 0 20 0 0 -20 0 -20 40 0 40 0 0 20 0 20 20 0 20 0 0 40 0 40
+-20 0 -20 0 0 20 0 20 -40 0 -40 0 0 -20z m80 -60 l0 -40 -40 0 -40 0 0 40 0
+40 40 0 40 0 0 -40z"/>
+  </g>
+</svg>`,
+        `<?xml version="1.0" encoding="UTF-8"?>
+<svg id="jibjab_4" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <g id="layer-1" fill="#000000" stroke="none" transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)">
+    <path d="M160 400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M320 360 l0
+-80 -20 0 -20 0 0 -20 0 -20 40 0 40 0 0 100 0 100 -20 0 -20 0 0 -80z M440
+400 l0 -40 20 0 20 0 0 40 0 40 -20 0 -20 0 0 -40z M280 180 l0 -20 -20 0 -20
+0 0 -20 0 -20 20 0 20 0 0 -20 0 -20 40 0 40 0 0 20 0 20 20 0 20 0 0 20 0 20
+-20 0 -20 0 0 20 0 20 -40 0 -40 0 0 -20z m80 -40 l0 -20 -40 0 -40 0 0 20 0
+20 40 0 40 0 0 -20z"/>
+  </g>
+</svg>`
+      ]
+    }
+  };
+
+  // src/system/applications/FrankApp.js
+  var FrankApp = class extends App2 {
+    constructor(root) {
+      const id = "frank_app";
+      super(root, id, new Window(id, "Frank", `<div id="frank-container"></div>`));
+      this._lastHassVoice = null;
+      this._lastHassMedia = null;
+      this._lastHassBpm = null;
+      this._lastSprite = null;
+      this._currentSprite = null;
+      init();
+    }
+    init() {
+      const entity = this.config.entity;
+      const mediaEntity = this.config.media_entity;
+      const bpmEntity = this.config.bpm_entity;
+      const weatherEntity = this.config.weather_entity;
+      const newVoiceState = entity && hass.states[entity] ? hass.states[entity].state.toLowerCase() : "idle";
+      const newMediaState = mediaEntity && hass.states[mediaEntity] ? hass.states[mediaEntity].state.toLowerCase() : "paused";
+      const newBpmState = bpmEntity && hass.states[bpmEntity] ? hass.states[bpmEntity].state : "120";
+      if (this._lastHassVoice === newVoiceState && this._lastHassMedia === newMediaState && this._lastHassBpm === newBpmState) return;
+      this._lastHassVoice = newVoiceState;
+      this._lastHassMedia = newMediaState;
+      this._lastHassBpm = newBpmState;
+      const currentBpm = isNaN(parseFloat(newBpmState)) ? 120 : parseFloat(newBpmState);
+      let effectiveState = "idle";
+      if (["listen", "wake", "process", "think", "respond", "speak", "tts"].some((s) => newVoiceState.includes(s))) {
+        effectiveState = newVoiceState;
+      } else if (newMediaState === "playing") {
+        effectiveState = "dancing";
+      }
+      if (this._currentState !== effectiveState || effectiveState === "dancing" && this._currentBpm !== currentBpm) {
+        this._currentState = effectiveState;
+        this._currentBpm = currentBpm;
+        if (this.applyState) this.applyState(effectiveState, currentBpm);
+      }
+      const config = this.config;
+      const el = {
+        desktop: this.root.getElementById("desktop"),
+        frankContainer: this.root.getElementById("frank-container")
+      };
+      this.handleResize = () => {
+        this.updateSpriteScale();
+      };
+      window.addEventListener("resize", this.handleResize);
+      let stateNow = "idle";
+      let currentBaseLid = 0;
+      const setSprite = (spr) => {
+        el.frankContainer.innerHTML = spr;
+        const svg = el.frankContainer.querySelector("svg");
+        if (!svg) {
+          console.log("[Frank] setSprite: no SVG found after injection");
+          return;
+        }
+        this._lastSprite = this._currentSprite;
+        this._currentSprite = svg;
+        this.updateSpriteScale();
+      };
+      function idle_smile() {
+        setSprite(SPRITES.FRANK.IDLE[0]);
+      }
+      this.idleTimer = null;
+      this.danceTimer = null;
+      this.danceLedTimer = null;
+      this.talkAnim = null;
+      this.respondTimer = null;
+      const IDLE_BEHAVIORS = [
+        { name: "smile", exec() {
+          idle_smile();
+        }, min: 5e3, max: 1e4, weight: 1 }
+      ];
+      const runNextIdleBehavior = () => {
+        if (stateNow !== "idle") return;
+        let r = Math.random() * IDLE_BEHAVIORS.reduce((s, b) => s + b.weight, 0), chosen = IDLE_BEHAVIORS[0];
+        for (const b of IDLE_BEHAVIORS) {
+          r -= b.weight;
+          if (r <= 0) {
+            chosen = b;
+            break;
+          }
+        }
+        chosen.exec();
+        this.idleTimer = setTimeout(runNextIdleBehavior, chosen.min + Math.random() * (chosen.max - chosen.min));
+      };
+      this.startIdleCycle = () => {
+        this.stopIdleCycle();
+        this.idleTimer = setTimeout(runNextIdleBehavior, 2e3 + Math.random() * 3e3);
+      };
+      this.stopIdleCycle = () => {
+        if (this.idleTimer) {
+          clearTimeout(this.idleTimer);
+          this.idleTimer = null;
+        }
+        if (this.pupilTimer) {
+          clearTimeout(this.pupilTimer);
+          this.pupilTimer = null;
+        }
+        if (this.glitchRaf) {
+          cancelAnimationFrame(this.glitchRaf);
+          this.glitchRaf = null;
+        }
+      };
+      this.stopDanceCycle = () => {
+        if (this.danceTimer) {
+          clearTimeout(this.danceTimer);
+          this.danceTimer = null;
+        }
+        if (this.danceLedTimer) {
+          clearTimeout(this.danceLedTimer);
+          this.danceLedTimer = null;
+        }
+      };
+      this.startDanceCycle = (bpm) => {
+        this.stopDanceCycle();
+        let dancePhase = 0;
+        let currentRoutine = Math.floor(Math.random() * 8);
+        const currentBpm2 = Math.max(60, Math.min(200, bpm));
+        const beatMs = 60 / currentBpm2 * 1e3;
+        const beatSec = beatMs / 1e3;
+        let expectedNextTick = performance.now() + beatMs;
+        const step = () => {
+          if (stateNow !== "dancing") return;
+          if (dancePhase > 0 && dancePhase % 16 === 0) {
+            let nextRoutine;
+            do {
+              nextRoutine = Math.floor(Math.random() * 8);
+            } while (nextRoutine === currentRoutine);
+            currentRoutine = nextRoutine;
+          }
+          const choreoBlock = currentRoutine;
+          const isDownBeat = dancePhase % 2 === 0;
+          const isQuadBeat = dancePhase % 4 === 0;
+          const phaseMod4 = dancePhase % 4;
+          const phaseMod8 = dancePhase % 8;
+          let dirX = isDownBeat ? 1 : -1;
+          if (this.danceLedTimer) clearTimeout(this.danceLedTimer);
+          this.danceLedTimer = setTimeout(() => {
+            if (stateNow === "dancing") {
+            }
+          }, beatMs * 0.3);
+          let moveDur = beatSec;
+          let bodyDur = beatSec * 2;
+          const executeTick = () => {
+            dancePhase++;
+            const now = performance.now();
+            expectedNextTick += beatMs;
+            const delay = Math.max(0, expectedNextTick - now);
+            this.danceTimer = setTimeout(step, delay);
+          };
+          executeTick();
+        };
+        step();
+      };
+      const startRespondAnim = () => {
+        if (this.talkAnim) clearTimeout(this.talkAnim);
+        const step = () => {
+          if (this._currentSprite?.id !== "neutral") {
+            setSprite(SPRITES.FRANK.NEUTRAL[0]);
+          } else {
+            const nextSprite = SPRITES.FRANK.JIBJAB[Math.floor(Math.random() * SPRITES.FRANK.JIBJAB.length)];
+            setSprite(nextSprite);
+          }
+          const talkSpeed = config.talk_speed !== void 0 ? parseFloat(config.talk_speed) : 200;
+          this.talkAnim = setTimeout(step, talkSpeed);
+        };
+        step();
+      };
+      const animateFrank = (state, bpm) => {
+        stateNow = state;
+        if (this.talkAnim) clearTimeout(this.talkAnim);
+        this.stopIdleCycle();
+        this.stopDanceCycle();
+        if (state === "idle") {
+          this.startIdleCycle();
+        } else if (state === "dancing") {
+        } else if (state === "listening") {
+          this.displayState(state);
+        } else if (state === "processing") {
+          this.displayState(state);
+        } else if (state === "responding") {
+          startRespondAnim();
+        }
+      };
+      this.applyState = (raw, bpm) => {
+        const s = (raw || "idle").toLowerCase();
+        let mapped = "idle";
+        if (s.includes("respond") || s.includes("speak") || s.includes("tts")) mapped = "responding";
+        else if (s.includes("listen") || s.includes("wake")) mapped = "listening";
+        else if (s.includes("process") || s.includes("think")) mapped = "processing";
+        else if (s === "dancing") mapped = "dancing";
+        if (this.respondTimer) {
+          clearTimeout(this.respondTimer);
+          this.respondTimer = null;
+        }
+        const delayMs = config.respond_delay !== void 0 ? parseFloat(config.respond_delay) : 0;
+        if (mapped === "responding" && this._lastEffectiveState !== "responding" && delayMs > 0) {
+          this.respondTimer = setTimeout(() => {
+            this._lastEffectiveState = "responding";
+            animateFrank("responding", bpm);
+          }, delayMs);
+          return;
+        }
+        this._lastEffectiveState = mapped;
+        animateFrank(mapped, bpm);
+      };
+      this.displayState = (state) => {
+      };
+      this.applyState("idle", 120);
+    }
+    updateSpriteScale() {
+      if (!this._currentSprite) {
+        console.log("[Frank] updateSpriteScale: no current sprite");
+        return;
+      }
+      const container = this.root.querySelector("#desktop");
+      if (!container) {
+        console.log("[Frank] updateSpriteScale: no frank-card found");
+        return;
+      }
+      const spriteWidth = this._currentSprite.width?.baseVal?.value || this._currentSprite.getBoundingClientRect().width;
+      const spriteHeight = this._currentSprite.height?.baseVal?.value || this._currentSprite.getBoundingClientRect().height;
+      const screenFill = 0.8;
+      const containerWidth = container.clientWidth;
+      const containerHeight = container.clientHeight;
+      const targetWidth = containerWidth * screenFill;
+      const targetHeight = containerHeight * screenFill;
+      const scaleX = targetWidth / spriteWidth;
+      const scaleY = targetHeight / spriteHeight;
+      const scale = Math.max(
+        1,
+        Math.floor(Math.min(scaleX, scaleY))
+      );
+      const finalWidth = spriteWidth * scale;
+      const finalHeight = spriteHeight * scale;
+      const svg = this._currentSprite;
+      svg.setAttribute("width", finalWidth);
+      svg.setAttribute("height", finalHeight);
+    }
+    cleanup() {
+      if (this.handleResize) {
+        window.removeEventListener("resize", this.handleResize);
+      }
+      if (this.stopIdleCycle) this.stopIdleCycle();
+      if (this.stopDanceCycle) this.stopDanceCycle();
+      if (this.respondTimer) clearTimeout(this.respondTimer);
+      if (this.talkAnim) clearTimeout(this.talkAnim);
+    }
+  };
+
+  // src/system/AppManager.js
+  var AppManager = class {
+    constructor(root) {
+      this.root = root;
+      this.apps = {};
+      this.appClasses = {
+        "about_app": AboutApp,
+        "finder_app": FinderApp,
+        "frank_app": FrankApp
+      };
+    }
+    registerApp(appId, appInstance) {
+      this.apps[appId] = appInstance;
+    }
+    openApp(appId) {
+      if (!this.apps[appId]) {
+        this.registerApp(appId, new this.appClasses[appId](this.root));
+      }
+      if (this.apps[appId]) {
+        this.apps[appId].window.open();
+      }
+    }
+    closeApp(appId) {
+      if (this.apps[appId]) {
+        this.apps[appId].window.close();
+        delete this.apps[appId];
+      } else {
+        console.warn(`App with ID ${appId} not found.`);
+      }
+    }
+  };
+
+  // src/system/Desktop.js
+  var Desktop = class {
+    constructor(root, appManager) {
+      this.root = root;
+      this.appManager = appManager;
+    }
+    // Desktop initialization and icon management
+    initializeDesktop() {
+      const desktop = this.root.getElementById("desktop");
+      const ICON_HEIGHT = 80;
+      let topPosition = 20;
+      this.appManager.apps.forEach((app) => {
+        const icon = this.createDesktopIcon(
+          app.id,
+          app.name,
+          "application",
+          app.icon,
+          { right: "20px", top: `${topPosition}px` }
+        );
+        desktop.appendChild(icon);
+        topPosition += ICON_HEIGHT;
+      });
+    }
+    createDesktopIcon(appId, name, type, icon, position = {}) {
+      const div = this.root.createElement("div");
+      div.className = "desktop-icon";
+      Object.assign(div.style, position);
+      div.innerHTML = `
+            <img src="/assets/images/${icon}" alt="${name}">
+            <div class="desktop-icon-label">${name}</div>
+        `;
+      div.setAttribute("data-appId", appId);
+      div.setAttribute("data-name", name);
+      div.setAttribute("data-type", type);
+      return div;
     }
   };
 
   // src/system/StateManager.js
   var StateManager = class {
-    constructor(menubar) {
+    constructor(root, menubar) {
+      this.root = root;
       this.menubar = menubar;
       this.STATE_KEY = "frankOS_State";
       this.AUTO_SAVE_INTERVAL = 5e3;
@@ -179,7 +644,7 @@
     }
     saveState() {
       try {
-        const windows = Array.from(document.querySelectorAll(".window")).map((window2) => ({
+        const windows = Array.from(this.root.querySelectorAll(".window")).map((window2) => ({
           title: window2.querySelector(".window-title").textContent,
           content: window2.querySelector(".window-content").innerHTML,
           type: window2.dataset.windowType || (window2.classList.contains("folder-window") ? "folder" : "document"),
@@ -193,7 +658,7 @@
         }));
         const desktop = {};
         const menuState = {
-          activeApp: document.querySelector(".app-menu").textContent
+          activeApp: this.root.querySelector(".app-menu").textContent
         };
         const state = {
           windows,
@@ -211,7 +676,7 @@
         const savedState = localStorage.getItem(this.STATE_KEY);
         if (!savedState) return;
         const state = JSON.parse(savedState);
-        const desktop = document.getElementById("desktop");
+        const desktop = this.root.getElementById("desktop");
         if (desktop) {
         }
         if (state.menuState) {
@@ -223,7 +688,7 @@
           }
         }
         state.windows.forEach((windowState) => {
-          new Window(
+          new Window2(
             windowState.title,
             windowState.content,
             windowState.type,
@@ -247,54 +712,20 @@
     }
   };
 
-  // src/system/AppManager.js
-  var AppManager = class {
-    constructor() {
-      this.apps = {};
-      this.appClasses = {
-        "about_app": AboutApp,
-        "finder_app": FinderApp,
-        "frank_app": FrankApp
-      };
-    }
-    registerApp(appId, appInstance) {
-      this.apps[appId] = appInstance;
-    }
-    openApp(appId) {
-      if (!this.apps[appId]) {
-        registerApp(appId, new appClasses[appId]());
-      }
-      if (this.apps[appId]) {
-        this.apps[appId].window.open();
-      }
-    }
-    closeApp(appId) {
-      if (this.apps[appId]) {
-        this.apps[appId].window.close();
-        delete this.apps[appId];
-      } else {
-        console.warn(`App with ID ${appId} not found.`);
-      }
-    }
-  };
-
   // src/system/System.js
   var System = class {
-    constructor() {
-      this.menubar = null;
-      this.stateManager = null;
-      this.appManager = null;
-    }
-    init() {
-      this.menubar = new MenuBar();
-      this.stateManager = new StateManager(this.menubar);
-      this.appManager = new AppManager();
+    constructor(root) {
+      this.root = root;
+      this.menubar = new MenuBar(root);
+      this.desktop = new Desktop(root);
+      this.stateManager = new StateManager(root, this.menubar);
+      this.appManager = new AppManager(root);
       this.initializeEventListeners();
     }
     // Initialize desktop and event listeners
     initializeEventListeners() {
-      document.addEventListener("click", (e) => this.handleGlobalClick(e));
-      document.addEventListener("keydown", (e) => this.handleGlobalKeydown(e));
+      this.root.addEventListener("click", (e) => this.handleGlobalClick(e));
+      this.root.addEventListener("keydown", (e) => this.handleGlobalKeydown(e));
       window.addEventListener("beforeunload", () => this.handleBeforeUnload());
     }
     handleGlobalClick(e) {
@@ -304,7 +735,7 @@
       if (e.target.id === "desktop") {
         e.preventDefault();
         e.stopPropagation();
-        document.querySelectorAll(".window").forEach((win) => {
+        this.root.querySelectorAll(".window").forEach((win) => {
           win.classList.remove("active");
           win.style.zIndex = "1";
           win.querySelector(".window-titlebar").style.background = "var(--system7-titlebar-inactive)";
@@ -313,7 +744,7 @@
       }
       const window2 = e.target.closest(".window");
       if (window2) {
-        Array.from(document.querySelectorAll(".window")).forEach((w) => {
+        Array.from(this.root.querySelectorAll(".window")).forEach((w) => {
           if (w !== window2) {
             w.classList.remove("active");
           }
@@ -330,17 +761,8 @@
     handleGlobalDblClick(e) {
       const icon = e.target.closest(".desktop-icon");
       if (!icon) return;
-      const name = icon.dataset.name;
-      const type = icon.dataset.type;
-      if (type === "folder") {
-        this.appManager.openApp("finder_app");
-      } else if (type === "alias") {
-        if (name === "Frank") {
-          this.appManager.openApp("frank_app");
-        } else if (name === "Trash") {
-          this.appManager.openApp("trash_app");
-        }
-      }
+      const appId = icon.dataset.appId;
+      this.appManager.openApp(appId);
     }
     handleGlobalKeydown(e) {
       if (e.key === "Escape") {
@@ -351,10 +773,10 @@
       this.stateManager.saveState();
     }
     cleanup() {
-      document.removeEventListener("click", this.handleGlobalClick);
-      document.removeEventListener("dblclick", this.handleGlobalDblClick);
-      document.removeEventListener("keydown", this.handleGlobalKeydown);
-      document.removeEventListener("beforeunload", this.handleBeforeUnload);
+      this.root.removeEventListener("click", this.handleGlobalClick);
+      this.root.removeEventListener("dblclick", this.handleGlobalDblClick);
+      this.root.removeEventListener("keydown", this.handleGlobalKeydown);
+      this.root.removeEventListener("beforeunload", this.handleBeforeUnload);
     }
   };
 
@@ -363,6 +785,8 @@
     // #region constructor
     constructor() {
       super();
+      this.system = null;
+      this.attachShadow({ mode: "open" });
     }
     // #endregion
     // #region Lovelace methods
@@ -390,9 +814,9 @@
     }
     // #endregion
     // #region hass setter
-    set hass(hass) {
+    set hass(hass2) {
       console.log("Entering hass setter");
-      if (!hass) return;
+      if (!hass2) return;
       if (!this.contentReady) {
         this.init();
         this.contentReady = true;
@@ -408,7 +832,7 @@
     // #region setupDOM
     setupDOM() {
       console.log("Setting up DOM");
-      this.innerHTML = `
+      this.shadowRoot.innerHTML = `
     <div id="scene">
         <div id="menubar" class="menubar">
             <!-- Menubar content will be injected here -->
@@ -423,12 +847,13 @@
     // #endregion
     connectedCallback() {
       console.log("FrankOSCard connected to DOM");
-      this.system = new System();
-      this.system.init();
+      this.system = new System(this.shadowRoot);
     }
     disconnectedCallback() {
       console.log("FrankOSCard disconnected from DOM");
-      this.system.cleanup();
+      if (this.system) {
+        this.system.cleanup();
+      }
     }
   };
 
@@ -442,12 +867,12 @@
       this._config = config;
       this.render();
     }
-    set hass(hass) {
-      this._hass = hass;
+    set hass(hass2) {
+      this._hass = hass2;
       const pickers = this.shadowRoot.querySelectorAll("ha-entity-picker");
       if (pickers.length > 0) {
         pickers.forEach((picker) => {
-          picker.hass = hass;
+          picker.hass = hass2;
         });
       } else {
         this.render();

@@ -1,18 +1,15 @@
 import { MenuBar } from './MenuBar.js';
+import { Desktop } from './Desktop.js';
 import { StateManager } from './StateManager.js';
 import { AppManager } from './AppManager.js';
 
 export class System {
-    constructor() {
-        this.menubar = null;
-        this.stateManager = null;
-        this.appManager = null;
-    }
-
-    init() {
-        this.menubar = new MenuBar();
-        this.stateManager = new StateManager(this.menubar);
-        this.appManager = new AppManager();
+    constructor(root) {
+        this.root = root;
+        this.menubar = new MenuBar(root);
+        this.desktop = new Desktop(root);
+        this.stateManager = new StateManager(root, this.menubar);
+        this.appManager = new AppManager(root);
         
         this.initializeEventListeners();
     }
@@ -20,10 +17,10 @@ export class System {
     // Initialize desktop and event listeners
     initializeEventListeners() {
         // Global click handler
-        document.addEventListener('click', (e) => this.handleGlobalClick(e));
+        this.root.addEventListener('click', (e) => this.handleGlobalClick(e));
 
         // Global key handlers
-        document.addEventListener('keydown', (e) => this.handleGlobalKeydown(e));
+        this.root.addEventListener('keydown', (e) => this.handleGlobalKeydown(e));
 
         // Save state before page unload
         window.addEventListener('beforeunload', () => this.handleBeforeUnload());
@@ -42,7 +39,7 @@ export class System {
             e.stopPropagation();
 
             // Deactivate all windows and set to base z-index
-            document.querySelectorAll('.window').forEach(win => {
+            this.root.querySelectorAll('.window').forEach(win => {
                 win.classList.remove('active');
                 win.style.zIndex = '1';
                 win.querySelector('.window-titlebar').style.background =
@@ -54,7 +51,7 @@ export class System {
 
         const window = e.target.closest('.window');
         if (window) {
-            Array.from(document.querySelectorAll('.window')).forEach(w => {
+            Array.from(this.root.querySelectorAll('.window')).forEach(w => {
                 if (w !== window) {
                     w.classList.remove('active');
                 }
@@ -74,21 +71,9 @@ export class System {
         const icon = e.target.closest('.desktop-icon');
         if (!icon) return;
 
-        const name = icon.dataset.name;
-        const type = icon.dataset.type;
-
-        if (type === 'folder') {
-            this.appManager.openApp('finder_app');
-        }
-        else if (type === 'alias') {
-            if (name === 'Frank') {
-                this.appManager.openApp('frank_app');
-            }
-            else if (name === 'Trash') {
-                this.appManager.openApp('trash_app');
-            }
-            
-        }
+        const appId = icon.dataset.appId;
+        
+        this.appManager.openApp(appId);
     }
 
     handleGlobalKeydown(e) {
@@ -104,10 +89,10 @@ export class System {
 
     cleanup() {
         // Clean up any global event listeners or intervals if needed
-        document.removeEventListener('click', this.handleGlobalClick);
-        document.removeEventListener('dblclick', this.handleGlobalDblClick);
-        document.removeEventListener('keydown', this.handleGlobalKeydown);
-        document.removeEventListener('beforeunload', this.handleBeforeUnload);
+        this.root.removeEventListener('click', this.handleGlobalClick);
+        this.root.removeEventListener('dblclick', this.handleGlobalDblClick);
+        this.root.removeEventListener('keydown', this.handleGlobalKeydown);
+        this.root.removeEventListener('beforeunload', this.handleBeforeUnload);
 
         // TODO: cleanup any intervals. call cleanup on all referenced objects
     }

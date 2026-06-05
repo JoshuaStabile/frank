@@ -2,7 +2,8 @@ import { MenuBar } from './MenuBar.js';
 import { Window } from './Window.js';
 
 export class StateManager {
-    constructor(menubar) {
+    constructor(root, menubar) {
+        this.root = root;
         this.menubar = menubar;
         this.STATE_KEY = 'frankOS_State';
         this.AUTO_SAVE_INTERVAL = 5000; // Auto-save every 5 seconds
@@ -15,7 +16,7 @@ export class StateManager {
     saveState() {
         try {
             // Capture all open windows
-            const windows = Array.from(document.querySelectorAll('.window')).map(window => ({
+            const windows = Array.from(this.root.querySelectorAll('.window')).map(window => ({
                 title: window.querySelector('.window-title').textContent,
                 content: window.querySelector('.window-content').innerHTML,
                 type: window.dataset.windowType || (window.classList.contains('folder-window') ? 'folder' : 'document'),
@@ -34,7 +35,7 @@ export class StateManager {
 
             // Capture menu state
             const menuState = {
-                activeApp: document.querySelector('.app-menu').textContent,
+                activeApp: this.root.querySelector('.app-menu').textContent,
             };
 
             const state = {
@@ -58,7 +59,7 @@ export class StateManager {
             const state = JSON.parse(savedState);
 
             // Restore desktop background
-            const desktop = document.getElementById('desktop');
+            const desktop = this.root.getElementById('desktop');
             if (desktop) {
             }
 

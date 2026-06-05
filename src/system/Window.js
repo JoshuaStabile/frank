@@ -1,6 +1,7 @@
 export class Window {
-    constructor(title, content, type = 'document', x = 20, y = 50) {
-        this.element = document.createElement('div');
+    constructor(root, id, title, content, type = 'document', x = 20, y = 50) {
+        this.root = root;
+        this.element = this.root.createElement('div');
         this.element.className = 'window';
         if (type === 'folder') this.element.classList.add('folder-window');
         
@@ -22,7 +23,7 @@ export class Window {
 
         // Create window structure
         this.element.innerHTML = `
-            <div class="window-titlebar" data-app-id="${title}}">
+            <div class="window-titlebar" data-app-id="${id}">}">
                 <div class="window-close"></div>
                 <div class="window-title">${title}</div>
             </div>
@@ -62,7 +63,7 @@ export class Window {
             this.bringToFront();
         });
 
-        document.addEventListener('mousemove', (e) => {
+        this.root.addEventListener('mousemove', (e) => {
             if (isDragging) {
                 e.preventDefault();
                 this.element.style.left = (e.clientX - initialX) + 'px';
@@ -70,7 +71,7 @@ export class Window {
             }
         });
 
-        document.addEventListener('mouseup', () => {
+        this.root.addEventListener('mouseup', () => {
             if (isDragging) {
                 isDragging = false;
             }
@@ -96,12 +97,12 @@ export class Window {
             };
             
             const onMouseUp = () => {
-                document.removeEventListener('mousemove', onMouseMove);
-                document.removeEventListener('mouseup', onMouseUp);
+                this.root.removeEventListener('mousemove', onMouseMove);
+                this.root.removeEventListener('mouseup', onMouseUp);
             };
             
-            document.addEventListener('mousemove', onMouseMove);
-            document.addEventListener('mouseup', onMouseUp);
+            this.root.addEventListener('mousemove', onMouseMove);
+            this.root.addEventListener('mouseup', onMouseUp);
         });
     }
 
@@ -113,7 +114,7 @@ export class Window {
     }
 
     bringToFront() {
-        const windows = document.querySelectorAll('.window');
+        const windows = this.root.querySelectorAll('.window');
         let maxZ = 0;
         windows.forEach(win => {
             const z = parseInt(win.style.zIndex || 0);
@@ -134,7 +135,7 @@ export class Window {
     }
 
     open() {
-        document.getElementById('desktop').appendChild(this.element);
+        this.root.getElementById('desktop').appendChild(this.element);
         this.bringToFront();
     }
 }
