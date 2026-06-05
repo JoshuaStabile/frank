@@ -1,36 +1,38 @@
 import { MenuManager } from './MenuManager.js';
 import { StateManager } from './StateManager.js';
 import { WindowManager } from './WindowManager.js';
-import { initializeDesktop } from './filesystem.js';
+import { FileManager } from './FileManager.js';
+import { SoundManager } from './SoundManager.js';
 
 export class System {
     constructor() {
-        this.stateManager = new StateManager();
         this.windowManager = new WindowManager();
+        this.stateManager = new StateManager(this.windowManager);
+        this.menuManager = new MenuManager(this.windowManager);
+        this.fileManager = new FileManager(this.windowManager);
+        this.soundManager = new SoundManager();
 
         this.init();
     }
 
     init() {
-        initializeClock();
-        initializeDesktop();
-        initializeEventListeners();
-        checkUrlParameters();
-
+        this.initializeClock();
+        this.initializeEventListeners();
+        this.checkUrlParameters();
     }
 
     checkUrlParameters() {
         const urlParams = new URLSearchParams(window.location.search);
         const page = urlParams.get('page');
         if (page) {
-            openPage(page);
+            this.windowManager.openPage(page);
         }
     }
 
     // Clock functionality
     initializeClock() {
-        updateClock();
-        setInterval(updateClock, 1000);
+        this.updateClock();
+        setInterval(() => this.updateClock(), 1000);
     }
 
     updateClock() {
@@ -82,7 +84,7 @@ export class System {
         </div>
     `;
 
-        const aboutWindow = new Window(
+        const aboutWindow = this.windowManager.createWindow(
             'About This Website',
             content,
             'about',
@@ -98,8 +100,8 @@ export class System {
         aboutWindow.element.querySelector('.window-content').style.overflow = 'hidden';
 
         // Play sound if available
-        if (typeof SoundManager !== 'undefined') {
-            SoundManager.play('click');
+        if (typeof this.SoundManager !== 'undefined') {
+            this.SoundManager.play('click');
         }
     }
 
@@ -108,12 +110,12 @@ export class System {
         const enabled = localStorage.getItem('soundEnabled') !== 'false';
         localStorage.setItem('soundEnabled', !enabled);
 
-        if (typeof SoundManager !== 'undefined') {
-            SoundManager.setVolume(!enabled ? 0.5 : 0);
+        if (typeof this.SoundManager !== 'undefined') {
+            this.SoundManager.setVolume(!enabled ? 0.5 : 0);
         }
 
         // Update menu checkmark
-        if (typeof StateManager !== 'undefined') {
+        if (typeof this.StateManager !== 'undefined') {
             StateManager.updateSoundMenuCheck(!enabled);
         }
     }
@@ -129,8 +131,8 @@ export class System {
         document.addEventListener('mousedown', (e) => {
             // Handle menu closing
             if (!e.target.closest('.menubar-item') && !e.target.closest('.dropdown-menu')) {
-                if (typeof MenuManager !== 'undefined') {
-                    MenuManager.closeAllMenus();
+                if (typeof this.MenuManager !== 'undefined') {
+                    this.MenuManager.closeAllMenus();
                 }
             }
 
@@ -153,8 +155,8 @@ export class System {
                 appMenu.querySelector('.app-name').textContent = 'Finder';
 
                 // Force MenuManager to update with Finder as active
-                if (typeof MenuManager !== 'undefined') {
-                    MenuManager.forceFinderActive();
+                if (typeof this.MenuManager !== 'undefined') {
+                    this.MenuManager.forceFinderActive();
                 }
             }
         });
@@ -163,8 +165,8 @@ export class System {
         document.addEventListener('keydown', (e) => {
             // Add key shortcuts here if needed
             if (e.key === 'Escape') {
-                if (typeof MenuManager !== 'undefined') {
-                    MenuManager.closeAllMenus();
+                if (typeof this.MenuManager !== 'undefined') {
+                    this.MenuManager.closeAllMenus();
                 }
             }
         });
@@ -181,5 +183,13 @@ export class System {
                 window.classList.add('active');
             }
         });
+    }
+
+    cleanup() {
+        // Clean up any global event listeners or intervals if needed
+        document.removeEventListener('mousedown', this.handleGlobalClick);
+        document.removeEventListener('keydown', this.handleGlobalKeydown);
+        // Clear any intervals (like clock updates) if needed
+        clearInterval(this.clockInterval);
     }
 }

@@ -1,5 +1,6 @@
 export class StateManager {
-    constructor() {
+    constructor(windowManager) {
+        this.windowManager = windowManager;
         this.STATE_KEY = 'frankOS_State';
         this.AUTO_SAVE_INTERVAL = 5000; // Auto-save every 5 seconds
         
@@ -80,7 +81,13 @@ export class StateManager {
 
             // Restore windows
             state.windows.forEach(windowState => {
-                Window.restore(windowState);
+                this.windowManager.createWindow(
+                    windowState.title,
+                    windowState.content,
+                    windowState.type,
+                    parseInt(windowState.position.left) || 100,
+                    parseInt(windowState.position.top) || 100
+                );
             });
 
             // Update application menu after windows are restored

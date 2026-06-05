@@ -1,3 +1,4 @@
+import { App } from './App.js';
 import { SPRITES } from '../config/sprites.js';
 
 export class FrankApp extends App {

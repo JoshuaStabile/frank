@@ -1,4 +1,3 @@
-import { findItem, fileSystem } from './filesystem.js';
 export class Window {
     constructor(title, content, type = 'document', x = 20, y = 50) {
         this.element = document.createElement('div');
@@ -120,25 +119,25 @@ export class Window {
         const closeButton = this.element.querySelector('.window-close');
         closeButton.addEventListener('click', () => {
             // Play close sound if available
-            if (typeof SoundManager !== 'undefined') {
-                SoundManager.play('drop');
+            if (typeof this.soundManager !== 'undefined') {
+                this.soundManager.play('drop');
             }
             
             this.element.remove();
             
             // Reset application name to Finder if no windows are active
             if (!document.querySelector('.window')) {
-                updateActiveApplication('Finder');
+                this.updateActiveApplication('Finder');
             }
             
             // Update application menu
-            if (typeof MenuManager !== 'undefined') {
-                MenuManager.updateApplicationMenu();
+            if (typeof this.menuManager !== 'undefined') {
+                this.menuManager.updateApplicationMenu();
             }
 
             // Save state
-            if (typeof StateManager !== 'undefined') {
-                StateManager.saveState();
+            if (typeof this.stateManager !== 'undefined') {
+                this.stateManager.saveState();
             }
         });
     }
@@ -171,19 +170,9 @@ export class Window {
             clearTimeout(this.saveStateTimeout);
         }
         this.saveStateTimeout = setTimeout(() => {
-            if (typeof StateManager !== 'undefined') {
-                StateManager.saveState();
+            if (typeof this.stateManager !== 'undefined') {
+                this.stateManager.saveState();
             }
         }, 500);
-    }
-
-    static restore(windowState) {
-        return new Window(
-            windowState.title, 
-            windowState.content, 
-            windowState.type, 
-            parseInt(windowState.position.left), 
-            parseInt(windowState.position.top)
-        );
     }
 }

@@ -3,6 +3,11 @@ export class WindowManager {
         this.windows = [];
     }
 
+    createWindow(title, content, type = 'document', left = 100, top = 100) {
+        const newWindow = new Window(title, content, type, left, top);
+        this.windows.push(newWindow);
+        return newWindow;
+    }
 
     // Add this function to update the application name
     updateActiveApplication(windowTitle) {
@@ -16,7 +21,7 @@ export class WindowManager {
     // This might be in your window click handler or focus handler
     setActiveWindow(window) {
         // ...existing code...
-        updateActiveApplication(window.querySelector('.window-title').textContent);
+        this.updateActiveApplication(window.querySelector('.window-title').textContent);
         // ...existing code...
     }
 
@@ -35,7 +40,7 @@ export class WindowManager {
                 const windowTitle = fileItem ? fileItem.name : page;
 
                 // Create new window with proper title
-                new Window(windowTitle, windowContent, 'document');
+                this.createWindow(windowTitle, windowContent, 'document');
             })
             .catch(error => console.error('Error loading page:', error));
     }

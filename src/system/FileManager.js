@@ -1,10 +1,8 @@
-import { Window } from './Window.js';
-import { openPage } from './Window.js';
-
 // File System Structure
 export class FileManager {
 
-    constructor() {
+    constructor(windowManager) {
+        this.windowManager = windowManager;
         this.fileSystem = {
             'Macintosh HD': {
                 type: 'folder',
@@ -14,6 +12,7 @@ export class FileManager {
             }
         };
 
+        this.initializeDesktop();
     }
 
 
@@ -48,29 +47,9 @@ export class FileManager {
 
     handleDoubleClick(name) {
         // Check for Access main security grid specifically 
-        if (name === 'Access main security grid') {
-            const videoContent = `
-            <video width="200" height="200" autoplay loop>
-                <source src="/assets/video/TheKing.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        `;
-            const jpWindow = new Window('The King', videoContent, 'document',
-                window.innerWidth / 2 - 115,
-                window.innerHeight / 2 - 125);
-            jpWindow.element.style.width = '230px';
-            jpWindow.element.style.height = '250px';
-            jpWindow.element.style.resize = 'none';
-            const resizeHandle = jpWindow.element.querySelector('.window-resizer');
-            if (resizeHandle) {
-                resizeHandle.remove();
-            }
-            return;
-        }
-
         if (name === 'Macintosh HD') {
             const hdFolder = fileSystem['Macintosh HD'];
-            new Window(name, createFolderContents(hdFolder), 'folder');
+            this.windowManager.createWindow(name, createFolderContents(hdFolder), 'folder');
             return;
         }
 
@@ -79,9 +58,9 @@ export class FileManager {
 
         if (item) {
             if (item.type === 'folder') {
-                new Window(name, createFolderContents(item), 'folder');
+                this.windowManager.createWindow(name, createFolderContents(item), 'folder');
             } else if (item.type === 'document') {
-                openPage(item.file);
+                this.windowManager.openPage(item.file);
             }
         } else {
             // Check if it's an alias
@@ -93,15 +72,7 @@ export class FileManager {
             };
 
             if (fileMap[name]) {
-                openPage(fileMap[name]);
-            } else if (name === 'JP') {
-                const videoContent = `
-                <video width="200" height="200" autoplay loop>
-                    <source src="/assets/videos/TheKing.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            `;
-                new Window('TheKing', videoContent, 'document', window.innerWidth / 2 - 100, window.innerHeight / 2 - 100);
+                this.windowManager.openPage(fileMap[name]);
             }
         }
     }
