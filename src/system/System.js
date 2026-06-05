@@ -1,6 +1,6 @@
 import { MenuBar } from './MenuBar.js';
 import { StateManager } from './StateManager.js';
-import { AppManager } from './applications/AppManager.js';
+import { AppManager } from './AppManager.js';
 
 export class System {
     constructor() {
@@ -11,15 +11,6 @@ export class System {
 
     init() {
         this.initializeEventListeners();
-        this.checkUrlParameters();
-    }
-
-    checkUrlParameters() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const page = urlParams.get('page');
-        if (page) {
-            this.windowManager.openPage(page);
-        }
     }
 
     // Initialize desktop and event listeners
@@ -77,6 +68,27 @@ export class System {
         }
     }
 
+    handleGlobalDblClick(e) {
+        const icon = e.target.closest('.desktop-icon');
+        if (!icon) return;
+
+        const name = icon.dataset.name;
+        const type = icon.dataset.type;
+
+        if (type === 'folder') {
+            this.appManager.openApp('finder_app');
+        }
+        else if (type === 'alias') {
+            if (name === 'Frank') {
+                this.appManager.openApp('frank_app');
+            }
+            else if (name === 'Trash') {
+                this.appManager.openApp('trash_app');
+            }
+            
+        }
+    }
+
     handleGlobalKeydown(e) {
         // Add key shortcuts here if needed
         if (e.key === 'Escape') {
@@ -91,6 +103,7 @@ export class System {
     cleanup() {
         // Clean up any global event listeners or intervals if needed
         document.removeEventListener('click', this.handleGlobalClick);
+        document.removeEventListener('dblclick', this.handleGlobalDblClick);
         document.removeEventListener('keydown', this.handleGlobalKeydown);
         document.removeEventListener('beforeunload', this.handleBeforeUnload);
 

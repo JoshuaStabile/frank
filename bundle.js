@@ -1751,7 +1751,7 @@ height: 100vh;
     }
   };
 
-  // src/system/applications/AppManager.js
+  // src/system/AppManager.js
   var AppManager = class {
     constructor() {
       this.apps = {};
@@ -1791,14 +1791,6 @@ height: 100vh;
     }
     init() {
       this.initializeEventListeners();
-      this.checkUrlParameters();
-    }
-    checkUrlParameters() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const page = urlParams.get("page");
-      if (page) {
-        this.windowManager.openPage(page);
-      }
     }
     // Initialize desktop and event listeners
     initializeEventListeners() {
@@ -1836,6 +1828,21 @@ height: 100vh;
         }
       }
     }
+    handleGlobalDblClick(e) {
+      const icon = e.target.closest(".desktop-icon");
+      if (!icon) return;
+      const name = icon.dataset.name;
+      const type = icon.dataset.type;
+      if (type === "folder") {
+        this.appManager.openApp("finder_app");
+      } else if (type === "alias") {
+        if (name === "Frank") {
+          this.appManager.openApp("frank_app");
+        } else if (name === "Trash") {
+          this.appManager.openApp("trash_app");
+        }
+      }
+    }
     handleGlobalKeydown(e) {
       if (e.key === "Escape") {
         this.menubar.closeAllMenus();
@@ -1846,6 +1853,7 @@ height: 100vh;
     }
     cleanup() {
       document.removeEventListener("click", this.handleGlobalClick);
+      document.removeEventListener("dblclick", this.handleGlobalDblClick);
       document.removeEventListener("keydown", this.handleGlobalKeydown);
       document.removeEventListener("beforeunload", this.handleBeforeUnload);
     }
