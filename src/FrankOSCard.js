@@ -50,8 +50,6 @@ export class FrankOSCard extends HTMLElement {
   init() {
     console.log('Initializing FrankOSCard');
     this.setupDOM();
-    this.system = new System();
-    this.system.init();
   }
 
   // #endregion
@@ -75,7 +73,14 @@ export class FrankOSCard extends HTMLElement {
 
   // #endregion
 
+  connectedCallback() {
+    console.log('FrankOSCard connected to DOM');
+    this.system = new System();
+    this.system.init();
+  }
+
   disconnectedCallback() {
+    console.log('FrankOSCard disconnected from DOM');
     this.system.cleanup();
   }
 }
