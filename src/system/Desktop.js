@@ -4,11 +4,13 @@ export class Desktop {
     constructor(root, appManager) {
         this.root = root;
         this.appManager = appManager;
+
+        this.init();
     }
 
 
     // Desktop initialization and icon management
-    initializeDesktop() {
+    init() {
         const desktop = this.root.getElementById('desktop');
         const ICON_HEIGHT = 80;
         let topPosition = 20;

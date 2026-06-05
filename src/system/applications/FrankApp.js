@@ -1,4 +1,5 @@
 import { App } from './App.js';
+import { Window } from '../Window.js';
 import { SPRITES } from '../../config/sprites.js';
 
 export class FrankApp extends App {

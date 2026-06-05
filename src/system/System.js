@@ -7,9 +7,9 @@ export class System {
     constructor(root) {
         this.root = root;
         this.menubar = new MenuBar(root);
-        this.desktop = new Desktop(root);
         this.stateManager = new StateManager(root, this.menubar);
         this.appManager = new AppManager(root);
+        this.desktop = new Desktop(root, this.appManager);
         
         this.initializeEventListeners();
     }

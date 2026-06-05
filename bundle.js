@@ -56,7 +56,7 @@
   };
 
   // src/system/applications/App.js
-  var App2 = class {
+  var App = class {
     constructor(root, id, window2) {
       this.root = root;
       this.id = id;
@@ -68,7 +68,7 @@
   };
 
   // src/system/Window.js
-  var Window2 = class {
+  var Window = class {
     constructor(root, id, title, content, type = "document", x = 20, y = 50) {
       this.root = root;
       this.element = this.root.createElement("div");
@@ -183,7 +183,7 @@
   };
 
   // src/system/applications/AboutApp.js
-  var AboutApp = class extends App2 {
+  var AboutApp = class extends App {
     constructor(root) {
       const id = "about_app";
       const content = `
@@ -194,7 +194,7 @@
                 </div>
             </div>
         `;
-      super(root, id, new Window2(id, "About", content, "about", window.innerWidth / 2 - 200, window.innerHeight / 2 - 150));
+      super(root, id, new Window(id, "About", content, "about", window.innerWidth / 2 - 200, window.innerHeight / 2 - 150));
     }
   };
 
@@ -314,7 +314,7 @@
   };
 
   // src/system/applications/FrankApp.js
-  var FrankApp = class extends App2 {
+  var FrankApp = class extends App {
     constructor(root) {
       const id = "frank_app";
       super(root, id, new Window(id, "Frank", `<div id="frank-container"></div>`));
@@ -599,9 +599,10 @@
     constructor(root, appManager) {
       this.root = root;
       this.appManager = appManager;
+      this.init();
     }
     // Desktop initialization and icon management
-    initializeDesktop() {
+    init() {
       const desktop = this.root.getElementById("desktop");
       const ICON_HEIGHT = 80;
       let topPosition = 20;
@@ -688,7 +689,7 @@
           }
         }
         state.windows.forEach((windowState) => {
-          new Window2(
+          new Window(
             windowState.title,
             windowState.content,
             windowState.type,
@@ -717,9 +718,9 @@
     constructor(root) {
       this.root = root;
       this.menubar = new MenuBar(root);
-      this.desktop = new Desktop(root);
       this.stateManager = new StateManager(root, this.menubar);
       this.appManager = new AppManager(root);
+      this.desktop = new Desktop(root, this.appManager);
       this.initializeEventListeners();
     }
     // Initialize desktop and event listeners

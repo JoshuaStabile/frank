@@ -1,3 +1,6 @@
+import { App } from './App.js';
+import { Window } from '../Window.js';
+
 // File System Structure
 export class FinderApp extends App {
 
