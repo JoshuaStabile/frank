@@ -19,7 +19,6 @@ export class System {
 
     // Initialize desktop and event listeners
     initializeEventListeners() {
-
         // Global click handler
         document.addEventListener('click', (e) => this.handleGlobalClick(e));
 
@@ -28,7 +27,6 @@ export class System {
 
         // Save state before page unload
         window.addEventListener('beforeunload', () => this.handleBeforeUnload());
-
     }
 
     handleGlobalClick(e) {
