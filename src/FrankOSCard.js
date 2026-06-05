@@ -39,6 +39,7 @@ export class FrankOSCard extends HTMLElement {
     if (!hass) return;
     if (!this.contentReady) {
       this.init()
+      this.contentReady = true;
     }
   }
 

@@ -1173,12 +1173,13 @@ height: 100vh;
   // src/system/MenuBar.js
   var MenuBar = class {
     constructor() {
+      this.element = document.getElementById("menubar");
       this.renderContent();
       this.resetApplicationName();
       this.initializeClock();
     }
     renderContent() {
-      return `
+      this.element.innerHTML = `
             <div class="menubar-left">
                 <div class="menubar-item" data-menu="apple">
                     <!-- svg 12x12-->
@@ -1561,6 +1562,7 @@ height: 100vh;
       if (!hass) return;
       if (!this.contentReady) {
         this.init();
+        this.contentReady = true;
       }
     }
     // #endregion

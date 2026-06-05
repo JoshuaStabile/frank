@@ -1,12 +1,15 @@
 export class MenuBar {
     constructor() {
+        this.element = document.getElementById('menubar');
+
         this.renderContent();
         this.resetApplicationName();
         this.initializeClock();
     }
 
     renderContent() {
-        return `
+        this.element.innerHTML =
+            `
             <div class="menubar-left">
                 <div class="menubar-item" data-menu="apple">
                     <!-- svg 12x12-->
