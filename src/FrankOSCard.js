@@ -21,6 +21,7 @@ export class FrankOSCard extends HTMLElement {
   // #region setConfig
 
   setConfig(config) {
+    console.log('Entering setConfig');
     if (!config.entity && !this.config) {
       this.config = { ...config, entity: 'assist_satellite.example' };
     } else {
@@ -36,6 +37,7 @@ export class FrankOSCard extends HTMLElement {
   // #region hass setter
 
   set hass(hass) {
+    console.log('Entering hass setter');
     if (!hass) return;
     if (!this.contentReady) {
       this.init()
@@ -48,6 +50,7 @@ export class FrankOSCard extends HTMLElement {
   // #region init
 
   init() {
+    console.log('Initializing FrankOSCard');
     this.setupDOM();
     this.system = new System();
     this.system.init();

@@ -1547,6 +1547,7 @@ height: 100vh;
     // #endregion
     // #region setConfig
     setConfig(config) {
+      console.log("Entering setConfig");
       if (!config.entity && !this.config) {
         this.config = { ...config, entity: "assist_satellite.example" };
       } else {
@@ -1559,6 +1560,7 @@ height: 100vh;
     // #endregion
     // #region hass setter
     set hass(hass) {
+      console.log("Entering hass setter");
       if (!hass) return;
       if (!this.contentReady) {
         this.init();
@@ -1568,6 +1570,7 @@ height: 100vh;
     // #endregion
     // #region init
     init() {
+      console.log("Initializing FrankOSCard");
       this.setupDOM();
       this.system = new System();
       this.system.init();
